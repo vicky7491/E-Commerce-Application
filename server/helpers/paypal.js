@@ -1,9 +1,11 @@
-const paypal = require("paypal-rest-sdk");
+// const paypal = require("paypal-rest-sdk");
 
-paypal.configure({
-  mode: "",
-  client_id: "",
-  client_secret: "",
-});
+// paypal.configure({
+//   mode: "sandbox",
+//   client_id: "",
+//   client_secret: "",
+// });
 
-module.exports = paypal;
+
+// console.log("⚠️ PayPal integration is temporarily disabled.");
+// module.exports = paypal;
