@@ -19,14 +19,15 @@ const registerUser = async (req, res) => {
       userName,
       email,
       password: hashPassword,
-    });
-
+    }); 
     await newUser.save();
+
     res.status(200).json({
       success: true,
       message: "Registration successful",
     });
   } catch (e) {
+ 
     console.log(e);
     res.status(500).json({
       success: false,
@@ -65,10 +66,10 @@ const loginUser = async (req, res) => {
         userName: checkUser.userName,
       },
       "CLIENT_SECRET_KEY",
-      { expiresIn: "60m" }
+      { expiresIn: "15m" }
     );
 
-    res.cookie("token", token, { httpOnly: true, secure: false }).json({
+    res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "strict" }).json({
       success: true,
       message: "Logged in successfully",
       user: {
