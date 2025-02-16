@@ -1,4 +1,3 @@
-require("dotenv").config(); // ✅ Load environment variables first
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
@@ -18,16 +17,15 @@ const commonFeatureRouter = require("./routes/common/feature-routes");
 
 //create a database connection -> u can also
 //create a separate file for this and then import/use that file here
-
+require("dotenv").config();
 mongoose
 .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
-  
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-console.log("Using MONGO_URI:", process.env.MONGO_URI);
+
 app.use(
   cors({
     origin: "http://localhost:5173",
