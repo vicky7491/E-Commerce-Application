@@ -28,21 +28,18 @@ const addProduct = async (req, res) => {
       title,
       description,
       category,
-      brand,
       price,
       salePrice,
       totalStock,
       averageReview,
     } = req.body;
 
-    console.log(averageReview, "averageReview");
 
     const newlyCreatedProduct = new Product({
       image,
       title,
       description,
       category,
-      brand,
       price,
       salePrice,
       totalStock,
@@ -73,7 +70,6 @@ const fetchAllProducts = async (req, res) => {
       data: listOfProducts,
     });
   } catch (e) {
-    console.log(e);
     res.status(500).json({
       success: false,
       message: "Error occured",
@@ -90,7 +86,6 @@ const editProduct = async (req, res) => {
       title,
       description,
       category,
-      brand,
       price,
       salePrice,
       totalStock,
@@ -107,7 +102,6 @@ const editProduct = async (req, res) => {
     findProduct.title = title || findProduct.title;
     findProduct.description = description || findProduct.description;
     findProduct.category = category || findProduct.category;
-    findProduct.brand = brand || findProduct.brand;
     findProduct.price = price === "" ? 0 : price || findProduct.price;
     findProduct.salePrice =
       salePrice === "" ? 0 : salePrice || findProduct.salePrice;

@@ -21,10 +21,7 @@ const registerUser = async (req, res) => {
       password: hashPassword,
     }); 
 
-
-    console.log("Before saving user:", newUser);
     await newUser.save();
-    console.log("User saved successfully!");
 
     res.status(200).json({
       success: true,
