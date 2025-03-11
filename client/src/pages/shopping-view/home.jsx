@@ -120,6 +120,24 @@ function ShoppingHome() {
     dispatch(getFeatureImages());
   }, [dispatch]);
 
+ // Function to scroll to Calendly section
+ function scrollToCalendly() {
+  const calendlySection = document.getElementById("calendly-section");
+  if (calendlySection) {
+    calendlySection.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+useEffect(() => {
+  const script = document.createElement("script");
+  script.src = "https://assets.calendly.com/assets/external/widget.js";
+  script.async = true;
+  document.body.appendChild(script);
+}, []); // Runs only once when the component mounts
+
+
+
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="relative w-full h-[600px] overflow-hidden">
@@ -226,6 +244,20 @@ function ShoppingHome() {
         setOpen={setOpenDetailsDialog}
         productDetails={productDetails}
       />
+
+{/* Calendly Section */}
+<div id="calendly-section" className="py-12">
+  <div className="container mx-auto px-4">
+    <h2 className="text-3xl font-bold text-center mb-4">Book a Meeting</h2>
+    <div
+      className="calendly-inline-widget"
+      data-url="https://calendly.com/bauaa65?hide_landing_page_details=1&hide_gdpr_banner=1"
+      style={{ minWidth: "320px", height: "700px" }}
+    ></div>
+  </div>
+</div>
+
+
     </div>
   );
 }
