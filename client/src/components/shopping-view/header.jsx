@@ -1,3 +1,4 @@
+import brandLogo from "@/assets/brand-logo.jpg";
 import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
 import {
   Link,
@@ -70,6 +71,7 @@ function HeaderRightContent() {
   const [openCartSheet, setOpenCartSheet] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   function handleLogout() {
     dispatch(logoutUser());
@@ -79,26 +81,33 @@ function HeaderRightContent() {
     dispatch(fetchCartItems(user?.id));
   }, [dispatch]);
 
-  function scrollToCalendly() {
-    console.log("Button clicked!"); // Check if the function runs
-    const calendlySection = document.getElementById("calendly-section");
-    if (calendlySection) {
-      console.log("Calendly section FOUND:", calendlySection);
-      // Get section position
-      const sectionTop = calendlySection.getBoundingClientRect().top + window.scrollY;
-       // Scroll to section
-       window.scrollTo({ top: sectionTop, behavior: "smooth" });
-      calendlySection.scrollIntoView({ behavior: "smooth" });
-    }else {
-      console.error("Calendly section not found!");
+  function scrollToCalendly(navigate, location) {
+    if (location.pathname !== "/shop/home") {
+      // Navigate first if not on the correct page
+      navigate("/shop/home");
+  
+      // Wait for navigation to complete, then scroll
+      setTimeout(() => {
+        const calendlySection = document.getElementById("calendly-section");
+        if (calendlySection) {
+          const sectionTop = calendlySection.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({ top: sectionTop, behavior: "smooth" });
+        } 
+      }, 500); // Delay to allow DOM to update
+    } else {
+      // Scroll directly if already on the correct page
+      const calendlySection = document.getElementById("calendly-section");
+      if (calendlySection) {
+        const sectionTop = calendlySection.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: sectionTop, behavior: "smooth" });
+      } 
     }
   }
-  
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
       
-        <Button onClick={scrollToCalendly} variant="default" className="hidden lg:inline-block">
+        <Button onClick={() => scrollToCalendly(navigate, location)} variant="default" className="hidden lg:inline-block">
           Book Your Impression
         </Button>
       
@@ -153,11 +162,20 @@ function HeaderRightContent() {
 }
 
 function ShoppingHeader() {
+  useEffect(() => {
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100); // Delay ensures it overrides browser's default behavior
+  }, []);
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <Link to="/shop/home" className="flex items-center gap-2">
-          <HousePlug className="h-6 w-6" />
+        <img
+    src={brandLogo}
+    alt="Brand Logo"
+    className="h-12 max-w-[150px] object-contain" // Adjust height as needed
+  />
           <span className="font-bold">Beautiful Molds</span>
         </Link>
         <Sheet>
