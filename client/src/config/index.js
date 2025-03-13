@@ -100,18 +100,23 @@ export const shoppingViewHeaderMenuItems = [
     path: "/shop/listing",
   },
   {
-    id: "men",
-    label: "Men",
+    id: "baby",
+    label: "Baby",
     path: "/shop/listing",
   },
   {
-    id: "women",
-    label: "Women",
+    id: "couple",
+    label: "Couple",
     path: "/shop/listing",
   },
   {
-    id: "kids",
-    label: "Kids",
+    id: "parents",
+    label: "Parents",
+    path: "/shop/listing",
+  },
+  {
+    id: "pet",
+    label: "Pet",
     path: "/shop/listing",
   },
   {
@@ -122,10 +127,10 @@ export const shoppingViewHeaderMenuItems = [
 ];
 
 export const categoryOptionsMap = {
-  men: "Men",
-  women: "Women",
-  kids: "Kids",
+  baby: "Baby",
   couple: "Couple",
+  parents: "Parents",
+  pet: "Pet",
 };
 
 // export const brandOptionsMap = {
@@ -139,10 +144,10 @@ export const categoryOptionsMap = {
 
 export const filterOptions = {
   category: [
-    { id: "men", label: "Men" },
-    { id: "women", label: "Women" },
-    { id: "kids", label: "Kids" },
+    { id: "baby", label: "Baby" },
     { id: "couple", label: "Couple" },
+    { id: "parents", label: "Parents" },
+    { id: "pet", label: "Pet" },
   ],
 
 };

@@ -32,21 +32,14 @@ import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import { getFeatureImages } from "@/store/common-slice";
 
 const categoriesWithIcon = [
-  { id: "men", label: "Men", icon: ShirtIcon },
-  { id: "women", label: "Women", icon: CloudLightning },
-  { id: "kids", label: "Kids", icon: BabyIcon },
-  { id: "accessories", label: "Accessories", icon: WatchIcon },
-  { id: "footwear", label: "Footwear", icon: UmbrellaIcon },
+  { id: "baby", label: "Baby", icon: BabyIcon },
+  { id: "couple", label: "Couple", icon: CloudLightning },
+  { id: "parents", label: "Parents", icon: ShirtIcon },
+  { id: "pet", label: "pet", icon: WatchIcon },
+  // { id: "footwear", label: "Footwear", icon: UmbrellaIcon },
 ];
 
-// const brandsWithIcon = [
-//   { id: "nike", label: "Nike", icon: Shirt },
-//   { id: "adidas", label: "Adidas", icon: WashingMachine },
-//   { id: "puma", label: "Puma", icon: ShoppingBasket },
-//   { id: "levi", label: "Levi's", icon: Airplay },
-//   { id: "zara", label: "Zara", icon: Images },
-//   { id: "h&m", label: "H&M", icon: Heater },
-// ];
+
 function ShoppingHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { productList, productDetails } = useSelector(
@@ -251,7 +244,8 @@ useEffect(() => {
     <h2 className="text-3xl font-bold text-center mb-4">Book a Meeting</h2>
     <div
       className="calendly-inline-widget"
-      data-url="https://calendly.com/bauaa65?hide_landing_page_details=1&hide_gdpr_banner=1"
+      data-url="https://calendly.com/bauaa65/30min"
+      
       style={{ minWidth: "320px", height: "700px" }}
     ></div>
   </div>
