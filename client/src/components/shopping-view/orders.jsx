@@ -51,6 +51,7 @@ function ShoppingOrders() {
               <TableHead>Order ID</TableHead>
               <TableHead>Order Date</TableHead>
               <TableHead>Order Status</TableHead>
+              <TableHead>Payment Status</TableHead>
               <TableHead>Order Price</TableHead>
               <TableHead>
                 <span className="sr-only">Details</span>
@@ -75,6 +76,21 @@ function ShoppingOrders() {
                       >
                         {orderItem?.orderStatus}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {orderItem?.paymentStatus === "paid" ? (
+                        <Badge className="py-1 px-3 bg-green-500">
+                          {orderItem?.paymentStatus}
+                        </Badge>
+                      ) : orderItem?.paymentStatus === "pending" ? (
+                        <Badge className="py-1 px-3 bg-yellow-500">
+                          {orderItem?.paymentStatus}
+                        </Badge>
+                      ) : (
+                        <Badge className="py-1 px-3 bg-red-600">
+                          {orderItem?.paymentStatus}
+                        </Badge>
+                      )}
                     </TableCell>
                     <TableCell>${orderItem?.totalAmount}</TableCell>
                     <TableCell>

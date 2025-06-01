@@ -6,14 +6,23 @@ function PaymentSuccessPage() {
   const navigate = useNavigate();
 
   return (
-    <Card className="p-10">
-      <CardHeader className="p-0">
-        <CardTitle className="text-4xl">Payment is successfull!</CardTitle>
-      </CardHeader>
-      <Button className="mt-5" onClick={() => navigate("/shop/account")}>
-        View Orders
-      </Button>
-    </Card>
+    <div className="flex items-center justify-center min-h-screen bg-background">
+      <Card className="w-full max-w-md p-8 shadow-lg border border-muted">
+        <CardHeader className="text-center space-y-2">
+          <CardTitle className="text-3xl font-bold text-green-600">
+            Payment Successful!
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Thank you for your purchase. Your order has been confirmed.
+          </p>
+        </CardHeader>
+        <div className="mt-6 flex justify-center">
+          <Button onClick={() => navigate("/shop/account")}>
+            View My Orders
+          </Button>
+        </div>
+      </Card>
+    </div>
   );
 }
 

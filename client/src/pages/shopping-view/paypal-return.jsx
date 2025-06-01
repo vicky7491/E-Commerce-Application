@@ -25,11 +25,17 @@ function PaypalReturnPage() {
   }, [paymentId, payerId, dispatch]);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Processing Payment...Please wait!</CardTitle>
-      </CardHeader>
-    </Card>
+    <Card className="w-full max-w-md mx-auto shadow-md border border-muted bg-card">
+    <CardHeader className="text-center py-8">
+      <CardTitle className="text-xl font-semibold text-primary">
+        Processing Your Payment
+      </CardTitle>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Please wait a moment while we confirm your transaction.
+      </p>
+    </CardHeader>
+  </Card>
+  
   );
 }
 

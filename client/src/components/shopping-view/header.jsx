@@ -107,10 +107,14 @@ function HeaderRightContent() {
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
       
-        <Button onClick={() => scrollToCalendly(navigate, location)} variant="default" className="hidden lg:inline-block">
-          Book Your Impression
-        </Button>
-      
+           <Button
+        onClick={() => scrollToCalendly(navigate, location)}
+        variant="default"
+        className="hidden lg:inline-block bg-custom-gold text-white font-medium rounded-md shadow-sm transition-colors hover:bg-custom-gold-dark"
+      >
+        Book Your Impression
+      </Button>
+
 
       <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
         <Button
