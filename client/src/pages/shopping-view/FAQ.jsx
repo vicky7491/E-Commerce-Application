@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import BookingForm from './BookingForm';
+import Footer from './Footer';
 
 const FAQ = () => {
     return (
+        <div className="flex flex-col min-h-screen bg-brand-cream">
         <div className="bg-[#f9f5ef] text-[#333] p-10">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
 
@@ -311,19 +313,13 @@ const FAQ = () => {
                                 </p>
                             </div>
                         </details>
-
-
-
-
-
-
-
                     </div>
                 </div>
                 {/* Booking Form Section */}
                 <BookingForm />
-
             </div>
+        </div>
+        <Footer />
         </div>
     );
 };

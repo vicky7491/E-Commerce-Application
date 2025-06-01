@@ -18,6 +18,16 @@ module.exports = {
     },
     extend: {
       colors: {
+          // Primary brand colors (from your logo)
+        'brand-cream': '#FDF7F0', // Light cream background
+        'brand-clay': '#D4A88C', // Warm clay color
+        'brand-terracotta': '#B87D5B', // Rich terracotta
+        'brand-charcoal': '#3A3A3A', // Deep charcoal for text
+        
+        // Accent colors
+        'brand-gold': '#D4AF37', // Metallic gold accents
+        'brand-sage': '#A8B8A0', // Soft sage green
+        'brand-dusty-rose': '#C8A2A8', // Vintage rose
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
