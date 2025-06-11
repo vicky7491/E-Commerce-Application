@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import BookingForm from './BookingForm';
 import Footer from './Footer';
+import CallToAction from './CallToAction';
 
 const FAQ = () => {
     return (
@@ -13,7 +14,6 @@ const FAQ = () => {
                 <div className="md:col-span-2">
                     <h2 className="text-3xl font-serif text-[#b89d4f] mb-6">FAQs</h2>
                     <div className="space-y-4">
-
                         <details className="border rounded-lg bg-white p-4 shadow-sm">
                             <summary className="cursor-pointer font-semibold text-lg">
                                 What is Life Casting / How does the casting process work?
@@ -319,6 +319,7 @@ const FAQ = () => {
                 <BookingForm />
             </div>
         </div>
+        <CallToAction />
         <Footer />
         </div>
     );

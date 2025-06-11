@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 
 
-
-
 const Footer = () => {
       const navigate = useNavigate();
        function handleNavigateToListingPage(getCurrentItem, section) {
@@ -37,21 +35,21 @@ const Footer = () => {
               <h3 className="text-xl font-bold mb-4  text-brand-gold">CONSUMER POLICY</h3>
               <ul className="space-y-2">
                 <li>
-                  <button
-                    // onClick={scrollToCalendly}
+                  <Link
+                    to="/shop/ContactUs"
                     className="text-brand-cream hover:text-brand-gold transition"
                   >
                     Contact Us
-                  </button>
+                  </Link>
                 </li>
-                <li>
-                  <a
-                    href="#"
+                {/* <li>
+                  <link
+                    to="/shop/ContactUs"
                     className="text-brand-cream hover:text-brand-gold transition"
                   >
-                    Our Services
-                  </a>
-                </li>
+                    Shipping & Delivery
+                  </link>
+                </li> */}
                 <li>
                   <a
                     href="#"
@@ -125,6 +123,14 @@ const Footer = () => {
                   >
                     Customer Support
                   </button>
+                </li>
+                <li>
+                   <Link
+                    to="/shop/AboutUs"
+                    className="text-brand-cream hover:text-brand-gold transition"
+                  >
+                    About Us
+                  </Link>
                 </li>
               </ul>
             </div>

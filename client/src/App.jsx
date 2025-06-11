@@ -23,6 +23,9 @@ import PaypalReturnPage from "./pages/shopping-view/paypal-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import SearchProducts from "./pages/shopping-view/search";
 import FAQ from "./pages/shopping-view/FAQ";
+import ScrollToTop from "./components/common/ScrollToTop";
+import ContactUs from "./pages/shopping-view/ContactUs";
+import AboutUs from "./pages/shopping-view/AboutUs";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -40,6 +43,7 @@ function App() {
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
+       <ScrollToTop />
       <Routes>
         <Route
           path="/"
@@ -90,6 +94,9 @@ function App() {
           <Route path="payment-success" element={<PaymentSuccessPage />} />
           <Route path="search" element={<SearchProducts />} />
           <Route path="faqs" element={<FAQ/>} />
+          <Route path="ContactUs" element={<ContactUs />} />
+          <Route path="AboutUs" element={<AboutUs />} />
+          {/* <Route path="ShippingDelivery" element={<ShippingDelivery/>}/> */}
         </Route>
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />

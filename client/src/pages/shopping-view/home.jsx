@@ -5,19 +5,9 @@ import bannerThree from "../../assets/banner-3.webp";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Airplay,
-  BabyIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  CloudLightning,
-  Heater,
-  Images,
-  Shirt,
-  ShirtIcon,
-  ShoppingBasket,
-  UmbrellaIcon,
-  WashingMachine,
-  WatchIcon,
+ 
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
@@ -38,6 +28,8 @@ import babyimpression from "../../assets/babyimpression.jpg";
 import coupleimpression from "../../assets/coupleimpression.jpg";
 import parentsimpression from "../../assets/parentsimpression.jpg";
 import petimpression from "../../assets/petimpression.jpg";
+import CallToAction from "./CallToAction";
+
 
 
 const categoriesWithIcon = [
@@ -128,12 +120,12 @@ function ShoppingHome() {
   }, [dispatch]);
 
   // Function to scroll to Calendly section
-  function scrollToCalendly() {
-    const calendlySection = document.getElementById("calendly-section");
-    if (calendlySection) {
-      calendlySection.scrollIntoView({ behavior: "smooth" });
-    }
-  }
+  // function scrollToCalendly() {
+  //   const calendlySection = document.getElementById("calendly-section");
+  //   if (calendlySection) {
+  //     calendlySection.scrollIntoView({ behavior: "smooth" });
+  //   }
+  // }
 
   return (
     <div className="flex flex-col min-h-screen bg-brand-cream">
@@ -273,41 +265,7 @@ function ShoppingHome() {
         </div>
       </section>
 
-      {/* <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-10">
-            Shop by Category
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-            {categoriesWithIcon.map((categoryItem) => (
-              <Card
-                key={categoryItem.id}
-                onClick={() =>
-                  handleNavigateToListingPage(categoryItem, "category")
-                }
-                className="cursor-pointer bg-[#fdf7f0] hover:shadow-md transition rounded-md overflow-hidden"
-              >
-                <CardContent className="p-4 flex flex-col items-center justify-center text-center">
-                 
-                  <img
-                    src={categoryItem.image}
-                    alt={categoryItem.label}
-                    className="h-40 object-contain mb-4"
-                  />
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="font-bold text-lg">
-                      {categoryItem.label}
-                    </span>
-                    <span className="text-lg">➤</span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
-   
+     
       <section className="py-12 bg-brand-cream">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -319,7 +277,7 @@ function ShoppingHome() {
             </p>
             </div>
             
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
             {productList && productList.length > 0
               ? productList.map((productItem) => (
                   <ShoppingProductTile
@@ -337,8 +295,9 @@ function ShoppingHome() {
         setOpen={setOpenDetailsDialog}
         productDetails={productDetails}
       />
-
+      
       <BookingForm />
+      <CallToAction />
       <Footer />
     </div>
   );
