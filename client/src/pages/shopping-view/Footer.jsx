@@ -42,38 +42,31 @@ const Footer = () => {
                     Contact Us
                   </Link>
                 </li>
-                {/* <li>
-                  <link
-                    to="/shop/ContactUs"
+                <li>
+                  <Link
+                    to="/shop/Shipping-Delivery-Policies"
                     className="text-brand-cream hover:text-brand-gold transition"
                   >
                     Shipping & Delivery
-                  </link>
-                </li> */}
-                <li>
-                  <a
-                    href="#"
-                    className="text-brand-cream hover:text-brand-gold transition"
-                  >
-                    Terms & Conditions
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-brand-cream hover:text-brand-gold transition"
-                  >
-                    Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <Link
-                    to="/shop/faqs"
+                    to="/shop/terms&conditions"
                     className="text-brand-cream hover:text-brand-gold transition"
                   >
-                    FAQs
+                    Terms & Conditions
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    to="/shop/privacy-policy"
+                    className="text-brand-cream hover:text-brand-gold transition"
+                  >
+                    Privacy Policy
+                  </Link>
+                </li>
+               
               </ul>
             </div>
 
@@ -82,12 +75,12 @@ const Footer = () => {
               <h3 className="text-xl font-bold mb-4  text-brand-gold">QUICK LINKS</h3>
               <ul className="space-y-2">
                 <li>
-                  <a
-                    href="/"
+                  <Link
+                    to="/shop/home"
                     className="text-brand-cream hover:text-brand-gold transition"
                   >
                     Home
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a
@@ -102,34 +95,21 @@ const Footer = () => {
                     Category
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="#feature-products"
-                    className="text-brand-cream hover:text-brand-gold transition"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      document
-                        .getElementById("feature-products")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                    }}
-                  >
-                    Products
-                  </a>
-                </li>
-                <li>
-                  <button
-                    // onClick={scrollToCalendly}
-                    className="text-brand-cream hover:text-brand-gold transition"
-                  >
-                    Customer Support
-                  </button>
-                </li>
+               
                 <li>
                    <Link
                     to="/shop/AboutUs"
                     className="text-brand-cream hover:text-brand-gold transition"
                   >
                     About Us
+                  </Link>
+                </li>
+                 <li>
+                  <Link
+                    to="/shop/faqs"
+                    className="text-brand-cream hover:text-brand-gold transition"
+                  >
+                    FAQs
                   </Link>
                 </li>
               </ul>

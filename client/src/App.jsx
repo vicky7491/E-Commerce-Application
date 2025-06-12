@@ -26,6 +26,9 @@ import FAQ from "./pages/shopping-view/FAQ";
 import ScrollToTop from "./components/common/ScrollToTop";
 import ContactUs from "./pages/shopping-view/ContactUs";
 import AboutUs from "./pages/shopping-view/AboutUs";
+import ShippingDelivery from "./pages/shopping-view/ShippingDeliveryPolicies";
+import PrivacyPolicy from "./pages/shopping-view/PrivacyPolicy";
+import TermsAndConditions from "./pages/shopping-view/TermsAndConditions";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -96,7 +99,10 @@ function App() {
           <Route path="faqs" element={<FAQ/>} />
           <Route path="ContactUs" element={<ContactUs />} />
           <Route path="AboutUs" element={<AboutUs />} />
-          {/* <Route path="ShippingDelivery" element={<ShippingDelivery/>}/> */}
+          <Route path="Shipping-Delivery-Policies" element={<ShippingDelivery/>}/>
+          <Route path="privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="terms&conditions" element={<TermsAndConditions/>} />
+
         </Route>
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />

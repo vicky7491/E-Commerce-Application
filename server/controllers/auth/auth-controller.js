@@ -67,7 +67,7 @@ const loginUser = async (req, res) => {
         userName: checkUser.userName,
       },
       "CLIENT_SECRET_KEY",
-      { expiresIn: "15m" }
+      { expiresIn: "12h" }
     );
 
     res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "strict" }).json({
