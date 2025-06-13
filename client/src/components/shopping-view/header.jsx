@@ -1,5 +1,5 @@
 import brandLogo from "@/assets/brand-logo.jpg";
-import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
+import { LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
 import {
   Link,
   useLocation,
@@ -51,7 +51,7 @@ function MenuItems() {
   }
 
   return (
-    <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
+    <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row ">
       {shoppingViewHeaderMenuItems.map((menuItem) => (
         <Label
           onClick={() => handleNavigate(menuItem)}
@@ -81,40 +81,9 @@ function HeaderRightContent() {
     dispatch(fetchCartItems(user?.id));
   }, [dispatch]);
 
-  function scrollToCalendly(navigate, location) {
-    if (location.pathname !== "/shop/home") {
-      // Navigate first if not on the correct page
-      navigate("/shop/home");
-  
-      // Wait for navigation to complete, then scroll
-      setTimeout(() => {
-        const calendlySection = document.getElementById("calendly-section");
-        if (calendlySection) {
-          const sectionTop = calendlySection.getBoundingClientRect().top + window.scrollY;
-          window.scrollTo({ top: sectionTop, behavior: "smooth" });
-        } 
-      }, 500); // Delay to allow DOM to update
-    } else {
-      // Scroll directly if already on the correct page
-      const calendlySection = document.getElementById("calendly-section");
-      if (calendlySection) {
-        const sectionTop = calendlySection.getBoundingClientRect().top + window.scrollY;
-        window.scrollTo({ top: sectionTop, behavior: "smooth" });
-      } 
-    }
-  }
 
   return (
-    <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-      
-           <Button
-        onClick={() => scrollToCalendly(navigate, location)}
-        variant="default"
-        className="hidden lg:inline-block bg-custom-gold text-white font-medium rounded-md shadow-sm transition-colors hover:bg-custom-gold-dark"
-      >
-        Book Your Impression
-      </Button>
-
+    <div className="flex lg:items-center lg:flex-row flex-col gap-4 ">
 
       <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
         <Button
@@ -172,7 +141,7 @@ function ShoppingHeader() {
     }, 100); // Delay ensures it overrides browser's default behavior
   }, []);
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background">
+    <header className="sticky top-0 z-40 w-full border-b bg-background bg-gradient-to-br from-rose-50 to-amber-50">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <Link to="/shop/home" className="flex items-center gap-2">
         <img
@@ -196,9 +165,6 @@ function ShoppingHeader() {
         </Sheet>
         <div className="hidden lg:flex items-center gap-6">
           <MenuItems />
-          {/* <Link to="/book-impression">
-            <Button variant="default">Book Your Impression</Button>
-          </Link> */}
         </div>
 
         <div className="hidden lg:block">

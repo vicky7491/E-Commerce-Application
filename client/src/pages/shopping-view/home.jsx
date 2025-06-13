@@ -23,6 +23,8 @@ import coupleimpression from "../../assets/coupleimpression.jpg";
 import parentsimpression from "../../assets/parentsimpression.jpg";
 import petimpression from "../../assets/petimpression.jpg";
 import CallToAction from "./CallToAction";
+import InstagramHandle from "./InstaHandle";
+
 
 const categoriesWithIcon = [
   { id: "baby", label: "Baby", image: babyimpression },
@@ -105,19 +107,9 @@ function ShoppingHome() {
     );
   }, [dispatch]);
 
-  console.log(productList, "productList");
-
   useEffect(() => {
     dispatch(getFeatureImages());
   }, [dispatch]);
-
-  // Function to scroll to Calendly section
-  // function scrollToCalendly() {
-  //   const calendlySection = document.getElementById("calendly-section");
-  //   if (calendlySection) {
-  //     calendlySection.scrollIntoView({ behavior: "smooth" });
-  //   }
-  // }
 
   return (
     <div className="flex flex-col min-h-screen bg-brand-cream">
@@ -333,7 +325,8 @@ function ShoppingHome() {
           </div>
         </div>
       </section>
-
+      
+      <InstagramHandle/>
       <CallToAction />
       <Footer />
     </div>

@@ -16,8 +16,8 @@ const AboutUs = () => {
     { id: 2, src: GalleryImage2, alt: "Family hand sculpture" },
     { id: 3, src: GalleryImage3, alt: "Couple hand casting" },
     { id: 4, src: GalleryImage4, alt: "Baby feet casting" },
-    { id: 5, src: GalleryImage5, alt: "Grandparent and child hands" },
-    { id: 6, src: GalleryImage6, alt: "Pregnancy belly casting" },
+    { id: 5, src: GalleryImage5, alt: "Child hand casting" },
+    { id: 6, src: GalleryImage6, alt: "Grandparent hand casting" },
   ];
 
   const features = [

@@ -100,24 +100,29 @@ export const shoppingViewHeaderMenuItems = [
     path: "/shop/listing",
   },
   {
-    id: "baby",
-    label: "Baby",
+    id: "our-gallery",
+    label: "OurGallery",
+    path: "/shop/our-gallery",
+  },
+  {
+    id: "testimonials",
+    label: "Testimonials",
     path: "/shop/listing",
   },
   {
-    id: "couple",
-    label: "Couple",
+    id: "casting-kit",
+    label: "CastingKit",
     path: "/shop/listing",
   },
   {
-    id: "parents",
-    label: "Parents",
-    path: "/shop/listing",
+    id: "ContactUs",
+    label: "ContactUs",
+    path: "/shop/ContactUs",
   },
   {
-    id: "pet",
-    label: "Pet",
-    path: "/shop/listing",
+    id: "about-us",
+    label: "AboutUs",
+    path: "/shop/AboutUs",
   },
   {
     id: "search",
@@ -133,14 +138,6 @@ export const categoryOptionsMap = {
   pet: "Pet",
 };
 
-// export const brandOptionsMap = {
-//   nike: "Nike",
-//   adidas: "Adidas",
-//   puma: "Puma",
-//   levi: "Levi",
-//   zara: "Zara",
-//   "h&m": "H&M",
-// };
 
 export const filterOptions = {
   category: [

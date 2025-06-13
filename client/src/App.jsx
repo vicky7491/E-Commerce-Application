@@ -29,6 +29,8 @@ import AboutUs from "./pages/shopping-view/AboutUs";
 import ShippingDelivery from "./pages/shopping-view/ShippingDeliveryPolicies";
 import PrivacyPolicy from "./pages/shopping-view/PrivacyPolicy";
 import TermsAndConditions from "./pages/shopping-view/TermsAndConditions";
+import OurGallery from "./pages/shopping-view/OurGallery";
+
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -46,6 +48,7 @@ function App() {
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
+        
        <ScrollToTop />
       <Routes>
         <Route
@@ -102,6 +105,7 @@ function App() {
           <Route path="Shipping-Delivery-Policies" element={<ShippingDelivery/>}/>
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms&conditions" element={<TermsAndConditions/>} />
+          <Route path="our-gallery" element={<OurGallery/>} />
 
         </Route>
         <Route path="/unauth-page" element={<UnauthPage />} />
