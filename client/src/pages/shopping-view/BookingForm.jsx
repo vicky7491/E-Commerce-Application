@@ -1,3 +1,4 @@
+import { useToast } from "@/components/ui/use-toast";
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -12,6 +13,8 @@ const BookingForm = ({formId}) => {
     location: '',
     comments: '',
   });
+
+  const { toast } = useToast();
 
   const handleNameKeyPress = (e) => {
     const regex = /^[A-Za-z\s]*$/;
@@ -46,7 +49,7 @@ const BookingForm = ({formId}) => {
     try {
       const res = await axios.post('http://localhost:5000/api/bookings/booking', payload);
       if (res.status === 201) {
-        alert('Booking submitted successfully!');
+        toast({ title: 'Booking submitted successfully!' });
         setFormData({
           name: '',
           phone: '',
@@ -60,8 +63,11 @@ const BookingForm = ({formId}) => {
       }
     } catch (error) {
       console.error("Error submitting booking:", error.response?.data || error.message);
-      alert('Failed to submit booking. Please try again.');
-    }
+      toast({
+        title: 'Failed to submit booking. Please try again.',
+        variant: 'destructive',
+    });
+  }
   };
 
   return (

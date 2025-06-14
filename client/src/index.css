@@ -216,5 +216,40 @@
 
 
 
-
     
+
+    /* Comment cell styling */
+.truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Expanded comment styling */
+.max-h-6 {
+  max-height: 1.5rem;
+}
+
+.max-h-96 {
+  max-height: 24rem;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+/* Hover effect for comment row */
+tr:hover .comment-tooltip {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .comment-tooltip {
+    display: none;
+  }
+  
+  .max-h-96 {
+    max-height: 12rem;
+  }
+}
