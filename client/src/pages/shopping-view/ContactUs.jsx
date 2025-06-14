@@ -59,7 +59,7 @@ const ContactUs = () => {
           </div>
 
           {/* Booking Form on the Right */}
-          <BookingForm />
+          <BookingForm formId="contactus"/>
         </div>
       </section>
 

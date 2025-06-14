@@ -66,7 +66,7 @@ const loginUser = async (req, res) => {
         email: checkUser.email,
         userName: checkUser.userName,
       },
-      "CLIENT_SECRET_KEY",
+       process.env.JWT_SECRET,
       { expiresIn: "12h" }
     );
 
@@ -90,7 +90,6 @@ const loginUser = async (req, res) => {
 };
 
 //logout
-
 const logoutUser = (req, res) => {
   res.clearCookie("token").json({
     success: true,
@@ -108,10 +107,19 @@ const authMiddleware = async (req, res, next) => {
     });
 
   try {
-    const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("✅ Decoded Token:", decoded);
+      // Optional: extra safety check
+    if (!decoded?.id) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token data. Please login again.",
+      });
+    }
     req.user = decoded;
     next();
   } catch (error) {
+    console.log("JWT Verify Error:", error.message);
     res.status(401).json({
       success: false,
       message: "Unauthorised user!",

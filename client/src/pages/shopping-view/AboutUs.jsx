@@ -177,7 +177,7 @@ const AboutUs = () => {
             id="booking"
             className="bg-gray-50 p-6 md:p-8 rounded-xl shadow-lg"
           >
-            <BookingForm />
+            <BookingForm formId="aboutus"/>
           </div>
         </section>
 

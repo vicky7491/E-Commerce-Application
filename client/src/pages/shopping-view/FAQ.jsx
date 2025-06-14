@@ -336,7 +336,7 @@ const FAQ = () => {
                     </div>
                 </div>
                 {/* Booking Form Section */}
-                <BookingForm />
+                <BookingForm formId="faq"/>
             </div>
         </div>
         <CallToAction />

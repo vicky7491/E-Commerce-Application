@@ -73,9 +73,19 @@ function HeaderRightContent() {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  function handleLogout() {
-    dispatch(logoutUser());
-  }
+ function handleLogout() {
+  dispatch(logoutUser())
+    .unwrap()
+    .then((res) => {
+      if (res.success) {
+        navigate("/auth/login"); // ✅ Redirect to login after successful logout
+      }
+    })
+    .catch((err) => {
+      console.error("Logout failed", err);
+    });
+}
+
 
   useEffect(() => {
     dispatch(fetchCartItems(user?.id));

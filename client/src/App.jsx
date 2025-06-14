@@ -30,6 +30,7 @@ import ShippingDelivery from "./pages/shopping-view/ShippingDeliveryPolicies";
 import PrivacyPolicy from "./pages/shopping-view/PrivacyPolicy";
 import TermsAndConditions from "./pages/shopping-view/TermsAndConditions";
 import OurGallery from "./pages/shopping-view/OurGallery";
+import BookingDashboard from "./pages/admin-view/BookingDashboard";
 
 
 function App() {
@@ -83,6 +84,7 @@ function App() {
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
+          <Route path="bookingDashboard" element={<BookingDashboard/>} />
         </Route>
         <Route
           path="/shop"
