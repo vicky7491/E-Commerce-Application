@@ -31,6 +31,8 @@ import PrivacyPolicy from "./pages/shopping-view/PrivacyPolicy";
 import TermsAndConditions from "./pages/shopping-view/TermsAndConditions";
 import OurGallery from "./pages/shopping-view/OurGallery";
 import BookingDashboard from "./pages/admin-view/BookingDashboard";
+import AdminCastingKits from "./pages/admin-view/casting-kit";
+import CastingKitForm from "./components/admin-view/CastingKitForm";
 
 
 function App() {
@@ -85,6 +87,8 @@ function App() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
           <Route path="bookingDashboard" element={<BookingDashboard/>} />
+          <Route path="add-casting-kit" element={<CastingKitForm />} />
+          <Route path="casting-kit" element={<AdminCastingKits/>} />
         </Route>
         <Route
           path="/shop"
