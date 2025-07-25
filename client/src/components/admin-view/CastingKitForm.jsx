@@ -82,7 +82,12 @@ const CastingKitForm = ({
           description: "",
           price: "",
           stock: "",
-          images: [],
+          images: [
+    {
+      url: uploadedImageUrl,
+      public_id: formData?.images?.[0]?.public_id || "no-id",
+    },
+  ],
         });
 
         setImageFile(null);

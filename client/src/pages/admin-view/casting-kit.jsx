@@ -75,7 +75,22 @@ const AdminCastingKits = () => {
   return (
     <Fragment>
        <div className="mb-5 w-full flex justify-end">
-        <Button onClick={() => setOpenCreateKitDialog(true)}>Add New Casting Kit</Button>
+        <Button
+  onClick={() => {
+    setFormData({
+      title: "",
+      description: "",
+      price: "",
+      stock: "",
+      images: [],
+    });
+    setCurrentEditedId(null);
+    setOpenCreateKitDialog(true);
+  }}
+>
+  Add New Casting Kit
+</Button>
+
       </div>
     <div className="max-w-6xl mx-auto px-4 py-8">
       {loading ? (

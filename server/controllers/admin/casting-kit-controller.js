@@ -19,8 +19,7 @@ const uploadCastingKitImage = async (req, res) => {
 
 const createCastingKit = async (req, res) => {
   try {
-    const { title, description, price, stock } = req.body;
-     const images = JSON.parse(req.body.images || '[]');
+    const { title, description, price, stock,images } = req.body;
 
     const kit = new CastingKit({
       title,
