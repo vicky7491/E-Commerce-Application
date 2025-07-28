@@ -29,10 +29,11 @@ import AboutUs from "./pages/shopping-view/AboutUs";
 import ShippingDelivery from "./pages/shopping-view/ShippingDeliveryPolicies";
 import PrivacyPolicy from "./pages/shopping-view/PrivacyPolicy";
 import TermsAndConditions from "./pages/shopping-view/TermsAndConditions";
-import OurGallery from "./pages/shopping-view/OurGallery";
+import Testimonials from "./pages/shopping-view/Testimonials";
 import BookingDashboard from "./pages/admin-view/BookingDashboard";
 import AdminCastingKits from "./pages/admin-view/casting-kit";
 import CastingKitForm from "./components/admin-view/CastingKitForm";
+import CastingKitPage from "./pages/shopping-view/casting-kit";
 
 
 function App() {
@@ -111,7 +112,8 @@ function App() {
           <Route path="Shipping-Delivery-Policies" element={<ShippingDelivery/>}/>
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms&conditions" element={<TermsAndConditions/>} />
-          <Route path="our-gallery" element={<OurGallery/>} />
+          <Route path="testimonials" element={<Testimonials/>} />
+          <Route path="CastingKit" element={<CastingKitPage />} />
 
         </Route>
         <Route path="/unauth-page" element={<UnauthPage />} />

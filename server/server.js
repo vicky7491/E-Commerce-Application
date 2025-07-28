@@ -16,9 +16,8 @@ const shopAddressRouter = require("./routes/shop/address-routes");
 const shopOrderRouter = require("./routes/shop/order-routes");
 const shopSearchRouter = require("./routes/shop/search-routes");
 const shopReviewRouter = require("./routes/shop/review-routes");
+const shopcastingKitRoutes = require("./routes/shop/casting-kit");
 const commonBookingRouter = require('./routes/common/booking-routes');
-
-
 const commonFeatureRouter = require("./routes/common/feature-routes");
 
 //create a database connection -> u can also
@@ -62,7 +61,7 @@ app.use("/api/shop/address", shopAddressRouter);
 app.use("/api/shop/order", shopOrderRouter);
 app.use("/api/shop/search", shopSearchRouter);
 app.use("/api/shop/review", shopReviewRouter);
-
+app.use("/api/shop/casting-kits", shopcastingKitRoutes);
 app.use("/api/common/feature", commonFeatureRouter);
 app.use('/api/bookings', commonBookingRouter);
 
