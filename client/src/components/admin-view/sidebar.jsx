@@ -33,12 +33,7 @@ const adminSidebarMenuItems = [
     path: "/admin/bookingDashboard",
     icon: <BadgeCheck />,
   },
-  {
-    id: "casting-kit",
-    label: "CastingKit",
-    path: "/admin/casting-kit",
-    icon: <ShoppingBasket />,
-  },
+
 ];
 
 function MenuItems({ setOpen }) {

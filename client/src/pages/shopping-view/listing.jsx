@@ -122,9 +122,22 @@ function ShoppingListing() {
   }
 
   useEffect(() => {
-    setSort("price-lowtohigh");
-    setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
-  }, [categorySearchParam]);
+  setSort("price-lowtohigh");
+
+  const savedFilters = JSON.parse(sessionStorage.getItem("filters")) || {};
+
+  // Sync categorySearchParam to filters
+  if (categorySearchParam) {
+    const updatedFilters = {
+      ...savedFilters,
+      category: [categorySearchParam],
+    };
+    setFilters(updatedFilters);
+    sessionStorage.setItem("filters", JSON.stringify(updatedFilters));
+  } else {
+    setFilters(savedFilters);
+  }
+}, [categorySearchParam]);
 
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {
@@ -187,6 +200,7 @@ function ShoppingListing() {
           {productList && productList.length > 0
             ? productList.map((productItem) => (
                 <ShoppingProductTile
+                key={productItem._id} 
                   handleGetProductDetails={handleGetProductDetails}
                   product={productItem}
                   handleAddtoCart={handleAddtoCart}

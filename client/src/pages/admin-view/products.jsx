@@ -28,6 +28,7 @@ const initialFormData = {
   salePrice: "",
   totalStock: "",
   averageReview: 0,
+  isCastingKit: false,
 };
 
 function AdminProducts() {
@@ -89,11 +90,14 @@ function AdminProducts() {
   }
 
   function isFormValid() {
-    return Object.keys(formData)
-      .filter((currentKey) => currentKey !== "averageReview")
-      .map((key) => formData[key] !== "")
-      .every((item) => item);
-  }
+  return Object.entries(formData)
+    .filter(([key]) => key !== "averageReview")
+    .filter(([key]) => !(formData.isCastingKit && key === "category"))
+    .every(([key, value]) => {
+      if (typeof value === "boolean") return true; // ✅ isCastingKit allowed
+      return value !== "";
+    });
+}
 
   useEffect(() => {
     dispatch(fetchAllProducts());
@@ -152,6 +156,7 @@ function AdminProducts() {
               buttonText={currentEditedId !== null ? "Edit" : "Add"}
               formControls={addProductFormElements}
               isBtnDisabled={!isFormValid()}
+              hiddenFields={formData.isCastingKit === true ? ["category"] : []}
             />
           </div>
         </SheetContent>

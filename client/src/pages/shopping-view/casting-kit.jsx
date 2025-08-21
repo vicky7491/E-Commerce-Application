@@ -1,44 +1,65 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "@/store/shop/cart-slice/index";
+import { useSelector } from "react-redux";
 import CastingKitTile from "@/components/shopping-view/CastingKitTile";
-import { useToast } from "@/components/ui/use-toast";
 import CallToAction from "./CallToAction";
 import Footer from "./Footer";
+import { useToast } from "@/components/ui/use-toast";
+import { useDispatch } from "react-redux"; // ✅ Add this
+import { addToCart,fetchCartItems  } from "@/store/shop/cart-slice"; 
+
+
 
 const CastingKitPage = () => {
-  const dispatch = useDispatch();
-  const { toast } = useToast();
   const [kits, setKits] = useState([]);
   const [loading, setLoading] = useState(true);
+  const userId = useSelector((state) => state.auth.user?.id);
+ const { toast } = useToast();
 
-  const userId = useSelector((state) => state.auth.user?._id); // adjust if different
-console.log("UserID in page:", userId);
-  useEffect(() => {
-    const fetchKits = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/api/shop/casting-kits");
-        setKits(res.data.kits || []);
-      } catch (err) {
-        console.error("Failed to fetch casting kits:", err);
+ 
+ const dispatch = useDispatch(); 
+const cartItems = useSelector((state) => state.shopCart.cartItems); 
+
+
+  const handleAddToCart = (productId, totalStock) => {
+  if (!userId) {
+    toast({
+      title: "Login required",
+      description: "Please login to add items to cart.",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  const getCartItems = cartItems?.items || [];
+
+  // 🔍 Check stock like product logic
+  if (getCartItems.length) {
+    const index = getCartItems.findIndex(
+      (item) => item.productId === productId
+    );
+
+    if (index > -1) {
+      const getQuantity = getCartItems[index].quantity;
+
+      if (getQuantity + 1 > totalStock) {
         toast({
-          title: "Error",
-          description: "Unable to load casting kits.",
+          title: `Only ${getQuantity} quantity can be added for this item`,
           variant: "destructive",
         });
-      } finally {
-        setLoading(false);
+        return;
       }
-    };
+    }
+  }
+  
+  console.log("userId being sent to addToCart:", userId);
 
-    fetchKits();
-  }, []);
 
-const handleAddToCart = (itemId, itemType, quantity) => {
-  dispatch(addToCart({ itemId, itemType, quantity }))
+  // ✅ Add to cart
+  dispatch(addToCart({ userId, productId, quantity: 1 }))
     .unwrap()
     .then(() => {
+      dispatch(fetchCartItems(userId));
       toast({
         title: "Added to Cart",
         description: "The item has been added to your cart.",
@@ -53,30 +74,49 @@ const handleAddToCart = (itemId, itemType, quantity) => {
     });
 };
 
+  useEffect(() => {
+    const fetchCastingKits = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/admin/products/get");
+        const allProducts = response.data.data || [];
+        const onlyCastingKits = allProducts.filter((item) => item.isCastingKit === true);
+        setKits(onlyCastingKits);
+      } catch (error) {
+        console.error("Failed to load casting kits:", error);
+        setKits([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCastingKits();
+  }, []);
+
   return (
     <div>
-    <section className="py-12 px-4 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8 text-center">Casting Kits</h1>
+      <section className="py-12 px-4 max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8 text-center">Casting Kits</h1>
 
-      {loading ? (
-        <p className="text-center text-muted-foreground">Loading...</p>
-      ) : kits.length === 0 ? (
-        <p className="text-center text-muted-foreground">No casting kits available.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {kits.map((kit) => (
-            <CastingKitTile
-              key={kit._id}
-              kit={kit}
-              isLoggedIn={!!userId}
-              handleAddToCart={handleAddToCart}
-            />
-          ))}
-        </div>
-      )}
-    </section>
-    <CallToAction />
-    <Footer />
+        {loading ? (
+          <p className="text-center text-muted-foreground">Loading...</p>
+        ) : kits.length === 0 ? (
+          <p className="text-center text-muted-foreground">No casting kits available.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {kits.map((kit) => (
+              
+              <CastingKitTile
+                key={kit._id}
+                kit={kit}
+                 handleAddToCart={handleAddToCart}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <CallToAction />
+      <Footer />
     </div>
   );
 };

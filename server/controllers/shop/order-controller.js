@@ -1,152 +1,95 @@
-const paypal = require("../../helpers/paypal");
+const Razorpay = require("razorpay");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
 
-const createOrder = async (req, res) => {
+// Razorpay instance
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+// 🧾 Step 1: Create Razorpay Order (amount in ₹)
+const createRazorpayOrder = async (req, res) => {
+  try {
+    const { amount } = req.body;
+
+    const options = {
+      amount: amount * 100, // convert to paise
+      currency: "INR",
+      receipt: `receipt_order_${Date.now()}`,
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    res.status(200).json({
+      success: true,
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ success: false, message: "Razorpay order error" });
+  }
+};
+
+// ✅ Step 2: After payment success, confirm order & save to DB
+const confirmRazorpayPayment = async (req, res) => {
   try {
     const {
       userId,
       cartItems,
       addressInfo,
-      orderStatus,
       paymentMethod,
-      paymentStatus,
       totalAmount,
-      orderDate,
-      orderUpdateDate,
-      paymentId,
-      payerId,
       cartId,
+      razorpay_payment_id,
+      razorpay_order_id,
+      razorpay_signature,
     } = req.body;
 
-    const create_payment_json = {
-      intent: "sale",
-      payer: {
-        payment_method: "paypal",
-      },
-      redirect_urls: {
-        return_url: "http://localhost:5173/shop/paypal-return",
-        cancel_url: "http://localhost:5173/shop/paypal-cancel",
-      },
-      transactions: [
-        {
-          item_list: {
-            items: cartItems.map((item) => ({
-              name: item.title,
-              sku: item.productId,
-              price: item.price.toFixed(2),
-              currency: "USD",
-              quantity: item.quantity,
-            })),
-          },
-          amount: {
-            currency: "USD",
-            total: totalAmount.toFixed(2),
-          },
-          description: "description",
-        },
-      ],
-    };
-
-    paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
-      if (error) {
-        console.log(error);
-
-        return res.status(500).json({
-          success: false,
-          message: "Error while creating paypal payment",
-        });
-      } else {
-        const newlyCreatedOrder = new Order({
-          userId,
-          cartId,
-          cartItems,
-          addressInfo,
-          orderStatus,
-          paymentMethod,
-          paymentStatus,
-          totalAmount,
-          orderDate,
-          orderUpdateDate,
-          paymentId,
-          payerId,
-        });
-
-        await newlyCreatedOrder.save();
-
-        const approvalURL = paymentInfo.links.find(
-          (link) => link.rel === "approval_url"
-        ).href;
-
-        res.status(201).json({
-          success: true,
-          approvalURL,
-          orderId: newlyCreatedOrder._id,
-        });
-      }
+    const newOrder = new Order({
+      userId,
+      cartId,
+      cartItems,
+      addressInfo,
+      orderStatus: "confirmed",
+      paymentStatus: "paid",
+      paymentMethod,
+      totalAmount,
+      orderDate: new Date(),
+      orderUpdateDate: new Date(),
+      paymentId: razorpay_payment_id,
+      payerId: razorpay_order_id,
     });
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({
-      success: false,
-      message: "Some error occured!",
-    });
-  }
-};
 
-const capturePayment = async (req, res) => {
-  try {
-    const { paymentId, payerId, orderId } = req.body;
+    await newOrder.save();
 
-    let order = await Order.findById(orderId);
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order can not be found",
-      });
-    }
-
-    order.paymentStatus = "paid";
-    order.orderStatus = "confirmed";
-    order.paymentId = paymentId;
-    order.payerId = payerId;
-
-    for (let item of order.cartItems) {
+    // ✅ Reduce stock for each product
+    for (let item of cartItems) {
       let product = await Product.findById(item.productId);
-
-      if (!product) {
-        return res.status(404).json({
-          success: false,
-          message: `Not enough stock for this product ${product.title}`,
-        });
+      if (product) {
+        product.totalStock -= item.quantity;
+        await product.save();
       }
-
-      product.totalStock -= item.quantity;
-
-      await product.save();
     }
 
-    const getCartId = order.cartId;
-    await Cart.findByIdAndDelete(getCartId);
+    // 🗑 Delete cart after order
+    await Cart.findByIdAndDelete(cartId);
 
-    await order.save();
-
-    res.status(200).json({
+    res.status(201).json({
       success: true,
-      message: "Order confirmed",
-      data: order,
+      message: "Razorpay payment captured, order created",
+      order: newOrder,
     });
   } catch (e) {
     console.log(e);
-    res.status(500).json({
-      success: false,
-      message: "Some error occured!",
-    });
+    res.status(500).json({ success: false, message: "Payment confirm error" });
   }
 };
 
+// ✅ Step 3: Get all orders by user
 const getAllOrdersByUser = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -173,11 +116,13 @@ const getAllOrdersByUser = async (req, res) => {
   }
 };
 
+// ✅ Step 4: Get single order details by ID
 const getOrderDetails = async (req, res) => {
   try {
     const { id } = req.params;
 
     const order = await Order.findById(id);
+
 
     if (!order) {
       return res.status(404).json({
@@ -200,8 +145,8 @@ const getOrderDetails = async (req, res) => {
 };
 
 module.exports = {
-  createOrder,
-  capturePayment,
+  createRazorpayOrder,
+  confirmRazorpayPayment,
   getAllOrdersByUser,
   getOrderDetails,
 };

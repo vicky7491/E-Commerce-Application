@@ -267,8 +267,9 @@ function ShoppingHome() {
 
           <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
             {productList && productList.length > 0
-              ? productList.map((productItem) => (
+              ? productList.filter((item) => item.isCastingKit !== true).map((productItem) => (
                   <ShoppingProductTile
+                  key={productItem._id}
                     handleGetProductDetails={handleGetProductDetails}
                     product={productItem}
                     handleAddtoCart={handleAddtoCart}

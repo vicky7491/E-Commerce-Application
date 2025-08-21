@@ -19,7 +19,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { checkAuth } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton";
-import PaypalReturnPage from "./pages/shopping-view/paypal-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import SearchProducts from "./pages/shopping-view/search";
 import FAQ from "./pages/shopping-view/FAQ";
@@ -31,9 +30,10 @@ import PrivacyPolicy from "./pages/shopping-view/PrivacyPolicy";
 import TermsAndConditions from "./pages/shopping-view/TermsAndConditions";
 import Testimonials from "./pages/shopping-view/Testimonials";
 import BookingDashboard from "./pages/admin-view/BookingDashboard";
-import AdminCastingKits from "./pages/admin-view/casting-kit";
-import CastingKitForm from "./components/admin-view/CastingKitForm";
-import CastingKitPage from "./pages/shopping-view/casting-kit";
+import CastingKit from "./pages/shopping-view/casting-kit";
+import OrderSuccess from "./pages/shopping-view/OrderSuccess";
+
+
 
 
 function App() {
@@ -88,8 +88,6 @@ function App() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
           <Route path="bookingDashboard" element={<BookingDashboard/>} />
-          <Route path="add-casting-kit" element={<CastingKitForm />} />
-          <Route path="casting-kit" element={<AdminCastingKits/>} />
         </Route>
         <Route
           path="/shop"
@@ -103,7 +101,6 @@ function App() {
           <Route path="listing" element={<ShoppingListing />} />
           <Route path="checkout" element={<ShoppingCheckout />} />
           <Route path="account" element={<ShoppingAccount />} />
-          <Route path="paypal-return" element={<PaypalReturnPage />} />
           <Route path="payment-success" element={<PaymentSuccessPage />} />
           <Route path="search" element={<SearchProducts />} />
           <Route path="faqs" element={<FAQ/>} />
@@ -113,7 +110,8 @@ function App() {
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms&conditions" element={<TermsAndConditions/>} />
           <Route path="testimonials" element={<Testimonials/>} />
-          <Route path="CastingKit" element={<CastingKitPage />} />
+          <Route path="CastingKit" element={<CastingKit />} />
+          <Route path="order-success" element={<OrderSuccess />} />
 
         </Route>
         <Route path="/unauth-page" element={<UnauthPage />} />

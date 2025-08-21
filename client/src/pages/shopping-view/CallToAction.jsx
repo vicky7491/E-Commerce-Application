@@ -1,7 +1,19 @@
 import React from 'react'
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const CallToAction = () => {
+   const navigate = useNavigate();
+
+     const handleBookingClick = () => {
+    navigate("/shop/ContactUs");
+  };
+     const handleViewGallery = () => {
+    navigate("/shop/testimonials");
+    window.scrollTo(0, 0);
+  };
+
+
   return (
     <div>
       {/* Call-to-Action Section */}
@@ -35,14 +47,14 @@ const CallToAction = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-              <Button className="bg-brand-gold hover:bg-brand-clay text-white font-bold py-7 px-12 text-lg rounded-lg transition-all duration-300 transform hover:-translate-y-1 shadow-xl shadow-brand-gold/30 hover:shadow-2xl hover:shadow-brand-gold/40 flex items-center group">
+              <Button  onClick={handleBookingClick}  className="bg-brand-gold hover:bg-brand-clay text-white font-bold py-7 px-12 text-lg rounded-lg transition-all duration-300 transform hover:-translate-y-1 shadow-xl shadow-brand-gold/30 hover:shadow-2xl hover:shadow-brand-gold/40 flex items-center group">
                 <span>Book Your Session Now</span>
                 <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
               </Button>
 
-              <Button variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white/10 font-bold py-7 px-10 text-lg rounded-lg transition-all duration-300">
+              <Button onClick={handleViewGallery} variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white/10 font-bold py-7 px-10 text-lg rounded-lg transition-all duration-300">
                 View Gallery
               </Button>
             </div>

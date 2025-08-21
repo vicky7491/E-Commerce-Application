@@ -2,37 +2,27 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  approvalURL: null,
   isLoading: false,
-  orderId: null,
+  razorpayOrder: null,
   orderList: [],
   orderDetails: null,
 };
 
-export const createNewOrder = createAsyncThunk(
-  "/order/createNewOrder",
-  async (orderData) => {
-    const response = await axios.post(
-      "http://localhost:5000/api/shop/order/create",
-      orderData
-    );
+export const createRazorpayOrder = createAsyncThunk(
+  "/order/createRazorpayOrder",
+  async (amount) => {
+    const response = await axios.post("http://localhost:5000/api/shop/order/razorpay/create", {
+      amount,
+    });
 
     return response.data;
   }
 );
 
-export const capturePayment = createAsyncThunk(
-  "/order/capturePayment",
-  async ({ paymentId, payerId, orderId }) => {
-    const response = await axios.post(
-      "http://localhost:5000/api/shop/order/capture",
-      {
-        paymentId,
-        payerId,
-        orderId,
-      }
-    );
-
+export const confirmRazorpayOrder = createAsyncThunk(
+  "/order/confirmRazorpayOrder",
+  async (orderData) => {
+    const response = await axios.post("http://localhost:5000/api/shop/order/razorpay/confirm", orderData);
     return response.data;
   }
 );
@@ -40,10 +30,7 @@ export const capturePayment = createAsyncThunk(
 export const getAllOrdersByUserId = createAsyncThunk(
   "/order/getAllOrdersByUserId",
   async (userId) => {
-    const response = await axios.get(
-      `http://localhost:5000/api/shop/order/list/${userId}`
-    );
-
+    const response = await axios.get(`http://localhost:5000/api/shop/order/list/${userId}`);
     return response.data;
   }
 );
@@ -51,10 +38,7 @@ export const getAllOrdersByUserId = createAsyncThunk(
 export const getOrderDetails = createAsyncThunk(
   "/order/getOrderDetails",
   async (id) => {
-    const response = await axios.get(
-      `http://localhost:5000/api/shop/order/details/${id}`
-    );
-
+    const response = await axios.get(`http://localhost:5000/api/shop/order/details/${id}`);
     return response.data;
   }
 );
@@ -69,23 +53,31 @@ const shoppingOrderSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(createNewOrder.pending, (state) => {
+      // create razorpay order
+      .addCase(createRazorpayOrder.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(createNewOrder.fulfilled, (state, action) => {
+      .addCase(createRazorpayOrder.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.approvalURL = action.payload.approvalURL;
-        state.orderId = action.payload.orderId;
-        sessionStorage.setItem(
-          "currentOrderId",
-          JSON.stringify(action.payload.orderId)
-        );
+        state.razorpayOrder = action.payload;
       })
-      .addCase(createNewOrder.rejected, (state) => {
+      .addCase(createRazorpayOrder.rejected, (state) => {
         state.isLoading = false;
-        state.approvalURL = null;
-        state.orderId = null;
+        state.razorpayOrder = null;
       })
+
+      // confirm order after payment
+      .addCase(confirmRazorpayOrder.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(confirmRazorpayOrder.fulfilled, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(confirmRazorpayOrder.rejected, (state) => {
+        state.isLoading = false;
+      })
+
+      // get orders
       .addCase(getAllOrdersByUserId.pending, (state) => {
         state.isLoading = true;
       })
@@ -97,6 +89,8 @@ const shoppingOrderSlice = createSlice({
         state.isLoading = false;
         state.orderList = [];
       })
+
+      // get order details
       .addCase(getOrderDetails.pending, (state) => {
         state.isLoading = true;
       })

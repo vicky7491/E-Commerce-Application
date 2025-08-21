@@ -3,23 +3,21 @@ const Product = require("../../models/Product");
 
 const handleImageUpload = async (req, res) => {
   try {
-    const b64 = Buffer.from(req.file.buffer).toString("base64");
-    const url = "data:" + req.file.mimetype + ";base64," + b64;
-    const result = await imageUploadUtil(url);
+    if (!req.file || !req.file.path) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
 
-    res.json({
+    const result = await imageUploadUtil(req.file.path);
+
+    return res.status(200).json({
       success: true,
       result,
     });
-  } catch (error) {
-    console.log(error);
-    res.json({
-      success: false,
-      message: "Error occured",
-    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Image upload failed" });
   }
 };
-
 //add a new product
 const addProduct = async (req, res) => {
   try {
@@ -32,6 +30,7 @@ const addProduct = async (req, res) => {
       salePrice,
       totalStock,
       averageReview,
+      isCastingKit,
     } = req.body;
 
 
@@ -44,6 +43,7 @@ const addProduct = async (req, res) => {
       salePrice,
       totalStock,
       averageReview,
+      isCastingKit: isCastingKit || false,
     });
 
     await newlyCreatedProduct.save();
@@ -90,6 +90,7 @@ const editProduct = async (req, res) => {
       salePrice,
       totalStock,
       averageReview,
+      isCastingKit,
     } = req.body;
 
     let findProduct = await Product.findById(id);
@@ -108,6 +109,7 @@ const editProduct = async (req, res) => {
     findProduct.totalStock = totalStock || findProduct.totalStock;
     findProduct.image = image || findProduct.image;
     findProduct.averageReview = averageReview || findProduct.averageReview;
+    findProduct.isCastingKit = typeof isCastingKit === "boolean" ? isCastingKit : findProduct.isCastingKit;
 
     await findProduct.save();
     res.status(200).json({

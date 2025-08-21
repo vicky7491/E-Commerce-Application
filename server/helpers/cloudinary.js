@@ -1,22 +1,51 @@
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
 
+// 🔐 Cloudinary config
 cloudinary.config({
   cloud_name: "dpavevvol",
   api_key: "688272279438694",
   api_secret: "29Hzm9xhEFWUhnewIyvbP2tvNVM",
 });
 
-const storage = new multer.memoryStorage();
+// ✅ Set up disk storage for multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadPath = path.join(__dirname, "../../uploads");
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath);
+    }
+    cb(null, uploadPath); // Folder to temporarily store files
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname); // Unique file name
+  },
+});
 
-async function imageUploadUtil(file) {
-  const result = await cloudinary.uploader.upload(file, {
-    resource_type: "auto",
-  });
+// ✅ Multer middleware with file size limit
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+});
 
-  return result;
+// ✅ Upload utility using file path (recommended for big files)
+async function imageUploadUtil(filePath) {
+  try {
+    const result = await cloudinary.uploader.upload(filePath, {
+      timeout: 120000,
+      resource_type: "auto",
+    });
+
+    // Delete file after upload
+    fs.unlinkSync(filePath);
+
+    return result;
+  } catch (error) {
+    console.error("Cloudinary upload failed:", error);
+    throw error;
+  }
 }
-
-const upload = multer({ storage });
 
 module.exports = { upload, imageUploadUtil };

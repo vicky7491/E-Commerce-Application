@@ -13,6 +13,7 @@ import AddressCard from "./address-card";
 import { useToast } from "../ui/use-toast";
 
 const initialAddressFormData = {
+  name: "",
   address: "",
   city: "",
   phone: "",
@@ -30,7 +31,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
 
   function handleManageAddress(event) {
     event.preventDefault();
-
+console.log(formData)
     if (addressList.length >= 3 && currentEditedId === null) {
       setFormData(initialAddressFormData);
       toast({
@@ -91,6 +92,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
     setCurrentEditedId(getCuurentAddress?._id);
     setFormData({
       ...formData,
+      name: getCuurentAddress?.name || "",
       address: getCuurentAddress?.address,
       city: getCuurentAddress?.city,
       phone: getCuurentAddress?.phone,

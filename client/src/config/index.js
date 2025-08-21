@@ -56,6 +56,18 @@ export const addProductFormElements = [
     type: "text",
     placeholder: "Enter product title",
   },
+  
+  {
+  name: "isCastingKit",
+  label: "Product Type",
+  componentType: "radio",
+  options: [
+    { id: false, label: "Product" },
+    { id: true, label: "Casting Kit" },
+  ],
+},
+
+
   {
     label: "Description",
     name: "description",
@@ -161,6 +173,13 @@ export const sortOptions = [
 ];
 
 export const addressFormControls = [
+   {
+    name: "name",
+    label: "Full Name",
+    placeholder: "Enter your full name",
+    componentType: "input",
+    type: "text",
+  },
   {
     label: "Address",
     name: "address",

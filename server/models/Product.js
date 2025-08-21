@@ -10,6 +10,10 @@ const ProductSchema = new mongoose.Schema(
     salePrice: Number,
     totalStock: Number,
     averageReview: Number,
+    isCastingKit: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

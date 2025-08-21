@@ -3,6 +3,7 @@ import Footer from './Footer';
 import BookingForm from './BookingForm';
 import CallToAction from './CallToAction';
 import FounderImage from "../../assets/founder.png";
+import golu from "../../assets/golu.jpg";
 import GalleryImage1 from "../../assets/babyimpression.jpg";
 import GalleryImage2 from "../../assets/petimpression.jpg";
 import GalleryImage3 from "../../assets/coupleimpression.jpg";
@@ -57,7 +58,7 @@ const AboutUs = () => {
         >
           <div 
             className="absolute inset-0 bg-cover bg-center opacity-20" 
-            style={{ backgroundImage: `url(${FounderImage})` }}
+            style={{ backgroundImage: `url(${golu})` }}
             aria-hidden="true"
           />
           
@@ -81,7 +82,7 @@ const AboutUs = () => {
               <div className="relative">
                 <div className="absolute -inset-4 bg-brand-terracotta opacity-20 rounded-2xl transform rotate-3"></div>
                 <img
-                  src={FounderImage}
+                  src={golu}
                   alt="Aniket Kumar, founder of Beautiful Molds"
                   className="relative rounded-2xl shadow-xl border-4 border-white max-w-full"
                   width={540}

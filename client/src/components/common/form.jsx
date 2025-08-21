@@ -17,6 +17,7 @@ function CommonForm({
   onSubmit,
   buttonText,
   isBtnDisabled,
+    hiddenFields = [],
 }) {
   function renderInputsByComponentType(getControlItem) {
     let element = null;
@@ -85,6 +86,30 @@ function CommonForm({
         );
 
         break;
+        case "radio":
+  element = (
+    <div className="flex gap-4">
+      {getControlItem.options?.map((option) => (
+        <label key={option.id} className="flex items-center gap-2">
+          <input
+            type="radio"
+            name={getControlItem.name}
+            value={option.id}
+            checked={formData[getControlItem.name] === option.id}
+            onChange={() =>
+              setFormData({
+                ...formData,
+                [getControlItem.name]: option.id,
+              })
+            }
+          />
+          {option.label}
+        </label>
+      ))}
+    </div>
+  );
+  break;
+
 
       default:
         element = (
@@ -111,7 +136,9 @@ function CommonForm({
   return (
     <form onSubmit={onSubmit}>
       <div className="flex flex-col gap-3">
-        {formControls.map((controlItem) => (
+        {formControls
+          .filter((controlItem) => !hiddenFields.includes(controlItem.name)) // ✅ Hide condition
+          .map((controlItem) => (
           <div className="grid w-full gap-1.5" key={controlItem.name}>
             <Label className="mb-1">{controlItem.label}</Label>
             {renderInputsByComponentType(controlItem)}

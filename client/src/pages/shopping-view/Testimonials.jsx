@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CallToAction from './CallToAction';
-import { galleryItems } from '@/config';
+import { galleryItems } from '../../config/index';
 import Footer from './Footer';
+import InstagramHandle from './InstaHandle';
 const Testimonials = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [activeCategory, setActiveCategory] = useState('All');
@@ -303,6 +304,7 @@ const Testimonials = () => {
         )}
       </AnimatePresence>
     </section>
+        <InstagramHandle />
         <CallToAction />
         <Footer />
     </div>

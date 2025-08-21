@@ -1,17 +1,23 @@
 const express = require("express");
-
 const {
-  createOrder,
+  createRazorpayOrder,
+  confirmRazorpayPayment,
   getAllOrdersByUser,
   getOrderDetails,
-  capturePayment,
 } = require("../../controllers/shop/order-controller");
 
 const router = express.Router();
 
-router.post("/create", createOrder);
-router.post("/capture", capturePayment);
+// 🆕 Razorpay: Create Order
+router.post("/razorpay/create", createRazorpayOrder);
+
+// 🆕 Razorpay: Confirm Payment & Save Order
+router.post("/razorpay/confirm", confirmRazorpayPayment);
+
+// ✅ Get orders by user
 router.get("/list/:userId", getAllOrdersByUser);
+
+// ✅ Get single order detail
 router.get("/details/:id", getOrderDetails);
 
 module.exports = router;
