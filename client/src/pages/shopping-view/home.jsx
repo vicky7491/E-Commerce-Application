@@ -361,95 +361,98 @@ function ShoppingHome() {
       />
 
       {/* Enhanced Booking Form Section */}
-      <section className="py-24 relative overflow-hidden">
-        {/* Enhanced Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-amber-50"></div>
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,_rgba(251,207,232,0.3)_0%,_transparent_50%)]"></div>
-        <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,_rgba(254,215,170,0.3)_0%,_transparent_50%)]"></div>
+    {/* Enhanced Booking Form Section */}
+<section className="py-24 relative overflow-hidden">
+  {/* Enhanced Background */}
+  <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-amber-50"></div>
+  <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,_rgba(251,207,232,0.3)_0%,_transparent_50%)]"></div>
+  <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,_rgba(254,215,170,0.3)_0%,_transparent_50%)]"></div>
 
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <motion.div 
-              className="relative"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+  <div className="container mx-auto px-4 relative z-10">
+    {/* Changed from lg:grid-cols-2 to custom ratio - image gets 5/12, form gets 7/12 */}
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <motion.div 
+        className="lg:col-span-5 relative" // Reduced from 6 to 5 columns
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        <div className="relative overflow-hidden rounded-3xl group shadow-2xl">
+          <img
+            src={coupleimpression}
+            alt="Family hand casting"
+            className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-110"
+          />
+
+          {/* Enhanced overlay elements */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-slate-900/30 mix-blend-soft-light"></div>
+          
+          {/* Floating decorative elements */}
+          <div className="absolute top-8 -left-6 w-24 h-24 bg-gradient-to-br from-rose-400/20 to-orange-400/20 rotate-12 rounded-2xl backdrop-blur-sm"></div>
+          <div className="absolute bottom-10 -right-6 w-32 h-32 bg-gradient-to-br from-amber-400/20 to-yellow-400/20 rotate-6 rounded-full backdrop-blur-sm"></div>
+          
+          {/* Sparkle effects */}
+          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white rounded-full opacity-80 animate-pulse"></div>
+          <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-rose-300 rounded-full opacity-60 animate-pulse"></div>
+        </div>
+
+        {/* Enhanced tagline - made more compact */}
+        <div className="mt-8 text-center lg:text-left">
+          <motion.h2 
+            className="text-3xl md:text-4xl font-bold text-slate-800 mb-4 relative inline-block leading-tight" // Reduced font sizes
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.7 }}
+          >
+            <span className="relative z-10 bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 bg-clip-text text-transparent">
+              Turn Memories
+            </span>
+            <div className="absolute bottom-2 left-0 w-full h-4 bg-gradient-to-r from-rose-400/40 to-orange-400/40 -z-0 transform -rotate-1"></div>
+          </motion.h2>
+          
+          <div className="flex flex-col items-center lg:items-start">
+            <motion.p 
+              className="text-2xl font-light bg-gradient-to-r from-rose-600 to-orange-600 bg-clip-text text-transparent mb-3" // Reduced font size
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.7 }}
             >
-              <div className="relative overflow-hidden rounded-3xl group shadow-2xl">
-                <img
-                  src={coupleimpression}
-                  alt="Family hand casting"
-                  className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-110"
-                />
-
-                {/* Enhanced overlay elements */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-slate-900/30 mix-blend-soft-light"></div>
-                
-                {/* Floating decorative elements */}
-                <div className="absolute top-8 -left-6 w-24 h-24 bg-gradient-to-br from-rose-400/20 to-orange-400/20 rotate-12 rounded-2xl backdrop-blur-sm"></div>
-                <div className="absolute bottom-10 -right-6 w-32 h-32 bg-gradient-to-br from-amber-400/20 to-yellow-400/20 rotate-6 rounded-full backdrop-blur-sm"></div>
-                
-                {/* Sparkle effects */}
-                <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white rounded-full opacity-80 animate-pulse"></div>
-                <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-rose-300 rounded-full opacity-60 animate-pulse"></div>
-              </div>
-
-              {/* Enhanced tagline */}
-              <div className="mt-12 text-center lg:text-left">
-                <motion.h2 
-                  className="text-5xl md:text-6xl font-bold text-slate-800 mb-6 relative inline-block leading-tight"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.7 }}
-                >
-                  <span className="relative z-10 bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 bg-clip-text text-transparent">
-                    Turn Memories
-                  </span>
-                  <div className="absolute bottom-2 left-0 w-full h-4 bg-gradient-to-r from-rose-400/40 to-orange-400/40 -z-0 transform -rotate-1"></div>
-                </motion.h2>
-                
-                <div className="flex flex-col items-center lg:items-start">
-                  <motion.p 
-                    className="text-4xl font-light bg-gradient-to-r from-rose-600 to-orange-600 bg-clip-text text-transparent mb-4"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.7 }}
-                  >
-                    Into Timeless Art
-                  </motion.p>
-                  
-                  <motion.div 
-                    className="w-32 h-1 bg-gradient-to-r from-rose-400 to-orange-400 mb-6 rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{ width: 128 }}
-                    transition={{ delay: 0.7, duration: 0.8 }}
-                  ></motion.div>
-                  
-                  <motion.p 
-                    className="text-slate-600 max-w-md text-lg leading-relaxed font-medium"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.9, duration: 0.7 }}
-                  >
-                    Preserve life's beautiful moments in exquisite castings that tell your family's unique story for generations to come
-                  </motion.p>
-                </div>
-              </div>
-            </motion.div>
+              Into Timeless Art
+            </motion.p>
             
             <motion.div 
-              className="lg:ml-auto max-w-md w-full"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+              className="w-24 h-1 bg-gradient-to-r from-rose-400 to-orange-400 mb-4 rounded-full" // Smaller divider
+              initial={{ width: 0 }}
+              animate={{ width: 96 }}
+              transition={{ delay: 0.7, duration: 0.8 }}
+            ></motion.div>
+            
+            <motion.p 
+              className="text-slate-600 max-w-sm text-base leading-relaxed font-medium" // Smaller max-width and font
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.7 }}
             >
-              <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
-                <BookingForm formId="home"/>
-              </div>
-            </motion.div>
+              Preserve life's beautiful moments in exquisite castings that tell your family's unique story
+            </motion.p>
           </div>
         </div>
-      </section>
+      </motion.div>
+      
+      <motion.div 
+        className="lg:col-span-7 w-full" // Increased from 6 to 7 columns, removed max-width constraint
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+      >
+        <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20 max-w-2xl mx-auto lg:mx-0">
+          {/* Form will now have more width to breathe */}
+          <BookingForm formId="home"/>
+        </div>
+      </motion.div>
+    </div>
+  </div>
+</section>
       
       <InstagramHandle />
       <CallToAction />
