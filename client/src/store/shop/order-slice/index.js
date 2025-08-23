@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-
+import { API_BASE } from "@/api/base";
 const initialState = {
   isLoading: false,
   razorpayOrder: null,
@@ -11,7 +11,7 @@ const initialState = {
 export const createRazorpayOrder = createAsyncThunk(
   "/order/createRazorpayOrder",
   async (amount) => {
-    const response = await axios.post("http://localhost:5000/api/shop/order/razorpay/create", {
+    const response = await axios.post(`${API_BASE}/shop/order/razorpay/create`, {
       amount,
     });
 
@@ -22,7 +22,7 @@ export const createRazorpayOrder = createAsyncThunk(
 export const confirmRazorpayOrder = createAsyncThunk(
   "/order/confirmRazorpayOrder",
   async (orderData) => {
-    const response = await axios.post("http://localhost:5000/api/shop/order/razorpay/confirm", orderData);
+    const response = await axios.post(`${API_BASE}/shop/order/razorpay/confirm`, orderData);
     return response.data;
   }
 );
@@ -30,7 +30,7 @@ export const confirmRazorpayOrder = createAsyncThunk(
 export const getAllOrdersByUserId = createAsyncThunk(
   "/order/getAllOrdersByUserId",
   async (userId) => {
-    const response = await axios.get(`http://localhost:5000/api/shop/order/list/${userId}`);
+    const response = await axios.get(`${API_BASE}/shop/order/list/${userId}`);
     return response.data;
   }
 );
@@ -38,7 +38,7 @@ export const getAllOrdersByUserId = createAsyncThunk(
 export const getOrderDetails = createAsyncThunk(
   "/order/getOrderDetails",
   async (id) => {
-    const response = await axios.get(`http://localhost:5000/api/shop/order/details/${id}`);
+    const response = await axios.get(`${API_BASE}/shop/order/details/${id}`);
     return response.data;
   }
 );

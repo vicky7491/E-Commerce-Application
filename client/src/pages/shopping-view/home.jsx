@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, Sparkles, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,12 +25,11 @@ import petimpression from "../../assets/petimpression.jpg";
 import CallToAction from "./CallToAction";
 import InstagramHandle from "./InstaHandle";
 
-
 const categoriesWithIcon = [
   { id: "baby", label: "Baby", image: babyimpression },
-  { id: "couple", label: "Couple", image: coupleimpression },
+  { id: "couples", label: "Couple", image: coupleimpression },
   { id: "parents", label: "Parents", image: parentsimpression },
-  { id: "pet", label: "pet", image: petimpression },
+  { id: "family/group", label: "Family/Group", image: petimpression },
 ];
 
 function ShoppingHome() {
@@ -86,6 +85,7 @@ function ShoppingHome() {
     }, 300);
     return () => clearTimeout(timer);
   }, []);
+
   useEffect(() => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
@@ -112,19 +112,28 @@ function ShoppingHome() {
   }, [dispatch]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-brand-cream">
-      <div className="relative w-full h-[600px] overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-orange-50">
+      {/* Enhanced Hero Slider */}
+      <div className="relative w-full h-[700px] overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-100/50 via-transparent to-amber-100/30"></div>
+        
         {featureImageList && featureImageList.length > 0
           ? featureImageList.map((slide, index) => (
-              <img
-                src={slide?.image}
-                key={index}
-                className={`${
-                  index === currentSlide ? "opacity-100" : "opacity-0"
-                } absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
-              />
+              <div key={index} className="absolute inset-0">
+                <img
+                  src={slide?.image}
+                  className={`${
+                    index === currentSlide ? "opacity-100 scale-100" : "opacity-0 scale-105"
+                  } absolute top-0 left-0 w-full h-full object-cover transition-all duration-1000 ease-out`}
+                />
+                {/* Enhanced overlay with gradient */}
+                <div className="absolute inset-0 bg-gradient-to-r from-slate-900/30 via-transparent to-slate-900/20"></div>
+              </div>
             ))
           : null}
+
+        {/* Enhanced Navigation Buttons */}
         <Button
           variant="outline"
           size="icon"
@@ -135,9 +144,9 @@ function ShoppingHome() {
                 featureImageList.length
             )
           }
-          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-brand-cream/90 border-brand-terracotta text-brand-terracotta"
+          className="absolute top-1/2 left-6 transform -translate-y-1/2 bg-white/95 backdrop-blur-sm border-0 text-slate-700 hover:bg-rose-50 hover:text-rose-700 shadow-xl transition-all duration-300 hover:scale-110"
         >
-          <ChevronLeftIcon className="w-4 h-4" />
+          <ChevronLeftIcon className="w-5 h-5" />
         </Button>
         <Button
           variant="outline"
@@ -147,25 +156,51 @@ function ShoppingHome() {
               (prevSlide) => (prevSlide + 1) % featureImageList.length
             )
           }
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-brand-cream/90 border-brand-terracotta text-brand-terracotta"
+          className="absolute top-1/2 right-6 transform -translate-y-1/2 bg-white/95 backdrop-blur-sm border-0 text-slate-700 hover:bg-rose-50 hover:text-rose-700 shadow-xl transition-all duration-300 hover:scale-110"
         >
-          <ChevronRightIcon className="w-4 h-4" />
+          <ChevronRightIcon className="w-5 h-5" />
         </Button>
+
+        {/* Slide Indicators */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          {featureImageList.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentSlide
+                  ? "bg-white scale-125 shadow-lg"
+                  : "bg-white/50 hover:bg-white/75"
+              }`}
+            />
+          ))}
+        </div>
       </div>
-      {/* Shop By catogary section */}
-      <section className="py-16 bg-gradient-to-b from-white to-brand-cream">
-        <div className="container mx-auto px-4">
+
+      {/* Enhanced Shop By Category Section */}
+      <section className="py-24 relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-rose-50/30 to-amber-50/50"></div>
+        <div className="absolute top-10 left-10 w-32 h-32 bg-rose-200/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-amber-200/20 rounded-full blur-3xl"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-12"
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold  text-brand-charcoal mb-4">
+            <div className="flex items-center justify-center mb-6">
+              <div className="w-16 h-0.5 bg-gradient-to-r from-transparent to-rose-400 mr-4"></div>
+              <Sparkles className="w-6 h-6 text-rose-500 mx-2" />
+              <div className="w-16 h-0.5 bg-gradient-to-l from-transparent to-rose-400 ml-4"></div>
+            </div>
+            <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 bg-clip-text text-transparent mb-6 tracking-tight">
               Shop by Category
             </h2>
-            <p className="text-brand-terracotta max-w-2xl mx-auto">
-              Explore our unique collections tailored for your special moments
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+              Discover our curated collections designed to capture and preserve your most precious moments
             </p>
           </motion.div>
 
@@ -173,75 +208,83 @@ function ShoppingHome() {
             {categoriesWithIcon.map((categoryItem, index) => (
               <motion.div
                 key={categoryItem.id}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 40, rotateY: -10 }}
                 animate={
                   isCategoryVisible
                     ? {
                         opacity: 1,
                         y: 0,
+                        rotateY: 0,
                         transition: {
-                          delay: index * 0.1,
+                          delay: index * 0.15,
                           type: "spring",
-                          stiffness: 120,
+                          stiffness: 100,
+                          damping: 15,
                         },
                       }
                     : {}
                 }
                 whileHover={{
-                  y: -10,
-                  transition: { duration: 0.3 },
+                  y: -15,
+                  rotateY: 5,
+                  transition: { duration: 0.4, ease: "easeOut" },
                 }}
-                className="cursor-pointer"
+                className="cursor-pointer group perspective-1000"
                 onClick={() =>
                   handleNavigateToListingPage(categoryItem, "category")
                 }
               >
-                <Card className="h-full bg-white rounded-xl overflow-hidden shadow-lg  border border-brand-sage transition-all duration-300 hover:shadow-xl">
+                <Card className="h-full bg-white/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg border border-slate-200/50 transition-all duration-500 hover:shadow-2xl hover:shadow-rose-500/10 group-hover:border-rose-300/50">
                   <CardContent className="p-0 flex flex-col h-full">
-                    <div className="relative overflow-hidden h-56">
+                    <div className="relative overflow-hidden h-64">
                       <motion.img
                         src={categoryItem.image}
                         alt={categoryItem.label}
-                        className="w-full h-full object-cover"
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ duration: 0.5 }}
+                        className="w-full h-full object-cover transition-all duration-700"
+                        whileHover={{ scale: 1.1 }}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/60 to-transparent"></div>
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <h3 className="text-xl font-bold text-white">
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent group-hover:from-rose-900/60 transition-all duration-500"></div>
+                      
+                      {/* Floating decorative element */}
+                      <div className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                        <Heart className="w-5 h-5 text-white" />
+                      </div>
+
+                      <div className="absolute bottom-6 left-6 right-6">
+                        <h3 className="text-2xl font-bold text-white mb-2 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                           {categoryItem.label}
                         </h3>
+                        <div className="w-12 h-1 bg-rose-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                       </div>
                     </div>
 
-                    <div className="p-4 flex-grow flex flex-col">
+                    <div className="p-6 flex-grow flex flex-col bg-gradient-to-br from-white to-slate-50/50">
                       <div className="flex-grow">
-                        <p className="text-brand-charcoal text-sm mb-4">
-                          Preserve precious memories with our{" "}
+                        <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                          Preserve precious memories with our expertly crafted{" "}
                           {categoryItem.label.toLowerCase()} collections
                         </p>
                       </div>
 
-                      <div className="flex items-center justify-between mt-2">
-                        <span className="text-sm font-medium text-brand-terracotta">
-                          Explore collection
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-semibold bg-gradient-to-r from-rose-600 to-orange-600 bg-clip-text text-transparent">
+                          Explore Collection
                         </span>
                         <motion.div
-                          className="w-8 h-8 rounded-full  bg-brand-sage/30 flex items-center justify-center"
-                          whileHover={{
-                            backgroundColor: "#D4A88C",
-                            color: "white",
-                          }}
+                          className="w-10 h-10 rounded-full bg-gradient-to-r from-rose-100 to-orange-100 flex items-center justify-center group-hover:from-rose-500 group-hover:to-orange-500 transition-all duration-300"
+                          whileHover={{ rotate: 360 }}
+                          transition={{ duration: 0.6 }}
                         >
                           <motion.span
-                            animate={{ x: [0, 5, 0] }}
+                            className="text-rose-600 group-hover:text-white transition-colors duration-300"
+                            animate={{ x: [0, 3, 0] }}
                             transition={{
                               repeat: Infinity,
-                              duration: 1.5,
+                              duration: 2,
+                              ease: "easeInOut",
                             }}
-                            className="text-brand-terracotta"
                           >
-                            ➤
+                            →
                           </motion.span>
                         </motion.div>
                       </div>
@@ -254,80 +297,161 @@ function ShoppingHome() {
         </div>
       </section>
 
-      <section id="feature-products" className="py-12 bg-brand-cream">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4 text-brand-charcoal">
-              Feature Products
-            </h2>
-            <p className="text-brand-terracotta max-w-2xl mx-auto">
-              Discover our most popular memory preservation items
-            </p>
-          </div>
+      {/* Enhanced Featured Products Section */}
+      <section id="feature-products" className="py-24 relative overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-rose-50/30"></div>
+        <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-rose-200/30 to-orange-200/30 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 left-20 w-48 h-48 bg-gradient-to-br from-amber-200/30 to-yellow-200/30 rounded-full blur-3xl"></div>
 
-          <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="text-center mb-16"
+          >
+            <div className="flex items-center justify-center mb-6">
+              <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-rose-400 to-transparent mr-4"></div>
+              <div className="w-3 h-3 bg-rose-400 rounded-full mx-2"></div>
+              <div className="w-20 h-0.5 bg-gradient-to-l from-transparent via-rose-400 to-transparent ml-4"></div>
+            </div>
+            <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 bg-clip-text text-transparent mb-6 tracking-tight">
+              Featured Products
+            </h2>
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+              Discover our most beloved memory preservation pieces, carefully crafted to last generations
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 place-items-stretch">
             {productList && productList.length > 0
-              ? productList.filter((item) => item.isCastingKit !== true).map((productItem) => (
-                  <ShoppingProductTile
-                  key={productItem._id}
-                    handleGetProductDetails={handleGetProductDetails}
-                    product={productItem}
-                    handleAddtoCart={handleAddtoCart}
-                  />
-                ))
+              ? productList
+                  .filter((item) => item.isCastingKit !== true)
+                  .map((productItem, index) => (
+                    <motion.div
+                      key={productItem._id}
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ 
+                        delay: index * 0.1, 
+                        duration: 0.5,
+                        ease: "easeOut" 
+                      }}
+                      className="w-full h-full flex items-stretch justify-center"
+                    >
+                      <div className="w-full max-w-sm">
+                        <ShoppingProductTile
+                          handleGetProductDetails={handleGetProductDetails}
+                          product={productItem}
+                          handleAddtoCart={handleAddtoCart}
+                        />
+                      </div>
+                    </motion.div>
+                  ))
               : null}
           </div>
         </div>
       </section>
+
       <ProductDetailsDialog
         open={openDetailsDialog}
         setOpen={setOpenDetailsDialog}
         productDetails={productDetails}
       />
 
-      {/* Booking Form Section */}
-      <section className="py-16 bg-brand-cream">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div className="relative">
-              <div className="relative overflow-hidden rounded-xl group">
+      {/* Enhanced Booking Form Section */}
+      <section className="py-24 relative overflow-hidden">
+        {/* Enhanced Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-amber-50"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,_rgba(251,207,232,0.3)_0%,_transparent_50%)]"></div>
+        <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,_rgba(254,215,170,0.3)_0%,_transparent_50%)]"></div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <motion.div 
+              className="relative"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <div className="relative overflow-hidden rounded-3xl group shadow-2xl">
                 <img
                   src={coupleimpression}
                   alt="Family hand casting"
-                  className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
 
-                {/* Decorative overlay elements */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-brand-terracotta/20 mix-blend-soft-light"></div>
-                <div className="absolute top-6 -left-4 w-24 h-24 bg-brand-terracotta/10 rotate-12 rounded-lg"></div>
-                <div className="absolute bottom-8 -right-4 w-20 h-20 bg-brand-charcoal/5 rotate-6 rounded-full"></div>
+                {/* Enhanced overlay elements */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-slate-900/30 mix-blend-soft-light"></div>
+                
+                {/* Floating decorative elements */}
+                <div className="absolute top-8 -left-6 w-24 h-24 bg-gradient-to-br from-rose-400/20 to-orange-400/20 rotate-12 rounded-2xl backdrop-blur-sm"></div>
+                <div className="absolute bottom-10 -right-6 w-32 h-32 bg-gradient-to-br from-amber-400/20 to-yellow-400/20 rotate-6 rounded-full backdrop-blur-sm"></div>
+                
+                {/* Sparkle effects */}
+                <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white rounded-full opacity-80 animate-pulse"></div>
+                <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-rose-300 rounded-full opacity-60 animate-pulse"></div>
               </div>
-              {/* Tagline with creative typography */}
-              <div className="mt-16 text-center md:text-left">
-                <h2 className="text-4xl md:text-5xl font-bold text-brand-charcoal mb-4 relative inline-block">
-                  <span className="relative z-10">Turn Memories</span>
-                  <div className="absolute bottom-2 left-0 w-full h-3 bg-brand-terracotta/30 -z-0"></div>
-                </h2>
-                <div className="flex flex-col items-center md:items-start">
-                  <p className="text-3xl font-light text-brand-charcoal mb-3">
+
+              {/* Enhanced tagline */}
+              <div className="mt-12 text-center lg:text-left">
+                <motion.h2 
+                  className="text-5xl md:text-6xl font-bold text-slate-800 mb-6 relative inline-block leading-tight"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.7 }}
+                >
+                  <span className="relative z-10 bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 bg-clip-text text-transparent">
+                    Turn Memories
+                  </span>
+                  <div className="absolute bottom-2 left-0 w-full h-4 bg-gradient-to-r from-rose-400/40 to-orange-400/40 -z-0 transform -rotate-1"></div>
+                </motion.h2>
+                
+                <div className="flex flex-col items-center lg:items-start">
+                  <motion.p 
+                    className="text-4xl font-light bg-gradient-to-r from-rose-600 to-orange-600 bg-clip-text text-transparent mb-4"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.7 }}
+                  >
                     Into Timeless Art
-                  </p>
-                  <div className="w-24 h-1 bg-brand-terracotta mb-4"></div>
-                  <p className="text-brand-terracotta max-w-md italic">
-                    Preserve life's beautiful moments in exquisite castings that
-                    tell your family's story
-                  </p>
+                  </motion.p>
+                  
+                  <motion.div 
+                    className="w-32 h-1 bg-gradient-to-r from-rose-400 to-orange-400 mb-6 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: 128 }}
+                    transition={{ delay: 0.7, duration: 0.8 }}
+                  ></motion.div>
+                  
+                  <motion.p 
+                    className="text-slate-600 max-w-md text-lg leading-relaxed font-medium"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.9, duration: 0.7 }}
+                  >
+                    Preserve life's beautiful moments in exquisite castings that tell your family's unique story for generations to come
+                  </motion.p>
                 </div>
               </div>
-            </div>
-            <div className="md:ml-auto">
-              <BookingForm formId="home"/>
-            </div>
+            </motion.div>
+            
+            <motion.div 
+              className="lg:ml-auto max-w-md w-full"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            >
+              <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
+                <BookingForm formId="home"/>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
       
-      <InstagramHandle/>
+      <InstagramHandle />
       <CallToAction />
       <Footer />
     </div>

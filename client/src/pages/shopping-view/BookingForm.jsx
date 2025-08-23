@@ -1,7 +1,7 @@
 import { useToast } from "@/components/ui/use-toast";
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import { API_BASE } from "@/api/base";
 const BookingForm = ({formId}) => {
   const [selectedConcept, setSelectedConcept] = useState('');
   const [preferredTime, setPreferredTime] = useState('');
@@ -47,7 +47,7 @@ const BookingForm = ({formId}) => {
     };
 
     try {
-      const res = await axios.post('http://localhost:5000/api/bookings/booking', payload);
+      const res = await axios.post(`${API_BASE}/bookings/booking`, payload);
       if (res.status === 201) {
         toast({ title: 'Booking submitted successfully!' });
         setFormData({
@@ -217,7 +217,7 @@ const BookingForm = ({formId}) => {
                   onClick={() => sessionStorage.setItem("activeForm", formId)}
                   className="px-6 py-3 bg-brand-gold hover:bg-brand-clay text-white font-medium rounded-md shadow-md transition-all duration-300"
                 >
-                  REQUEST PRICE
+                  BOOK YOUR SESSION
                 </button>
               </div>
             </form>

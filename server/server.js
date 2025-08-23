@@ -16,7 +16,6 @@ const shopSearchRouter = require("./routes/shop/search-routes");
 const shopReviewRouter = require("./routes/shop/review-routes");
 const commonBookingRouter = require('./routes/common/booking-routes');
 const commonFeatureRouter = require("./routes/common/feature-routes");
-
 //create a database connection -> u can also
 //create a separate file for this and then import/use that file here
 
@@ -27,6 +26,7 @@ mongoose
   
 const app = express();
 const PORT = process.env.PORT || 5000;
+const API_BASE = process.env.API_BASE || "http://localhost";
 console.log("Using MONGO_URI:", process.env.MONGO_URI);
 app.use(
   cors({
@@ -60,4 +60,4 @@ app.use("/api/common/feature", commonFeatureRouter);
 app.use('/api/bookings', commonBookingRouter);
 
 
-app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server is now running at ${API_BASE}:${PORT}`));

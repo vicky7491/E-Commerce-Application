@@ -3,7 +3,7 @@ import Footer from './Footer';
 import BookingForm from './BookingForm';
 import CallToAction from './CallToAction';
 import FounderImage from "../../assets/founder.png";
-import golu from "../../assets/golu.jpg";
+
 import GalleryImage1 from "../../assets/babyimpression.jpg";
 import GalleryImage2 from "../../assets/petimpression.jpg";
 import GalleryImage3 from "../../assets/coupleimpression.jpg";
@@ -21,21 +21,7 @@ const AboutUs = () => {
     { id: 6, src: GalleryImage6, alt: "Grandparent hand casting" },
   ];
 
-  const features = [
-    { 
-      title: "Incredible Detail", 
-      description: "Captures fingerprints, skin texture, and fine wrinkles"
-    },
-    { 
-      title: "Lasting Memories", 
-      description: "Creates permanent keepsakes that last for generations"
-    },
-    { 
-      title: "Unique Art", 
-      description: "Transform moments into beautiful display pieces"
-    }
-  ];
-
+  
   const artistDetails = [
     "Safe, non-toxic materials certified for all ages",
     "Premium finishes: Matte, Gloss, Pearl, Antique (Bronze/Gold/Silver)",
@@ -58,7 +44,7 @@ const AboutUs = () => {
         >
           <div 
             className="absolute inset-0 bg-cover bg-center opacity-20" 
-            style={{ backgroundImage: `url(${golu})` }}
+            style={{ backgroundImage: `url(${FounderImage})` }}
             aria-hidden="true"
           />
           
@@ -82,7 +68,7 @@ const AboutUs = () => {
               <div className="relative">
                 <div className="absolute -inset-4 bg-brand-terracotta opacity-20 rounded-2xl transform rotate-3"></div>
                 <img
-                  src={golu}
+                  src={FounderImage}
                   alt="Aniket Kumar, founder of Beautiful Molds"
                   className="relative rounded-2xl shadow-xl border-4 border-white max-w-full"
                   width={540}
@@ -107,32 +93,7 @@ const AboutUs = () => {
           </div>
         </section>
 
-        {/* Process Description */}
-        <section 
-          className="bg-gray-50 py-16 px-6" 
-          aria-labelledby="process-heading"
-        >
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 id="process-heading" className="text-3xl font-bold text-gray-900 mb-12">
-              What is Life Casting?
-            </h2>
-            <p className="text-lg text-gray-700 mb-10 leading-relaxed max-w-3xl mx-auto">
-              Life casting is the art of preserving the shape, texture, and details of the human body. Our safe and gentle process captures true-to-life impressions of loved ones' hands, feet, and more.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-              {features.map((feature, index) => (
-                <div 
-                  key={index} 
-                  className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
-                >
-                  <h3 className="text-xl font-bold mb-3 text-brand-charcoal">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+       
 
         {/* Meet the Artist */}
         <section 

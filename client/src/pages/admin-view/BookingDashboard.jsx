@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE } from "@/api/base";
 import BookingTable from "@/components/admin-view/BookingTable";
 import { useToast } from "@/components/ui/use-toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
@@ -12,7 +13,7 @@ const BookingDashboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/admin/bookings", { withCredentials: true })
+      .get(`${API_BASE}/admin/bookings`, { withCredentials: true })
       .then((res) => {
         if (res.data.success) {
           setBookings(res.data.bookings);
@@ -35,7 +36,7 @@ const BookingDashboard = () => {
   const confirmDeleteBooking = async () => {
     if (!deleteTargetId) return;
     try {
-      const res = await axios.delete(`http://localhost:5000/api/admin/bookings/${deleteTargetId}`, {
+      const res = await axios.delete(`${API_BASE}/admin/bookings/${deleteTargetId}`, {
         withCredentials: true,
       });
 
@@ -62,7 +63,7 @@ const BookingDashboard = () => {
   const handleEdit = async (updatedBooking) => {
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/admin/bookings/${updatedBooking._id}`,
+        `${API_BASE}/admin/bookings/${updatedBooking._id}`,
         updatedBooking,
         { withCredentials: true }
       );

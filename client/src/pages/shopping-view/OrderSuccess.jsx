@@ -51,7 +51,7 @@ export default function OrderSuccess() {
       <div className="max-w-2xl mx-auto p-6 text-center">
         <h1 className="text-2xl font-semibold mb-2">No order to show</h1>
         <p className="text-muted-foreground mb-6">
-          We couldn’t find your recent order details.
+          We couldn't find your recent order details.
         </p>
         <Button onClick={() => navigate("/shop/home")}>
           <Home className="w-4 h-4 mr-2" />
@@ -82,7 +82,7 @@ export default function OrderSuccess() {
   const grandTotal = itemsSubtotal + shippingFee - discount;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
+    <div className="max-w-5xl mx-auto px-4 py-10 pb-24"> {/* Added padding-bottom for fixed actions */}
       {/* Success Header */}
       <div className="flex flex-col items-center text-center mb-8">
         <CheckCircle2 className="w-14 h-14 text-green-600 mb-3" />
@@ -166,26 +166,6 @@ export default function OrderSuccess() {
               )}
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-wrap gap-3">
-              <Button variant="secondary" onClick={() => window.print()}>
-                <Printer className="w-4 h-4 mr-2" />
-                Print Invoice
-              </Button>
-              <Button variant="outline" onClick={() => navigate("/shop/home")}>
-                <Home className="w-4 h-4 mr-2" />
-                Continue Shopping
-              </Button>
-              <Button onClick={() => navigate("/shop/account")}>
-                <PackageSearch className="w-4 h-4 mr-2" />
-                View My Orders
-              </Button>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Right column: Items + Totals */}
@@ -253,6 +233,24 @@ export default function OrderSuccess() {
               </div>
             </CardContent>
           </Card>
+        </div>
+      </div>
+
+      {/* Fixed Action Buttons at Bottom */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg p-4 z-10">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row gap-3 justify-center">
+          <Button variant="secondary" onClick={() => window.print()} className="flex-1 sm:flex-none bg-green-500 hover:bg-green-600 text-white">
+            <Printer className="w-4 h-4 mr-2" />
+            Print Invoice
+          </Button>
+          <Button variant="outline" onClick={() => navigate("/shop/home")} className="flex-1 sm:flex-none">
+            <Home className="w-4 h-4 mr-2" />
+            Continue Shopping
+          </Button>
+          <Button onClick={() => navigate("/shop/account")} className="flex-1 sm:flex-none bg-blue-500 hover:bg-blue-600 text-white">
+            <PackageSearch className="w-4 h-4 mr-2" />
+            View My Orders
+          </Button>
         </div>
       </div>
     </div>

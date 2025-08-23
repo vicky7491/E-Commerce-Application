@@ -79,10 +79,10 @@ export const addProductFormElements = [
     name: "category",
     componentType: "select",
     options: [
-      { id: "men", label: "Men" },
-      { id: "women", label: "Women" },
-      { id: "kids", label: "Kids" },
-      { id: "couple", label: "Couple" },
+      { id: "baby", label: "Baby" },
+      { id: "parents", label: "Parents" },
+      { id: "couples", label: "Couples" },
+      { id: "family/group", label: "Family/Group" },
     ],
   },
  
@@ -149,18 +149,18 @@ export const shoppingViewHeaderMenuItems = [
 
 export const categoryOptionsMap = {
   baby: "Baby",
-  couple: "Couple",
   parents: "Parents",
-  pet: "Pet",
+  couples: "Couples",
+  family: "Family/Group",
 };
 
 
 export const filterOptions = {
   category: [
     { id: "baby", label: "Baby" },
-    { id: "couple", label: "Couple" },
     { id: "parents", label: "Parents" },
-    { id: "pet", label: "Pet" },
+    { id: "couples", label: "Couples" },
+    { id: "family/group", label: "Family/Group" },
   ],
 
 };
