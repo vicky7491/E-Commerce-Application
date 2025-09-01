@@ -37,6 +37,8 @@ import ScrollToTop from "./components/common/ScrollToTop";
 
 import { checkAuth } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton";
+import AuthForgotPassword from "./pages/auth/forgot-password";
+import ResetPassword from "./pages/auth/resetPassword";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -123,6 +125,22 @@ function App() {
     element={
       <CheckAuth isAuthenticated={isAuthenticated} user={user}>
         <AuthRegister />
+      </CheckAuth>
+    }
+  />
+  <Route
+    path="forgot-password"
+    element={
+      <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+        <AuthForgotPassword/>
+      </CheckAuth>
+    }
+  />
+  <Route
+    path="reset-password/:token"
+    element={
+      <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+        <ResetPassword/>
       </CheckAuth>
     }
   />

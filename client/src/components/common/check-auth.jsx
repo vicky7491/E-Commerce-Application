@@ -21,6 +21,8 @@ function CheckAuth({ isAuthenticated, user, children }) {
     !(
       location.pathname.includes("/login") ||
       location.pathname.includes("/register") ||
+       location.pathname.includes("/forgot-password") ||
+       location.pathname.includes("/reset-password") || 
       location.pathname.startsWith("/shop")
        // Allowing shop/home access without auth
     )
