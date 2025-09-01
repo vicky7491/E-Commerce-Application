@@ -53,7 +53,7 @@ export default function OrderSuccess() {
         <p className="text-muted-foreground mb-6">
           We couldn't find your recent order details.
         </p>
-        <Button onClick={() => navigate("/shop/home")}>
+        <Button onClick={() => navigate("/shop")}>
           <Home className="w-4 h-4 mr-2" />
           Go to Home
         </Button>
@@ -243,7 +243,7 @@ export default function OrderSuccess() {
             <Printer className="w-4 h-4 mr-2" />
             Print Invoice
           </Button>
-          <Button variant="outline" onClick={() => navigate("/shop/home")} className="flex-1 sm:flex-none">
+          <Button variant="outline" onClick={() => navigate("/shop")} className="flex-1 sm:flex-none">
             <Home className="w-4 h-4 mr-2" />
             Continue Shopping
           </Button>

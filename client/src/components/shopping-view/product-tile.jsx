@@ -4,12 +4,60 @@ import { categoryOptionsMap } from "@/config";
 import { Badge } from "../ui/badge";
 import { motion } from "framer-motion";
 import { ShoppingCart, Eye, Sparkles } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useToast } from "@/components/ui/use-toast";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 
-function ShoppingProductTile({
-  product,
-  handleGetProductDetails,
-  handleAddtoCart,
-}) {
+function ShoppingProductTile({ product, handleGetProductDetails }) {
+  const userId = useSelector((state) => state.auth.user?.id);
+  const cartItems = useSelector((state) => state.shopCart.cartItems);
+  const { toast } = useToast();
+  const dispatch = useDispatch();
+
+  // 🛒 Add to cart logic (same as CastingKitPage)
+  const handleAddToCart = (productId, totalStock) => {
+    if (!userId) {
+      toast({
+        title: "Login required",
+        description: "Please login to add items to cart.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const getCartItems = cartItems?.items || [];
+    if (getCartItems.length) {
+      const index = getCartItems.findIndex((item) => item.productId === productId);
+      if (index > -1) {
+        const getQuantity = getCartItems[index].quantity;
+        if (getQuantity + 1 > totalStock) {
+          toast({
+            title: `Only ${getQuantity} quantity can be added for this item`,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+    }
+
+    dispatch(addToCart({ userId, productId, quantity: 1 }))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchCartItems(userId));
+        toast({
+          title: "Added to Cart",
+          description: "The item has been added to your cart.",
+        });
+      })
+      .catch(() => {
+        toast({
+          title: "Failed",
+          description: "Could not add to cart. Try again later.",
+          variant: "destructive",
+        });
+      });
+  };
+
   return (
     <motion.div
       whileHover={{ y: -8, scale: 1.02 }}
@@ -27,11 +75,11 @@ function ShoppingProductTile({
               alt={product?.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
-            
-            {/* Enhanced overlay */}
+
+            {/* Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            
-            {/* View Details Button - appears on hover */}
+
+            {/* Quick View Button */}
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
               <Button
                 size="sm"
@@ -42,23 +90,24 @@ function ShoppingProductTile({
               </Button>
             </div>
 
-            {/* Enhanced badges */}
+            {/* Badges */}
             {product?.totalStock === 0 ? (
-              <Badge className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg rounded-full px-3 py-1">
+              <Badge className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg rounded-full px-3 py-1">
                 Out Of Stock
               </Badge>
             ) : product?.totalStock < 10 ? (
-              <Badge className="absolute top-3 left-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg rounded-full px-3 py-1">
+              <Badge className="absolute top-3 left-3 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg rounded-full px-3 py-1">
                 {`Only ${product?.totalStock} left`}
               </Badge>
             ) : product?.salePrice > 0 ? (
-              <Badge className="absolute top-3 left-3 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white shadow-lg rounded-full px-3 py-1 flex items-center">
+              <Badge className="absolute top-3 left-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-lg rounded-full px-3 py-1 flex items-center">
                 <Sparkles className="w-3 h-3 mr-1" />
                 Sale
               </Badge>
             ) : null}
           </div>
 
+          {/* Product Info */}
           <CardContent className="p-6 h-[140px] flex flex-col justify-between">
             <div>
               <h2 className="text-lg font-bold mb-3 text-slate-800 line-clamp-2 leading-tight group-hover:text-rose-700 transition-colors duration-300">
@@ -70,23 +119,23 @@ function ShoppingProductTile({
                 </span>
               </div>
             </div>
-            
+
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-2">
                 <span
                   className={`${
-                    product?.salePrice > 0 
-                      ? "line-through text-slate-400 text-sm" 
+                    product?.salePrice > 0
+                      ? "line-through text-slate-400 text-sm"
                       : "text-slate-800 font-bold text-lg"
                   }`}
                 >
                   ₹{product?.price}
                 </span>
-                {product?.salePrice > 0 ? (
+                {product?.salePrice > 0 && (
                   <span className="text-lg font-bold bg-gradient-to-r from-rose-600 to-orange-600 bg-clip-text text-transparent">
                     ₹{product?.salePrice}
                   </span>
-                ) : null}
+                )}
               </div>
               {product?.salePrice > 0 && (
                 <span className="text-xs bg-rose-100 text-rose-700 px-2 py-1 rounded-full font-medium">
@@ -97,6 +146,7 @@ function ShoppingProductTile({
           </CardContent>
         </div>
 
+        {/* Footer - Add to Cart */}
         <CardFooter className="p-6 pt-0">
           {product?.totalStock === 0 ? (
             <Button 
@@ -110,7 +160,7 @@ function ShoppingProductTile({
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleAddtoCart(product?._id, product?.totalStock);
+                  handleAddToCart(product?._id, product?.totalStock);
                 }}
                 className="w-full bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white rounded-xl h-12 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2"
                 whileHover={{ scale: 1.02 }}

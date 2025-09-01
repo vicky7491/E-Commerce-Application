@@ -33,7 +33,7 @@ function MenuItems() {
   function handleNavigate(getCurrentMenuItem) {
     sessionStorage.removeItem("filters");
 
-      const isStaticPath = ["/shop/home", "/shop/testimonials", "/shop/aboutUs", "/shop/contactus"].includes(
+      const isStaticPath = ["/shop", "/shop/testimonials", "/shop/aboutUs", "/shop/contactus"].includes(
     getCurrentMenuItem.path.toLowerCase()
   );
 
@@ -85,78 +85,90 @@ function HeaderRightContent() {
   const [openCartSheet, setOpenCartSheet] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation();
 
- function handleLogout() {
-  dispatch(logoutUser())
-    .unwrap()
-    .then((res) => {
-      if (res.success) {
-        navigate("/auth/login"); // ✅ Redirect to login after successful logout
-      }
-    })
-    .catch((err) => {
-      console.error("Logout failed", err);
-    });
-}
-
+  function handleLogout() {
+    dispatch(logoutUser())
+      .unwrap()
+      .then((res) => {
+        if (res.success) {
+          navigate("/auth/login");
+        }
+      })
+      .catch((err) => {
+        console.error("Logout failed", err);
+      });
+  }
 
   useEffect(() => {
-    dispatch(fetchCartItems(user?.id));
-  }, [dispatch]);
-
+    if (user?.id) {
+      dispatch(fetchCartItems(user.id));
+    }
+  }, [dispatch, user?.id]);
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4 ">
+      {/* If user is logged in show Cart + Avatar dropdown */}
+      {user ? (
+        <>
+          <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
+            <Button
+              onClick={() => setOpenCartSheet(true)}
+              variant="outline"
+              size="icon"
+              className="relative"
+            >
+              <ShoppingCart className="w-6 h-6" />
+              <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
+                {cartItems?.items?.length || 0}
+              </span>
+              <span className="sr-only">User cart</span>
+            </Button>
+            <UserCartWrapper
+              setOpenCartSheet={setOpenCartSheet}
+              cartItems={cartItems?.items || []}
+            />
+          </Sheet>
 
-      <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
-        <Button
-          onClick={() => setOpenCartSheet(true)}
-          variant="outline"
-          size="icon"
-          className="relative"
-        >
-          <ShoppingCart className="w-6 h-6" />
-          <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
-            {cartItems?.items?.length || 0}
-          </span>
-          <span className="sr-only">User cart</span>
-        </Button>
-        <UserCartWrapper
-          setOpenCartSheet={setOpenCartSheet}
-          cartItems={
-            cartItems && cartItems.items && cartItems.items.length > 0
-              ? cartItems.items
-              : []
-          }
-        />
-      </Sheet>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Avatar className="bg-black">
-            <AvatarFallback className="bg-black text-white font-extrabold">
-              {user?.userName[0].toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" className="w-56">
-          <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/shop/account")}>
-            <UserCog className="mr-2 h-4 w-4" />
-            Account
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar className="bg-black cursor-pointer">
+                <AvatarFallback className="bg-black text-white font-extrabold">
+                  {user?.userName ? user.userName[0].toUpperCase() : "U"}
+                </AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="right" className="w-56">
+              <DropdownMenuLabel>
+                Logged in as {user.userName}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate("/shop/account")}>
+                <UserCog className="mr-2 h-4 w-4" />
+                Account
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
+      ) : (
+        // If not logged in show Login + Register buttons
+        <div className="flex gap-3">
+          <Button onClick={() => navigate("/auth/login")} variant="outline">
+            Login
+          </Button>
+          <Button onClick={() => navigate("/auth/register")} variant="default">
+            Sign Up
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
+
 
 function ShoppingHeader() {
   useEffect(() => {
@@ -167,7 +179,7 @@ function ShoppingHeader() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background bg-gradient-to-br from-rose-50 to-amber-50">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
-        <Link to="/shop/home" className="flex items-center gap-2">
+        <Link to="/shop" className="flex items-center gap-2">
         <img
     src={brandLogo}
     alt="Brand Logo"

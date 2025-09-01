@@ -36,7 +36,7 @@ const Footer = () => {
               <ul className="space-y-2">
                 <li>
                   <Link
-                    to="/shop/ContactUs"
+                    to="/shop/contactus"
                     className="text-brand-cream hover:text-brand-gold transition"
                   >
                     Contact Us
@@ -52,7 +52,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    to="/shop/terms&conditions"
+                    to="/shop/terms-and-conditions"
                     className="text-brand-cream hover:text-brand-gold transition"
                   >
                     Terms & Conditions
@@ -76,7 +76,7 @@ const Footer = () => {
               <ul className="space-y-2">
                 <li>
                   <Link
-                    to="/shop/home"
+                    to="/shop"
                     className="text-brand-cream hover:text-brand-gold transition"
                   >
                     Home
@@ -98,7 +98,7 @@ const Footer = () => {
                
                 <li>
                    <Link
-                    to="/shop/AboutUs"
+                    to="/shop/aboutus"
                     className="text-brand-cream hover:text-brand-gold transition"
                   >
                     About Us

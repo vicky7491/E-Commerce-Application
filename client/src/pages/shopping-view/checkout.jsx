@@ -197,7 +197,7 @@ function ShoppingCheckout() {
                       <Button 
                         variant="outline" 
                         className="mt-4"
-                        onClick={() => navigate('/shop/home')}
+                        onClick={() => navigate('/shop')}
                       >
                         Continue Shopping
                       </Button>

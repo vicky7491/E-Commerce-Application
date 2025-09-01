@@ -210,11 +210,11 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
                       <span className={`text-3xl font-bold text-gray-900 ${productDetails?.salePrice > 0 ? "line-through text-gray-400" : ""}`}>
-                        ${productDetails?.price}
+                        ₹{productDetails?.price}
                       </span>
                       {productDetails?.salePrice > 0 && (
                         <span className="text-3xl font-bold text-red-600">
-                          ${productDetails?.salePrice}
+                          ₹{productDetails?.salePrice}
                         </span>
                       )}
                     </div>
@@ -242,7 +242,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                     </Button>
                   ) : (
                     <Button
-                      className="w-full"
+                      className="w-full  bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white"
                       size="lg"
                       onClick={() => handleAddToCart(productDetails?._id, productDetails?.totalStock)}
                       disabled={isAddingToCart}

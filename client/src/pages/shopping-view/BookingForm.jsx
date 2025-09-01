@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, User, Mail, Phone, MapPin, MessageSquare, Camera, Send, CheckCircle, Sparkles, Heart } from 'lucide-react';
+import axios from "axios";
+import { API_BASE } from "@/api/base";
 
 const BookingForm = ({formId}) => {
   const [selectedConcept, setSelectedConcept] = useState('');
@@ -79,7 +81,7 @@ const BookingForm = ({formId}) => {
       }, 3000);
     }, 2000);
 
-    /* Your actual API call would go here:
+   
     const clickedFormId = sessionStorage?.getItem("activeForm");
     if (clickedFormId !== formId) return;
 
@@ -107,7 +109,7 @@ const BookingForm = ({formId}) => {
         variant: 'destructive',
       });
     }
-    */
+    
   };
 
   if (isSubmitted) {
