@@ -20,17 +20,17 @@ const commonFeatureRouter = require("./routes/common/feature-routes");
 //create a separate file for this and then import/use that file here
 
 mongoose
-.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
   
 const app = express();
 const PORT = process.env.PORT || 5000;
 const API_BASE = process.env.API_BASE || "http://localhost";
-console.log("Using MONGO_URI:", process.env.MONGO_URI);
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
       "Content-Type",

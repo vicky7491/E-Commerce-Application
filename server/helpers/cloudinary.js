@@ -5,9 +5,9 @@ const path = require("path");
 
 // 🔐 Cloudinary config
 cloudinary.config({
-  cloud_name: "dpavevvol",
-  api_key: "688272279438694",
-  api_secret: "29Hzm9xhEFWUhnewIyvbP2tvNVM",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 // ✅ Set up disk storage for multer

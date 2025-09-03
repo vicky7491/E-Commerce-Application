@@ -13,7 +13,7 @@ const BookingDashboard = () => {
 
   useEffect(() => {
     axios
-      .get(`${API_BASE}/admin/bookings`, { withCredentials: true })
+      .get(`${API_BASE}/api/admin/bookings`, { withCredentials: true })
       .then((res) => {
         if (res.data.success) {
           setBookings(res.data.bookings);
@@ -36,7 +36,7 @@ const BookingDashboard = () => {
   const confirmDeleteBooking = async () => {
     if (!deleteTargetId) return;
     try {
-      const res = await axios.delete(`${API_BASE}/admin/bookings/${deleteTargetId}`, {
+      const res = await axios.delete(`${API_BASE}/api/admin/bookings/${deleteTargetId}`, {
         withCredentials: true,
       });
 
@@ -63,7 +63,7 @@ const BookingDashboard = () => {
   const handleEdit = async (updatedBooking) => {
     try {
       const res = await axios.put(
-        `${API_BASE}/admin/bookings/${updatedBooking._id}`,
+        `${API_BASE}/api/admin/bookings/${updatedBooking._id}`,
         updatedBooking,
         { withCredentials: true }
       );

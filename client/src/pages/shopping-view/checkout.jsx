@@ -72,7 +72,7 @@ function ShoppingCheckout() {
 
     try {
       // STEP 1: Create Razorpay order via backend
-      const res = await fetch(`${API_BASE}/shop/order/razorpay/create`, {
+      const res = await fetch(`${API_BASE}/api/shop/order/razorpay/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: totalCartAmount }),

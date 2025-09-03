@@ -97,7 +97,7 @@ const BookingForm = ({formId}) => {
     };
 
     try {
-      const res = await axios.post(`${API_BASE}/bookings/booking`, payload);
+      const res = await axios.post(`${API_BASE}/api/bookings/booking`, payload);
       if (res.status === 201) {
         toast({ title: 'Booking submitted successfully!' });
         // Reset form...

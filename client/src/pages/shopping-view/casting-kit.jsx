@@ -79,7 +79,7 @@ const CastingKitPage = () => {
   useEffect(() => {
     const fetchCastingKits = async () => {
       try {
-        const response = await axios.get(`${API_BASE}/admin/products/get`);
+        const response = await axios.get(`${API_BASE}/api/admin/products/get`);
         const allProducts = response.data.data || [];
         const onlyCastingKits = allProducts.filter((item) => item.isCastingKit === true);
         setKits(onlyCastingKits);

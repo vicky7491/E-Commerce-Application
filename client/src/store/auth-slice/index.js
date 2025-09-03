@@ -13,7 +13,7 @@ export const registerUser = createAsyncThunk(
 
   async (formData) => {
     const response = await axios.post(
-      `${API_BASE}/auth/register`,
+      `${API_BASE}/api/auth/register`,
       formData,
       {
         withCredentials: true,
@@ -29,7 +29,7 @@ export const loginUser = createAsyncThunk(
 
   async (formData) => {
     const response = await axios.post(
-      `${API_BASE}/auth/login`,
+      `${API_BASE}/api/auth/login`,
       formData,
       {
         withCredentials: true,
@@ -45,7 +45,7 @@ export const logoutUser = createAsyncThunk(
 
   async () => {
     const response = await axios.post(
-      `${API_BASE}/auth/logout`,
+      `${API_BASE}/api/auth/logout`,
       {},
       {
         withCredentials: true,
@@ -61,7 +61,7 @@ export const checkAuth = createAsyncThunk(
 
   async () => {
     const response = await axios.get(
-      `${API_BASE}/auth/check-auth`,
+      `${API_BASE}/api/auth/check-auth`,
       {
         withCredentials: true,
         headers: {
