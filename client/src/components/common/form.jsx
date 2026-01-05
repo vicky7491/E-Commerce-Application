@@ -27,9 +27,9 @@ function CommonForm({
   const [passwordVisible, setPasswordVisible] = useState({});
 
   const togglePasswordVisibility = (fieldName) => {
-    setPasswordVisible(prev => ({
+    setPasswordVisible((prev) => ({
       ...prev,
-      [fieldName]: !prev[fieldName]
+      [fieldName]: !prev[fieldName],
     }));
   };
 
@@ -49,13 +49,25 @@ function CommonForm({
               name={getControlItem.name}
               placeholder={getControlItem.placeholder}
               id={getControlItem.name}
-              type={isPassword && passwordVisible[getControlItem.name] ? "text" : getControlItem.type}
+              type={
+                isPassword && passwordVisible[getControlItem.name]
+                  ? "text"
+                  : getControlItem.type
+              }
               value={value}
               onChange={(event) =>
-                setFormData(getControlItem.name, event.target.value)
+                setFormData((prev) => ({
+                  ...prev,
+                  [getControlItem.name]: event.target.value,
+                }))
               }
-              className={hasError ? "border-destructive focus-visible:ring-destructive" : 
-                         isValid ? "border-green-500 focus-visible:ring-green-500" : ""}
+              className={
+                hasError
+                  ? "border-destructive focus-visible:ring-destructive"
+                  : isValid
+                  ? "border-green-500 focus-visible:ring-green-500"
+                  : ""
+              }
               disabled={isSubmitting}
             />
             {isPassword && (
@@ -82,13 +94,22 @@ function CommonForm({
         element = (
           <Select
             onValueChange={(value) =>
-              setFormData(getControlItem.name, value)
+              setFormData((prev) => ({
+                ...prev,
+                [getControlItem.name]: value,
+              }))
             }
             value={value}
             disabled={isSubmitting}
           >
-            <SelectTrigger className={`w-full ${hasError ? "border-destructive focus:ring-destructive" : ""}`}>
-              <SelectValue placeholder={getControlItem.placeholder || getControlItem.label} />
+            <SelectTrigger
+              className={`w-full ${
+                hasError ? "border-destructive focus:ring-destructive" : ""
+              }`}
+            >
+              <SelectValue
+                placeholder={getControlItem.placeholder || getControlItem.label}
+              />
             </SelectTrigger>
             <SelectContent>
               {getControlItem.options && getControlItem.options.length > 0
@@ -111,9 +132,16 @@ function CommonForm({
             id={getControlItem.id}
             value={value}
             onChange={(event) =>
-              setFormData(getControlItem.name, event.target.value)
+              setFormData((prev) => ({
+                ...prev,
+                [getControlItem.name]: event.target.value,
+              }))
             }
-            className={hasError ? "border-destructive focus-visible:ring-destructive" : ""}
+            className={
+              hasError
+                ? "border-destructive focus-visible:ring-destructive"
+                : ""
+            }
             disabled={isSubmitting}
             rows={getControlItem.rows || 3}
           />
@@ -124,14 +152,20 @@ function CommonForm({
         element = (
           <div className="flex gap-4 flex-wrap">
             {getControlItem.options?.map((option) => (
-              <label key={option.id} className="flex items-center gap-2 cursor-pointer">
+              <label
+                key={option.id}
+                className="flex items-center gap-2 cursor-pointer"
+              >
                 <input
                   type="radio"
                   name={getControlItem.name}
                   value={option.id}
                   checked={formData[getControlItem.name] === option.id}
                   onChange={() =>
-                    setFormData(getControlItem.name, option.id)
+                    setFormData((prev) => ({
+                      ...prev,
+                      [getControlItem.name]: option.id,
+                    }))
                   }
                   disabled={isSubmitting}
                   className="text-primary focus:ring-primary"
@@ -151,8 +185,12 @@ function CommonForm({
               name={getControlItem.name}
               checked={!!formData[getControlItem.name]}
               onChange={(event) =>
-                setFormData(getControlItem.name, event.target.checked)
-              }
+  setFormData((prev) => ({
+    ...prev,
+    [getControlItem.name]: event.target.checked,
+  }))
+}
+
               disabled={isSubmitting}
               className="text-primary focus:ring-primary"
             />
@@ -170,9 +208,16 @@ function CommonForm({
             type={getControlItem.type}
             value={value}
             onChange={(event) =>
-              setFormData(getControlItem.name, event.target.value)
+              setFormData((prev) => ({
+                ...prev,
+                [getControlItem.name]: event.target.value,
+              }))
             }
-            className={hasError ? "border-destructive focus-visible:ring-destructive" : ""}
+            className={
+              hasError
+                ? "border-destructive focus-visible:ring-destructive"
+                : ""
+            }
             disabled={isSubmitting}
           />
         );
@@ -207,16 +252,18 @@ function CommonForm({
               {controlItem.componentType !== "checkbox" && (
                 <Label htmlFor={controlItem.name} className="mb-1">
                   {controlItem.label}
-                  {controlItem.required && <span className="text-destructive ml-1">*</span>}
+                  {controlItem.required && (
+                    <span className="text-destructive ml-1">*</span>
+                  )}
                 </Label>
               )}
               {renderInputsByComponentType(controlItem)}
             </div>
           ))}
       </div>
-      <Button 
-        disabled={isBtnDisabled || isSubmitting} 
-        type="submit" 
+      <Button
+        disabled={isBtnDisabled || isSubmitting}
+        type="submit"
         className="w-full mt-2"
       >
         {isSubmitting ? (

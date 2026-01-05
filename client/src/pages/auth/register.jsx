@@ -108,14 +108,7 @@ function AuthRegister() {
     });
   }
 
-  const handleInputChange = (name, value) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: null }));
-    }
-  };
+ 
 
   return (
     <div className="mx-auto w-full max-w-md space-y-6">
@@ -160,7 +153,7 @@ function AuthRegister() {
         })}
         buttonText={isSubmitting ? "Creating Account..." : "Sign Up"}
         formData={formData}
-        setFormData={handleInputChange}
+        setFormData={setFormData}
         onSubmit={onSubmit}
         errors={errors}
         isSubmitting={isSubmitting}

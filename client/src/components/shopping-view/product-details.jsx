@@ -1,4 +1,4 @@
-import { StarIcon, MessageSquare, ShoppingCart, X } from "lucide-react";
+import { StarIcon, MessageSquare, ShoppingCart, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
@@ -22,12 +22,32 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [rating, setRating] = useState(0);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isAddingReview, setIsAddingReview] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const { reviews, loading: reviewsLoading } = useSelector((state) => state.shopReview);
 
   const { toast } = useToast();
+  
+  const images = productDetails?.images || [];
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const goToImage = (index) => {
+    setCurrentImageIndex(index);
+  };
+
+  // Reset image index when product changes
+  useEffect(() => {
+    setCurrentImageIndex(0);
+  }, [productDetails]);
 
   function handleRatingChange(getRating) {
     setRating(getRating);
@@ -94,6 +114,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
     dispatch(setProductDetails());
     setRating(0);
     setReviewMsg("");
+    setCurrentImageIndex(0);
   }
 
   async function handleAddReview() {
@@ -166,28 +187,102 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-2 top-2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white"
+            className="absolute right-2 top-2 z-50 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-lg"
             onClick={handleDialogClose}
           >
             <X className="h-4 w-4" />
           </Button>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-            {/* Product Image Section */}
-            <div className="relative bg-gray-100 p-8 flex items-center justify-center">
-              <div className="aspect-square w-full max-w-md">
-                <img
-                  src={productDetails?.image}
-                  alt={productDetails?.title}
-                  className="w-full h-full object-contain rounded-lg"
-                  onError={(e) => {
-                    e.target.src = "https://via.placeholder.com/400x400?text=Image+Not+Found";
-                  }}
-                />
+            {/* Product Image Section with Carousel */}
+            <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 p-6 lg:p-8">
+              <div className="relative aspect-square w-full max-w-md mx-auto">
+                {/* Main Image */}
+                <div className="relative w-full h-full rounded-xl overflow-hidden bg-white shadow-lg">
+                  {images.length > 0 ? (
+                    <img
+                      src={images[currentImageIndex]}
+                      alt={`${productDetails?.title} - Image ${currentImageIndex + 1}`}
+                      className="w-full h-full object-contain p-2"
+                      onError={(e) => {
+                        e.target.src = "https://via.placeholder.com/400x400?text=Image+Not+Found";
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-xl">
+                      <span className="text-gray-400">No Image Available</span>
+                    </div>
+                  )}
+                  
+                  {/* Navigation Arrows */}
+                  {images.length > 1 && (
+                    <>
+                      <Button
+                        onClick={prevImage}
+                        size="icon"
+                        variant="ghost"
+                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg rounded-full w-10 h-10"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </Button>
+                      
+                      <Button
+                        onClick={nextImage}
+                        size="icon"
+                        variant="ghost"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg rounded-full w-10 h-10"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </Button>
+                    </>
+                  )}
+                  
+                  {/* Image Counter */}
+                  {images.length > 1 && (
+                    <div className="absolute top-4 right-4 bg-black/60 text-white text-sm px-3 py-1 rounded-full backdrop-blur-sm">
+                      {currentImageIndex + 1} / {images.length}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Thumbnail Navigation */}
+                {images.length > 1 && (
+                  <div className="flex gap-2 mt-4 overflow-x-auto py-2 px-1">
+                    {images.map((image, index) => (
+                      <button
+                        key={index}
+                        onClick={() => goToImage(index)}
+                        className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                          index === currentImageIndex
+                            ? "border-rose-500 ring-2 ring-rose-200"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <img
+                          src={image}
+                          alt={`Thumbnail ${index + 1}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.src = "https://via.placeholder.com/100x100?text=Image";
+                          }}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
+              
+              {/* Sale Badge */}
               {productDetails?.salePrice > 0 && (
-                <Badge className="absolute left-4 top-4 bg-red-500 hover:bg-red-600">
+                <Badge className="absolute left-6 top-6 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white px-4 py-2 text-sm font-bold shadow-lg">
                   SALE
+                </Badge>
+              )}
+              
+              {/* Stock Badge */}
+              {productDetails?.totalStock < 10 && productDetails?.totalStock > 0 && (
+                <Badge className="absolute left-6 top-16 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-4 py-2 text-sm font-bold shadow-lg">
+                  Only {productDetails?.totalStock} left!
                 </Badge>
               )}
             </div>
@@ -218,6 +313,11 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                         </span>
                       )}
                     </div>
+                    {productDetails?.salePrice > 0 && (
+                      <Badge className="bg-green-100 text-green-700 hover:bg-green-200 px-3 py-1">
+                        Save {Math.round(((productDetails.price - productDetails.salePrice) / productDetails.price) * 100)}%
+                      </Badge>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-4">
@@ -242,7 +342,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                     </Button>
                   ) : (
                     <Button
-                      className="w-full  bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white"
+                      className="w-full bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl"
                       size="lg"
                       onClick={() => handleAddToCart(productDetails?._id, productDetails?.totalStock)}
                       disabled={isAddingToCart}

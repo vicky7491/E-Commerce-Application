@@ -1,28 +1,42 @@
 const { imageUploadUtil } = require("../../helpers/cloudinary");
 const Product = require("../../models/Product");
 
+/* ======================================================
+   IMAGE UPLOAD (Cloudinary)
+====================================================== */
 const handleImageUpload = async (req, res) => {
+  console.log("REQ.FILE =>", req.file);
+
   try {
     if (!req.file || !req.file.path) {
-      return res.status(400).json({ success: false, message: "No file uploaded" });
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded",
+      });
     }
 
     const result = await imageUploadUtil(req.file.path);
 
     return res.status(200).json({
       success: true,
-      result,
+      url: result.secure_url,
     });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ success: false, message: "Image upload failed" });
+    return res.status(500).json({
+      success: false,
+      message: "Image upload failed",
+    });
   }
 };
-//add a new product
+
+/* ======================================================
+   ADD PRODUCT (MULTIPLE IMAGES)
+====================================================== */
 const addProduct = async (req, res) => {
   try {
     const {
-      image,
+      images,
       title,
       description,
       category,
@@ -33,9 +47,8 @@ const addProduct = async (req, res) => {
       isCastingKit,
     } = req.body;
 
-
     const newlyCreatedProduct = new Product({
-      image,
+      images, // ✅ array of image URLs
       title,
       description,
       category,
@@ -47,42 +60,47 @@ const addProduct = async (req, res) => {
     });
 
     await newlyCreatedProduct.save();
-    res.status(201).json({
+
+    return res.status(201).json({
       success: true,
       data: newlyCreatedProduct,
     });
   } catch (e) {
-    console.log(e);
-    res.status(500).json({
+    console.error(e);
+    return res.status(500).json({
       success: false,
-      message: "Error occured",
+      message: "Error occurred while adding product",
     });
   }
 };
 
-//fetch all products
-
+/* ======================================================
+   FETCH ALL PRODUCTS
+====================================================== */
 const fetchAllProducts = async (req, res) => {
   try {
     const listOfProducts = await Product.find({});
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       data: listOfProducts,
     });
   } catch (e) {
-    res.status(500).json({
+    console.error(e);
+    return res.status(500).json({
       success: false,
-      message: "Error occured",
+      message: "Error occurred while fetching products",
     });
   }
 };
 
-//edit a product
+/* ======================================================
+   EDIT PRODUCT (MULTIPLE IMAGES SAFE)
+====================================================== */
 const editProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      image,
+      images,
       title,
       description,
       category,
@@ -93,63 +111,77 @@ const editProduct = async (req, res) => {
       isCastingKit,
     } = req.body;
 
-    let findProduct = await Product.findById(id);
-    if (!findProduct)
+    const product = await Product.findById(id);
+    if (!product) {
       return res.status(404).json({
         success: false,
         message: "Product not found",
       });
+    }
 
-    findProduct.title = title || findProduct.title;
-    findProduct.description = description || findProduct.description;
-    findProduct.category = category || findProduct.category;
-    findProduct.price = price === "" ? 0 : price || findProduct.price;
-    findProduct.salePrice =
-      salePrice === "" ? 0 : salePrice || findProduct.salePrice;
-    findProduct.totalStock = totalStock || findProduct.totalStock;
-    findProduct.image = image || findProduct.image;
-    findProduct.averageReview = averageReview || findProduct.averageReview;
-    findProduct.isCastingKit = typeof isCastingKit === "boolean" ? isCastingKit : findProduct.isCastingKit;
+    product.title = title ?? product.title;
+    product.description = description ?? product.description;
+    product.category = category ?? product.category;
+    product.price = price ?? product.price;
+    product.salePrice = salePrice ?? product.salePrice;
+    product.totalStock = totalStock ?? product.totalStock;
+    product.averageReview = averageReview ?? product.averageReview;
+    product.isCastingKit =
+      typeof isCastingKit === "boolean"
+        ? isCastingKit
+        : product.isCastingKit;
 
-    await findProduct.save();
-    res.status(200).json({
+    // ✅ images update only if provided
+    if (Array.isArray(images) && images.length > 0) {
+      product.images = images;
+    }
+
+    await product.save();
+
+    return res.status(200).json({
       success: true,
-      data: findProduct,
+      data: product,
     });
   } catch (e) {
-    console.log(e);
-    res.status(500).json({
+    console.error(e);
+    return res.status(500).json({
       success: false,
-      message: "Error occured",
+      message: "Error occurred while editing product",
     });
   }
 };
 
-//delete a product
+/* ======================================================
+   DELETE PRODUCT
+====================================================== */
 const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const product = await Product.findByIdAndDelete(id);
 
-    if (!product)
+    if (!product) {
       return res.status(404).json({
         success: false,
         message: "Product not found",
       });
+    }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: "Product delete successfully",
+      message: "Product deleted successfully",
     });
   } catch (e) {
-    console.log(e);
-    res.status(500).json({
+    console.error(e);
+    return res.status(500).json({
       success: false,
-      message: "Error occured",
+      message: "Error occurred while deleting product",
     });
   }
 };
 
+/* ======================================================
+   EXPORTS
+====================================================== */
 module.exports = {
   handleImageUpload,
   addProduct,

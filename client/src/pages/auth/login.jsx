@@ -19,15 +19,6 @@ function AuthLogin() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Update the setFormData handler to work with the enhanced CommonForm
-  const handleFormDataChange = (fieldName, value) => {
-    setFormData(prev => ({ ...prev, [fieldName]: value }));
-    
-    // Clear error when user starts typing
-    if (errors[fieldName]) {
-      setErrors(prev => ({ ...prev, [fieldName]: null }));
-    }
-  };
 
   // Validation functions
   const validateEmail = (email) => {
@@ -113,7 +104,7 @@ function AuthLogin() {
         formControls={loginFormControls}
         buttonText={"Sign In"}
         formData={formData}
-        setFormData={handleFormDataChange}
+        setFormData={setFormData}
         onSubmit={onSubmit}
         errors={errors}
         isSubmitting={isSubmitting}

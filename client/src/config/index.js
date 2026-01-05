@@ -11,6 +11,7 @@ export const registerFormControls = [
   {
     name: "userName",
     label: "User Name",
+    disableOnSubmit: false, 
     placeholder: "Enter your user name",
     componentType: "input",
     type: "text",
@@ -18,6 +19,7 @@ export const registerFormControls = [
   {
     name: "email",
     label: "Email",
+    disableOnSubmit: false, 
     placeholder: "Enter your email",
     componentType: "input",
     type: "email",
@@ -25,6 +27,7 @@ export const registerFormControls = [
   {
     name: "password",
     label: "Password",
+    disableOnSubmit: false, 
     placeholder: "Enter your password",
     componentType: "input",
     type: "password",
@@ -37,6 +40,7 @@ export const loginFormControls = [
     label: "Email",
     placeholder: "Enter your email",
     componentType: "input",
+    disableOnSubmit: false, 
     type: "email",
   },
   {
@@ -44,6 +48,7 @@ export const loginFormControls = [
     label: "Password",
     placeholder: "Enter your password",
     componentType: "input",
+    disableOnSubmit: false, 
     type: "password",
   },
 ];

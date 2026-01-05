@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import BookingForm from './BookingForm';
 import Footer from './Footer';
 import CallToAction from './CallToAction';
+import Testimonials from './Testimonials';
 
 const FAQ = () => {
     return (
@@ -65,7 +66,7 @@ const FAQ = () => {
                                     We offer complete flexibility. Choose to visit our professional Casting Studio or let us bring the experience to you.
                                 </p>
                                 <p>
-                                    Our mobile casting service covers most metro cities across India. Whether you're at home, a hospital, or any preferred location—we'll be there at your convenience.
+                                    Our mobile casting service covers delhi ncr. Whether you're at home, a hospital, or any preferred location—we'll be there at your convenience.
                                 </p>
                                 <ul className="list-disc list-inside space-y-1">
                                     <li><strong>Home Comfort:</strong> No travel needed—we come to you.</li>
@@ -110,7 +111,7 @@ const FAQ = () => {
                                     Whether it's holding hands, stacking palms, or forming a unique gesture, each group casting tells a heartfelt story frozen in time.
                                 </p>
                                 <p>
-                                    Need inspiration? Check out our <Link to="/gallery" className="text-[#b89d4f] underline hover:text-[#a88a3f]">Gallery</Link> to see stunning examples of family and group castings.
+                                    Need inspiration? Check out our <Link to="/Testimonials" className="text-[#b89d4f] underline hover:text-[#a88a3f]">Gallery</Link> to see stunning examples of family and group castings.
                                 </p>
                             </div>
                         </details>
