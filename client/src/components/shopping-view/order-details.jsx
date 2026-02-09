@@ -36,8 +36,8 @@ function ShoppingOrderDetailsView({ orderDetails }) {
 
   // Format price with commas
   const formatPrice = (price) => {
-    if (!price) return "$0.00";
-    return `$${parseFloat(price).toLocaleString('en-US', {
+    if (!price) return "₹0.00";
+    return `₹${parseFloat(price).toLocaleString('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     })}`;

@@ -18,7 +18,7 @@ function CastingKitTile({ kit, handleGetProductDetails, handleAddToCart }) {
         >
           <div className="relative overflow-hidden h-[280px]">
             <img
-              src={kit?.image}
+              src={kit?.images?.[0]}
               alt={kit?.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
