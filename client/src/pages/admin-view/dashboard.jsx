@@ -12,9 +12,6 @@ function AdminDashboard() {
   const { featureImageList } = useSelector((state) => state.commonFeature);
   const [errorMessage, setErrorMessage] = useState("");
 
-
-  console.log(uploadedImageUrl, "uploadedImageUrl");
-
   function handleUploadFeatureImage() {
     if (!uploadedImageUrl) {
       setErrorMessage("Please select an image before uploading.");

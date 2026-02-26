@@ -5,8 +5,6 @@ const Product = require("../../models/Product");
    IMAGE UPLOAD (Cloudinary)
 ====================================================== */
 const handleImageUpload = async (req, res) => {
-  console.log("REQ.FILE =>", req.file);
-
   try {
     if (!req.file || !req.file.path) {
       return res.status(400).json({

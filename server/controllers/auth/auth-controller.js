@@ -216,8 +216,6 @@ const authMiddleware = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("✅ Decoded Token:", decoded);
-      // Optional: extra safety check
     if (!decoded?.id) {
       return res.status(401).json({
         success: false,
@@ -227,7 +225,6 @@ const authMiddleware = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    console.log("JWT Verify Error:", error.message);
     res.status(401).json({
       success: false,
       message: "Unauthorised user!",

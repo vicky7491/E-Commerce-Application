@@ -31,7 +31,6 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
 
   function handleManageAddress(event) {
     event.preventDefault();
-console.log(formData)
     if (addressList.length >= 3 && currentEditedId === null) {
       setFormData(initialAddressFormData);
       toast({
@@ -110,8 +109,6 @@ console.log(formData)
   useEffect(() => {
     dispatch(fetchAllAddresses(user?.id));
   }, [dispatch]);
-
-  console.log(addressList, "addressList");
 
   return (
     <Card>

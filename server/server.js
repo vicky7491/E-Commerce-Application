@@ -1,63 +1,92 @@
-
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-require("dotenv").config(); 
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const authRouter = require("./routes/auth/auth-routes");
-const adminProductsRouter = require("./routes/admin/products-routes");
-const adminOrderRouter = require("./routes/admin/order-routes");
-const adminBookingRouter = require('./routes/admin/booking-routes');
-const shopProductsRouter = require("./routes/shop/products-routes");
-const shopCartRouter = require("./routes/shop/cart-routes");
-const shopAddressRouter = require("./routes/shop/address-routes");
-const shopOrderRouter = require("./routes/shop/order-routes");
-const shopSearchRouter = require("./routes/shop/search-routes");
-const shopReviewRouter = require("./routes/shop/review-routes");
-const commonBookingRouter = require('./routes/common/booking-routes');
-const commonFeatureRouter = require("./routes/common/feature-routes");
-//create a database connection -> u can also
-//create a separate file for this and then import/use that file here
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const compression = require("compression");
+const morgan = require("morgan");
 
-mongoose
-.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB connected"))
-  .catch((error) => console.log(error));
-  
 const app = express();
 const PORT = process.env.PORT || 5000;
-const API_BASE = process.env.API_BASE || "http://localhost";
+
+app.set("trust proxy", 1);
+
+// Security middleware
+app.use(helmet());
+app.use(compression());
+app.use(morgan("combined"));
+
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+  })
+);
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL?.split(","),
     methods: ["GET", "POST", "DELETE", "PUT"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "Cache-Control",
-      "Expires",
-      "Pragma",
-    ],
     credentials: true,
   })
 );
 
 app.use(cookieParser());
-app.use(express.json());
-app.use("/api/auth", authRouter);
-app.use("/api/admin/products", adminProductsRouter);
-app.use("/api/admin/orders", adminOrderRouter);
-app.use('/api/admin/bookings', adminBookingRouter);
+app.use(express.json({ limit: "10kb" }));
 
-app.use("/api/shop/products", shopProductsRouter);
-app.use("/api/shop/cart", shopCartRouter);
-app.use("/api/shop/address", shopAddressRouter);
-app.use("/api/shop/order", shopOrderRouter);
-app.use("/api/shop/search", shopSearchRouter);
-app.use("/api/shop/review", shopReviewRouter);
-app.use("/api/common/feature", commonFeatureRouter);
-app.use('/api/bookings', commonBookingRouter);
+// Routes
+app.use("/api/auth", require("./routes/auth/auth-routes"));
+app.use("/api/admin/products", require("./routes/admin/products-routes"));
+app.use("/api/admin/orders", require("./routes/admin/order-routes"));
+app.use("/api/admin/bookings", require("./routes/admin/booking-routes"));
+app.use("/api/shop/products", require("./routes/shop/products-routes"));
+app.use("/api/shop/cart", require("./routes/shop/cart-routes"));
+app.use("/api/shop/address", require("./routes/shop/address-routes"));
+app.use("/api/shop/order", require("./routes/shop/order-routes"));
+app.use("/api/shop/search", require("./routes/shop/search-routes"));
+app.use("/api/shop/review", require("./routes/shop/review-routes"));
+app.use("/api/common/feature", require("./routes/common/feature-routes"));
+app.use("/api/bookings", require("./routes/common/booking-routes"));
 
+// Health check
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "OK" });
+});
 
-app.listen(PORT, () => console.log(`Server is now running at ${API_BASE}:${PORT}`));
+// 404
+app.use("*", (req, res) => {
+  res.status(404).json({ success: false, message: "API route not found" });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  if (process.env.NODE_ENV === "development") {
+    console.error(err.stack);
+  }
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
+
+// DB connect + start server
+const startServer = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      autoIndex: false,
+      maxPoolSize: 10,
+    });
+    console.log("MongoDB connected");
+
+    app.listen(PORT, () =>
+      console.log(`Server running on port ${PORT}`)
+    );
+  } catch (error) {
+    console.error("MongoDB connection failed:", error.message);
+    process.exit(1);
+  }
+};
+
+startServer();

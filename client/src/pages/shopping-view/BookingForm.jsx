@@ -19,7 +19,7 @@ const BookingForm = ({formId}) => {
 
   // Mock toast function since we can't use the external one
   const toast = (message) => {
-    console.log(message);
+  
     // You can replace this with your actual toast implementation
   };
 
