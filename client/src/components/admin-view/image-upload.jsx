@@ -27,7 +27,7 @@ function ProductImageUpload({
       data.append("my_file", file);
 
       const res = await axios.post(
-        "http://localhost:5000/api/admin/products/upload-image",
+        `${API_BASE}/api/admin/products/upload-image`,
         data
       );
 
