@@ -51,8 +51,8 @@ app.use("/api/common/feature", require("./routes/common/feature-routes"));
 app.use("/api/bookings", require("./routes/common/booking-routes"));
 
 // Health check
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "OK" });
+app.get("/", (req, res) => {
+  res.status(200).json({ status: "API IS RUNNNING" });
 });
 
 // 404
