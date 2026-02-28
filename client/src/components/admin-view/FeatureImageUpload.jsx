@@ -1,6 +1,7 @@
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Skeleton } from "../ui/skeleton";
+import { API_BASE } from "@/api/base";
 import axios from "axios";
 
 function FeatureImageUpload({
@@ -19,7 +20,7 @@ function FeatureImageUpload({
     data.append("my_file", file);
 
     const res = await axios.post(
-      "http://localhost:5000/api/admin/products/upload-image",
+      `${API_BASE}/api/admin/products/upload-image`,
       data
     );
 
