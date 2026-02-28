@@ -55,10 +55,10 @@ app.get("/", (req, res) => {
   res.status(200).json({ status: "API IS RUNNNING" });
 });
 
-// 404
-app.use("*", (req, res) => {
-  res.status(404).json({ success: false, message: "API route not found" });
-});
+// // 404
+// app.use("*", (req, res) => {
+//   res.status(404).json({ success: false, message: "API route not found" });
+// });
 
 // Error handler
 app.use((err, req, res, next) => {
