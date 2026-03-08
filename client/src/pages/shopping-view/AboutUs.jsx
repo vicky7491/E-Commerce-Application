@@ -2,7 +2,7 @@ import React from 'react';
 import Footer from './Footer';
 import BookingForm from './BookingForm';
 import CallToAction from './CallToAction';
-import FounderImage from "../../assets/founder.png";
+import FounderImage from "../../assets/brand-logo.jpg";
 
 import GalleryImage1 from "../../assets/babyimpression.jpg";
 import GalleryImage2 from "../../assets/petimpression.jpg";

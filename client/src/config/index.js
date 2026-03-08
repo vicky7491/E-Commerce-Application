@@ -6,6 +6,9 @@ import feedback_2 from "../assets/feedback_2.mp4";
 import feedback_3 from "../assets/feedback_3.mp4";
 import feedback_4 from "../assets/feedback_4.mp4";
 import feedback_5 from "../assets/feedback_5.mp4";
+import workprocess1 from "../assets/working_1.mp4";
+import workprocess2 from "../assets/working_2.mp4";
+import workprocess3 from "../assets/working_3.jpg";
 
 export const registerFormControls = [
   {
@@ -243,92 +246,74 @@ export const galleryItems = [
   },
   {
     id: 3,
-    title: "Wedding Unity Sculpture",
-    description: "Two hearts forever intertwined",
-    category: "Couples",
-    size: "medium",
-    image: gallery_3,
-    type: "image"
-  },
-  {
-    id: 4,
     title: "Sibling Handprint Keepsake",
     description: "Capturing childhood bonds",
     category: "Parents",
     size: "large",
-    image: gallery_3,
-    type: "image"
+    image: feedback_4,
+    type: "video"
   },
   {
-    id: 5,
+    id: 4,
     title: "Maternity Hand Casting",
     description: "Celebrating the journey to motherhood",
     category: "Parents",
     size: "medium",
-    image: gallery_3,
-    type: "image"
+    image: feedback_5,
+    type: "video"
   },
   {
-    id: 6,
-    title: "Grandparent & Grandchild",
-    description: "A legacy of love preserved",
-    category: "Family/Group",
-    size: "small",
-    image: gallery_3,
-    type: "image"
-  },
-  {
-    id: 7,
+    id: 5,
     title: "Anniversary Sculpture",
     description: "Decades of devotion captured in art",
-    category: "Couples",
+    category: "Baby",
     size: "large",
     image: feedback_3,
     type: "video"
   },
   {
-    id: 8,
-    title: "Baby Hand & Foot Set",
-    description: "Tiny details frozen in time",
-    category: "Baby",
-    size: "medium",
-    image: gallery_3,
-    type: "image"
-  },
-  {
-    id: 9,
-    title: "Family Circle Casting",
-    description: "The unbroken bond of family",
-    category: "Family/Group",
-    size: "small",
-    image: feedback_4,
-    type: "video"
-  },
-  {
-    id: 10,
-    title: "New Parents' Hands",
-    description: "The beginning of a new family story",
-    category: "Parents",
-    size: "medium",
-    image: feedback_1,
-    type: "video"
-  },
-  {
-    id: 11,
+    id: 6,
     title: "Casting Process",
     description: "Witness the creation of timeless memories",
-    category: "Working process",
+    category: "Couples",
     size: "large",
     image: feedback_2,
     type: "video"
   },
   {
-    id: 12,
+    id: 7,
+    title: "Artisan Technique",
+    description: "Our skilled craftsmen at work",
+    category: "Baby",
+    size: "medium",
+    image: feedback_1,
+    type: "video"
+  },
+  {
+    id: 8,
     title: "Artisan Technique",
     description: "Our skilled craftsmen at work",
     category: "Working process",
     size: "medium",
-    image: feedback_1,
+    image:  workprocess1,
     type: "video"
-  }
+  },
+  {
+    id: 9,
+    title: "Artisan Technique",
+    description: "Our skilled craftsmen at work",
+    category: "Working process",
+    size: "medium",
+    image:  workprocess2,
+    type: "video"
+  },
+  {
+    id: 10,
+    title: "Artisan Technique",
+    description: "Our skilled craftsmen at work",
+    category: "Working process",
+    size: "medium",
+    image:  workprocess3,
+    type: "image"
+  },
 ];
