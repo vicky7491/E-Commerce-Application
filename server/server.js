@@ -14,7 +14,11 @@ const PORT = process.env.PORT || 5000;
 app.set("trust proxy", 1);
 
 // Security middleware
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
 app.use(compression());
 app.use(morgan("combined"));
 
