@@ -20,7 +20,7 @@ import { ArrowUpDownIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import Footer from "./footer";
+import Footer from "./Footer";
 
 function createSearchParamsHelper(filterParams, sortParam) {
   const queryParams = [];
