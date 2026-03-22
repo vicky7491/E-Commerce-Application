@@ -58,20 +58,29 @@ export const logoutUser = createAsyncThunk(
 
 export const checkAuth = createAsyncThunk(
   "/auth/checkauth",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE}/api/auth/check-auth`,
+        {
+          withCredentials: true,
+          headers: {
+            "Cache-Control":
+              "no-store, no-cache, must-revalidate, proxy-revalidate",
+          },
+        }
+      );
 
-  async () => {
-    const response = await axios.get(
-      `${API_BASE}/api/auth/check-auth`,
-      {
-        withCredentials: true,
-        headers: {
-          "Cache-Control":
-            "no-store, no-cache, must-revalidate, proxy-revalidate",
-        },
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 401) {
+        // ✅ normal case → user not logged in
+        return rejectWithValue(null);
       }
-    );
 
-    return response.data;
+      // ❌ real error
+      return rejectWithValue(error.response?.data || "Something went wrong");
+    }
   }
 );
 
@@ -114,8 +123,8 @@ const authSlice = createSlice({
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.success ? action.payload.user : null;
-        state.isAuthenticated = action.payload.success;
+        state.user = action.payload.user;
+        state.isAuthenticated = true;
       })
       .addCase(checkAuth.rejected, (state, action) => {
         state.isLoading = false;
