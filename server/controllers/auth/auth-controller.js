@@ -93,7 +93,6 @@ const loginUser = async (req, res) => {
 
 //logout
 const logoutUser = (req, res) => {
-  console.log("Logout request received");
   try {
   res.clearCookie("token", {
   httpOnly: true,
@@ -114,6 +113,7 @@ res.status(200).json({success: true, message: 'Logged out succesfully'});
 // ================= Forgot Password =================
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
+  let user;
 
   try {
     const user = await User.findOne({ email });
@@ -165,9 +165,11 @@ The ${appName} Team
 
   } catch (err) {
     console.error("Forgot Password Error:", err);
+    if (user) {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await user.save({ validateBeforeSave: false });
+    }
 
     return res.status(500).json({
       success: false,
