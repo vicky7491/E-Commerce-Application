@@ -41,16 +41,19 @@ import AuthForgotPassword from "./pages/auth/forgot-password";
 import ResetPassword from "./pages/auth/resetPassword";
 
 function App() {
-  const { user, isAuthenticated, isLoading } = useSelector(
-    (state) => state.auth
-  );
+  const { user, isAuthenticated, isLoading } = useSelector(state => state.auth);
+  const [authChecked, setAuthChecked] = useState(false);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(checkAuth());
-  }, [dispatch]);
+ useEffect(() => {
+  dispatch(checkAuth()).finally(() => setAuthChecked(true));
+}, [dispatch]);
 
-  if (isLoading) return <Skeleton className="w-[800px] h-[600px] bg-black" />;
+  if (!authChecked) return (
+  <div className="flex items-center justify-center min-h-screen">
+    <Skeleton className="w-[800px] h-[600px] bg-black" />
+  </div>
+);
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
