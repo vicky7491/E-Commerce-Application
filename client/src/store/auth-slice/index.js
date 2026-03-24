@@ -87,6 +87,42 @@ export const checkAuth = createAsyncThunk(
 }
 );
 
+export const forgotPassword = createAsyncThunk(
+  "/auth/forgot-password",
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE}/api/auth/forgot-password`,
+        { email },
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to send reset link"
+      );
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "/auth/reset-password",
+  async ({ token, password }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE}/api/auth/reset-password/${token}`,
+        { password },
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Password reset failed"
+      );
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -151,6 +187,33 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
+      // Forgot Password
+.addCase(forgotPassword.pending, (state) => {
+  state.isLoading = true;
+  state.error = null;
+})
+.addCase(forgotPassword.fulfilled, (state) => {
+  state.isLoading = false;
+  state.error = null;
+})
+.addCase(forgotPassword.rejected, (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+})
+
+// Reset Password
+.addCase(resetPassword.pending, (state) => {
+  state.isLoading = true;
+  state.error = null;
+})
+.addCase(resetPassword.fulfilled, (state) => {
+  state.isLoading = false;
+  state.error = null;
+})
+.addCase(resetPassword.rejected, (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+})
   },
 });
 

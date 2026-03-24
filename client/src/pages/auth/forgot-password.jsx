@@ -1,21 +1,25 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Mail, ArrowLeft } from "lucide-react";
+import { Mail, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { forgotPassword } from "@/store/auth-slice"; // ← import thunk
 
 function AuthForgotPassword() {
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const { toast } = useToast();
+  const dispatch = useDispatch();
+
+  // ← get loading from redux instead of local state
+  const { isLoading: loading } = useSelector((state) => state.auth);
 
   async function onSubmit(e) {
     e.preventDefault();
-    
-    // Basic email validation
+
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       toast({
         title: "Invalid email",
@@ -24,47 +28,25 @@ function AuthForgotPassword() {
       });
       return;
     }
-    
-    setLoading(true);
 
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/auth/forgot-password`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        }
-      );
+    // ✅ dispatch instead of raw fetch
+    const result = await dispatch(forgotPassword(email));
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Something went wrong");
-      }
-
-      // Show success state instead of just a toast
+    if (forgotPassword.fulfilled.match(result)) {
       setShowSuccess(true);
-      
       toast({
         title: "Password reset link sent",
         description: "Check your email inbox if this account exists.",
       });
-    } catch (error) {
-      console.error("Password reset error:", error);
+    } else {
       toast({
         title: "Error",
-        description: error.message || "Failed to send reset link",
+        description: result.payload || "Failed to send reset link",
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
     }
   }
 
-  // Success state after email submission
   if (showSuccess) {
     return (
       <div className="mx-auto w-full max-w-md space-y-6">
@@ -76,12 +58,12 @@ function AuthForgotPassword() {
             Check your email
           </h1>
           <p className="mt-3 text-muted-foreground">
-            We've sent a password reset link to <strong>{email}</strong>. 
+            We've sent a password reset link to <strong>{email}</strong>.
             Please check your inbox and follow the instructions.
           </p>
           <p className="mt-3 text-sm text-muted-foreground">
             Didn't receive the email?{" "}
-            <button 
+            <button
               onClick={() => setShowSuccess(false)}
               className="font-medium text-primary hover:underline"
             >
@@ -89,7 +71,6 @@ function AuthForgotPassword() {
             </button>
           </p>
         </div>
-        
         <div className="text-center mt-6">
           <Link to="/auth/login">
             <Button variant="outline" className="w-full">
@@ -125,16 +106,10 @@ function AuthForgotPassword() {
             required
             disabled={loading}
             autoComplete="email"
-            className="pl-10"
           />
-          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         </div>
 
-        <Button 
-          type="submit" 
-          className="w-full" 
-          disabled={loading}
-        >
+        <Button type="submit" className="w-full" disabled={loading}>
           {loading ? (
             <>
               <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
@@ -145,7 +120,7 @@ function AuthForgotPassword() {
           )}
         </Button>
       </form>
-      
+
       <div className="text-center">
         <Link to="/auth/login">
           <Button variant="ghost" className="text-sm text-muted-foreground">

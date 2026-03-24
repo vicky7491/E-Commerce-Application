@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux"; // ← add
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,19 +8,20 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useToast } from "@/components/ui/use-toast";
 import { Eye, EyeOff, CheckCircle, XCircle, Lock, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { resetPassword } from "@/store/auth-slice"; // ← add
 
 export default function ResetPassword() {
-  const { token } = useParams(); // token from /reset-password/:token
+  const { token } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const dispatch = useDispatch();                                    // ← add
+  const { isLoading: loading } = useSelector((state) => state.auth); // ← replaces local loading state
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Password requirements checklist
   const passwordRequirements = [
     { id: 1, text: "At least 8 characters", validator: (pwd) => pwd.length >= 8 },
     { id: 2, text: "Contains a number", validator: (pwd) => /\d/.test(pwd) },
@@ -31,7 +33,6 @@ export default function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate passwords match
     if (password !== confirmPassword) {
       toast({
         title: "Error",
@@ -41,57 +42,36 @@ export default function ResetPassword() {
       return;
     }
 
-    // Validate password meets all requirements
     const unmetRequirements = passwordRequirements
-      .filter(req => !req.validator(password))
-      .map(req => req.text);
-    
+      .filter((req) => !req.validator(password))
+      .map((req) => req.text);
+
     if (unmetRequirements.length > 0) {
       toast({
         title: "Password requirements not met",
-        description: `Please ensure your password includes: ${unmetRequirements.join(', ')}`,
+        description: `Please ensure your password includes: ${unmetRequirements.join(", ")}`,
         variant: "destructive",
       });
       return;
     }
 
-    try {
-      setLoading(true);
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/reset-password/${token}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+    // ✅ dispatch instead of raw fetch
+    const result = await dispatch(resetPassword({ token, password }));
+
+    if (resetPassword.fulfilled.match(result)) {
+      toast({
+        title: "Success",
+        description: result.payload.message || "Password reset successful",
       });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        toast({
-          title: "Success",
-          description: data.message || "Password reset successful",
-        });
-        // Redirect to login after a brief delay to show success message
-        setTimeout(() => navigate("/auth/login"), 1500);
-      } else {
-        toast({
-          title: "Error",
-          description: data.message || "Invalid or expired reset token",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
+      setTimeout(() => navigate("/auth/login"), 1500);
+    } else {
       toast({
         title: "Error",
-        description: error.message || "Failed to reset password. Please try again.",
+        description: result.payload || "Invalid or expired reset token",
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
     }
   };
-
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
-  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 via-white to-amber-50 p-4">
@@ -105,7 +85,7 @@ export default function ResetPassword() {
             Create a new password for your account
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
@@ -125,13 +105,13 @@ export default function ResetPassword() {
                 <button
                   type="button"
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  onClick={togglePasswordVisibility}
+                  onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="confirmPassword" className="text-sm font-medium">
                 Confirm New Password
@@ -149,14 +129,13 @@ export default function ResetPassword() {
                 <button
                   type="button"
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  onClick={toggleConfirmPasswordVisibility}
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
                   {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
-            
-            {/* Password requirements checklist */}
+
             <div className="space-y-2 pt-2">
               <p className="text-sm font-medium">Password must contain:</p>
               <ul className="space-y-1">
@@ -178,11 +157,7 @@ export default function ResetPassword() {
               </ul>
             </div>
 
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={loading}
-            >
+            <Button type="submit" className="w-full" disabled={loading}>
               {loading ? (
                 <>
                   <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
@@ -193,7 +168,7 @@ export default function ResetPassword() {
               )}
             </Button>
           </form>
-          
+
           <div className="mt-4 text-center">
             <Link to="/auth/login">
               <Button variant="ghost" size="sm" className="text-muted-foreground">
