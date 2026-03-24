@@ -1,4 +1,4 @@
-const { default: items } = require("razorpay/dist/types/items");
+const Razorpay = require('razorpay');
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
 
