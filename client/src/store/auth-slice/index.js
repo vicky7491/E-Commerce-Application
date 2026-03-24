@@ -6,12 +6,14 @@ const initialState = {
   isAuthenticated: false,
   isLoading: true,
   user: null,
+  error: null,
 };
 
 export const registerUser = createAsyncThunk(
   "/auth/register",
 
-  async (formData) => {
+  async (formData, { rejectWithValue }) => {
+    try {
     const response = await axios.post(
       `${API_BASE}/api/auth/register`,
       formData,
@@ -19,25 +21,30 @@ export const registerUser = createAsyncThunk(
         withCredentials: true,
       }
     );
-
     return response.data;
+  } catch (error) { 
+     return rejectWithValue(
+      error.response?.data?.message || "Registration failed");
   }
+}
 );
 
 export const loginUser = createAsyncThunk(
   "/auth/login",
-
-  async (formData) => {
-    const response = await axios.post(
-      `${API_BASE}/api/auth/login`,
-      formData,
-      {
-        withCredentials: true,
-      }
-    );
-
-    return response.data;
-  }
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE}/api/auth/login`,
+        formData,
+        {
+          withCredentials: true,
+        },
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Login failed");
+    }
+  },
 );
 
 export const logoutUser = createAsyncThunk(
@@ -49,37 +56,43 @@ export const logoutUser = createAsyncThunk(
       {},
       {
         withCredentials: true,
-      }
+      },
     );
 
     return response.data;
-  }
+  },
 );
 
 export const checkAuth = createAsyncThunk(
   "/auth/checkauth",
 
-  async () => {
-    const response = await axios.get(
-      `${API_BASE}/api/auth/check-auth`,
-      {
-        withCredentials: true,
-        headers: {
-          "Cache-Control":
-            "no-store, no-cache, must-revalidate, proxy-revalidate",
-        },
-      }
-    );
+  async (_, { rejectWithValue }) => {
+    try {
+    const response = await axios.get(`${API_BASE}/api/auth/check-auth`, {
+      withCredentials: true,
+      headers: {
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+      },
+    });
 
     return response.data;
+  } catch (error) {
+    return rejectWithValue(
+      error.response?.status === 401 ? null : error.response?.data?.message
+    );
   }
+}
 );
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action) => {},
+    setUser: (state, action) => {
+      state.user = action.payload;
+      state.isAuthenticated = !!action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -98,6 +111,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -108,6 +122,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
+        state.error = action.payload;
       })
       .addCase(checkAuth.pending, (state) => {
         state.isLoading = true;
@@ -126,7 +141,14 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
-      });
+      })
+      .addCase(logoutUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
   },
 });
 
