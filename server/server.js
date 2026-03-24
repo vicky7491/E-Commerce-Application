@@ -34,12 +34,13 @@ app.use(
     origin: process.env.FRONTEND_URL?.split(","),
     credentials: true,
     methods: ["GET", "POST", "DELETE", "PUT"],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'],
   })
 );
 
 app.use(cookieParser());
 app.use(express.json({ limit: "10kb" }));
+app.options('*', cors()); 
 
 // Routes
 app.use("/api/auth", require("./routes/auth/auth-routes"));
