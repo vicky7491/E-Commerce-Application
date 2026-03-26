@@ -1,34 +1,28 @@
-const nodemailer = require("nodemailer");
+// helpers/sendEmail.js
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendEmail = async ({ email, subject, message, html }) => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    throw new Error("EMAIL_USER or EMAIL_PASS env variable is missing");
-  }
-  
- 
-    const transporter = nodemailer.createTransport({
-      service: "gmail", // Gmail SMTP
-      auth: {
-        user: process.env.EMAIL_USER, // your Gmail address
-        pass: process.env.EMAIL_PASS, // your Gmail App Password
-      },
+  try {
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject,
+      text: message,
+      html: html || `<p>${message}</p>`,
     });
 
-    const mailOptions = {
-      from: `"Beautiful Molds" <${process.env.EMAIL_USER}>`,
-      to: email,        // ✅ fixed
-      subject,          // ✅ fixed
-      text: message,    // plain text version
-      html: html || `<p>${message}</p>`, // ✅ fallback if no HTML is provided
-    };
+    if (error) {
+      console.error("❌ Email sending failed:", error);
+      throw new Error(error.message);
+    }
 
-    try{
-    const info = await transporter.sendMail(mailOptions);
-    console.log("✅ Email sent:", info.messageId);
-    return info;
+    console.log("✅ Email sent:", data.id);
+    return data;
   } catch (error) {
     console.error("❌ Email sending failed:", error);
-    throw error;;
+    throw error;
   }
 };
 

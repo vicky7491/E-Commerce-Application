@@ -37,10 +37,10 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'],
   })
 );
-
+app.options('*', cors()); 
 app.use(cookieParser());
 app.use(express.json({ limit: "10kb" }));
-app.options('*', cors()); 
+
 
 // Routes
 app.use("/api/auth", require("./routes/auth/auth-routes"));

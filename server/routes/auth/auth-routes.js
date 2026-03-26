@@ -16,7 +16,7 @@ router.post("/logout", logoutUser);
 
 // Forgot & Reset Password
 router.post("/forgot-password", forgotPassword);
-router.put("/reset-password/:token", resetPassword);
+router.post("/reset-password/:token", resetPassword);
 
 router.get("/check-auth", authMiddleware, (req, res) => {
   const user = req.user;

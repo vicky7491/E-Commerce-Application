@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "build" : "npm install && npm install --prefix client && npm run build --prefix client",
+    "build": "npm install && npm install --prefix client && npm run build --prefix client",
     "start": "nodemon server.js"
   },
   "author": "Aniket kumar",
@@ -28,6 +28,7 @@
     "nodemailer": "^7.0.6",
     "nodemon": "^3.1.4",
     "razorpay": "^2.9.6",
+    "resend": "^6.9.4",
     "sib-api-v3-sdk": "^8.5.0"
   }
 }

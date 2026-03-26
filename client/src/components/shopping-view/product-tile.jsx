@@ -25,7 +25,7 @@ function ShoppingProductTile({ product, handleGetProductDetails }) {
     
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % images.length);
-    }, 5000); // Change image every 5 seconds
+    }, 3000); // Change image every 3 seconds
     
     return () => clearInterval(interval);
   }, [images.length, isHovering]); // Added isHovering dependency
@@ -191,7 +191,7 @@ function ShoppingProductTile({ product, handleGetProductDetails }) {
               </h2>
               <div className="flex justify-between items-center mb-3">
                 <span className="text-sm text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
-                  {categoryOptionsMap[product?.category] || "Uncategorized"}
+                  {categoryOptionsMap[product?.category] || (product?.isCastingKit ? "Casting Kits" :  "Uncategorized")}
                 </span>
               </div>
             </div>
