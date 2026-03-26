@@ -72,9 +72,15 @@ const loginUser = async (req, res) => {
       { expiresIn: "12h" }
     );
 
-    res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none", maxAge: 12 * 60 * 60 * 1000,}).json({
-      success: true,
-      message: "Logged in successfully",
+
+    const isProduction = process.env.NODE_ENV === "production";
+    res.cookie("token", token, { 
+      httpOnly: true,
+       secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+         maxAge: 12 * 60 * 60 * 1000,}).json({
+        success: true,
+        message: "Logged in successfully",
       user: {
         email: checkUser.email,
         role: checkUser.role,
@@ -94,10 +100,11 @@ const loginUser = async (req, res) => {
 //logout
 const logoutUser = (req, res) => {
   try {
+  const isProduction = process.env.NODE_ENV === "production";
   res.clearCookie("token", {
   httpOnly: true,
-  secure: true,
-  sameSite: "none",
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
 });
 res.status(200).json({success: true, message: 'Logged out succesfully'});
 }catch (error) {
@@ -116,7 +123,7 @@ const forgotPassword = async (req, res) => {
   let user;
 
   try {
-    const user = await User.findOne({ email });
+    user = await User.findOne({ email });
     if (!user) {
       return res.status(200).json({
         success: true,
@@ -127,7 +134,7 @@ const forgotPassword = async (req, res) => {
     const resetToken = user.getResetPasswordToken();
     await user.save({ validateBeforeSave: false });
 
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-password/${resetToken}`;
     const appName = process.env.APP_NAME || "Your App";
 
     const htmlTemplate = forgotPasswordEmail({
