@@ -1,0 +1,22 @@
+# Allow all public pages
+User-agent: *
+Allow: /
+Sitemap: https://beautifulmolds.com/sitemap.xml
+
+# Block admin pages
+Disallow: /admin/
+
+# Block protected user pages
+Disallow: /shop/checkout
+Disallow: /shop/account
+Disallow: /shop/order-success
+Disallow: /shop/payment-success
+
+# Block auth pages
+Disallow: /auth/login
+Disallow: /auth/register
+Disallow: /auth/forgot-password
+Disallow: /auth/reset-password/
+
+# Block unauthenticated special page
+Disallow: /unauth-page/
