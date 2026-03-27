@@ -42,8 +42,6 @@ async function generateSitemap() {
   stream.end();
 
   await streamToPromise(stream);
-  console.log(`✅ Sitemap generated → ${OUTPUT_PATH}`);
-  console.log(`   Total URLs: ${allRoutes.length}`);
 }
 
 generateSitemap().catch((err) => {
