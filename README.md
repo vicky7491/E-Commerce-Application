@@ -104,7 +104,7 @@ npm run dev          # starts Vite on http://localhost:5173
 
 ## API Overview
 
-- `GET /` – Health check (`{ status: "API IS RUNNNING" }`)
+- `GET /` – Health check (`{ status: "API IS RUNNING" }`)
 - `POST /api/auth/register | /login | /forgot-password | /reset-password/:token`
 - `GET /api/auth/check-auth`
 - Admin: `/api/admin/products`, `/api/admin/orders`, `/api/admin/bookings`
