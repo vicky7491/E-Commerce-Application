@@ -75,7 +75,7 @@ function AdminProducts() {
         if (data?.payload?.success) {
           dispatch(fetchAllProducts());
           resetForm();
-          toast({ title: "Product added successfully" });
+          toast({ title: "Product added successfully", variant: "success" });
         }
       });
     }
@@ -94,6 +94,7 @@ function AdminProducts() {
     dispatch(deleteProduct(productId)).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchAllProducts());
+        toast({ title: "Product deleted successfully", variant: "success" });
       }
     });
   }

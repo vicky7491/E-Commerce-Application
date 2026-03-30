@@ -36,6 +36,7 @@ function AuthForgotPassword() {
       setShowSuccess(true);
       toast({
         title: "Password reset link sent",
+        variant: "info",
         description: "Check your email inbox if this account exists.",
       });
     } else {

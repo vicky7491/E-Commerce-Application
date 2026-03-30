@@ -54,6 +54,7 @@ const CastingKitPage = () => {
         dispatch(fetchCartItems(userId));
         toast({
           title: "Added to Cart",
+          variant: "success",
           description: "The item has been added to your cart.",
         });
       })

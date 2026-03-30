@@ -2,14 +2,158 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-    <title>Beautiful Casting Molds</title>
+    <!-- ═══════════════════════════════════════════════════════════════
+         PRIMARY META TAGS
+         Title: 55–60 chars, lead with primary keyword
+    ═══════════════════════════════════════════════════════════════ -->
+    <title>Beautiful Molds | Hand & Feet Casting Kits</title>
+    <meta
+      name="description"
+      content="Shop Beautiful Casting Molds – premium casting kits for your loved one's hands, feet & creative projects. Safe materials, easy step-by-step process. Order today!"
+    />
+    <!-- keywords tag removed — ignored by all major search engines since 2009 -->
+    <meta name="author" content="Beautiful Casting Molds" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         CANONICAL — prevents duplicate-content penalty
+         (www vs non-www, trailing slash, query strings)
+    ═══════════════════════════════════════════════════════════════ -->
+    <link rel="canonical" href="https://beautifulmolds.com/" />
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         VIEWPORT
+    ═══════════════════════════════════════════════════════════════ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         PERFORMANCE HINTS
+         Preconnect to third-party origins used on this page.
+         Saves ~150–300ms per origin on first connection.
+    ═══════════════════════════════════════════════════════════════ -->
+    <link rel="preconnect" href="https://checkout.razorpay.com" crossorigin />
+    <link rel="dns-prefetch" href="https://checkout.razorpay.com" />
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         FAVICONS
+    ═══════════════════════════════════════════════════════════════ -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         OPEN GRAPH — Facebook, LinkedIn, WhatsApp, Slack previews
+         og:image should be 1200×630 px, < 1 MB.
+         Use an absolute URL — relative paths are not supported.
+    ═══════════════════════════════════════════════════════════════ -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Beautiful Casting Molds" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Beautiful Casting Molds | Hand & Feet Casting Kits" />
+    <meta
+      property="og:description"
+      content="Shop Beautiful Casting Molds – premium casting kits for hands, feet & creative projects. Safe materials, easy step-by-step process. Order today!"
+    />
+    <meta property="og:url" content="https://beautifulmolds.com/" />
+    <meta property="og:image" content="https://beautifulmolds.com/assets/og-cover.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Beautiful Casting Molds – hand and feet casting kits" />
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         TWITTER / X CARD
+    ═══════════════════════════════════════════════════════════════ -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@beautifulmolds" />
+    <meta name="twitter:creator" content="@beautifulmolds" />
+    <meta name="twitter:title" content="Beautiful Casting Molds | Hand & Feet Casting Kits" />
+    <meta
+      name="twitter:description"
+      content="Shop Beautiful Casting Molds – premium casting kits for hands, feet & creative projects. Safe materials, easy step-by-step process."
+    />
+    <meta name="twitter:image" content="https://beautifulmolds.com/assets/og-cover.jpg" />
+    <meta name="twitter:image:alt" content="Beautiful Casting Molds – hand and feet casting kits" />
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         JSON-LD STRUCTURED DATA
+         Organization schema → enables Google Knowledge Panel, sitelinks.
+         WebSite schema    → enables Sitelinks Search Box in SERPs.
+         BreadcrumbList    → rich breadcrumb results for inner pages.
+         Add Product schema on /product/:slug pages (not the homepage).
+    ═══════════════════════════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://beautifulmolds.com/#organization",
+          "name": "Beautiful Casting Molds",
+          "url": "https://beautifulmolds.com",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://beautifulmolds.com/assets/brand-logo.jpg",
+            "width": 200,
+            "height": 200
+          },
+          "sameAs": [
+            "https://www.instagram.com/beautifulmolds",
+            "https://www.facebook.com/beautifulmolds"
+          ],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer support",
+            "email": "beautifulmolds@gmail.com"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://beautifulmolds.com/#website",
+          "url": "https://beautifulmolds.com",
+          "name": "Beautiful Casting Molds",
+          "publisher": {
+            "@id": "https://beautifulmolds.com/#organization"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://beautifulmolds.com/shop?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://beautifulmolds.com/#webpage",
+          "url": "https://beautifulmolds.com",
+          "name": "Beautiful Casting Molds | Hand & Feet Casting Kits",
+          "isPartOf": { "@id": "https://beautifulmolds.com/#website" },
+          "about": { "@id": "https://beautifulmolds.com/#organization" },
+          "description": "Shop Beautiful Casting Molds – premium casting kits for hands, feet & creative projects. Safe materials, easy step-by-step process."
+        }
+      ]
+    }
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         RAZORPAY
+         Loaded via defer so it no longer blocks first render.
+         Razorpay's SDK is compatible with defer loading — it attaches
+         to window once parsed, which is before any user clicks checkout.
+         If you dynamically create Razorpay instances in your React code
+         you can also lazy-load this script only when the cart is opened.
+    ═══════════════════════════════════════════════════════════════ -->
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Razorpay moved to end of body + defer to unblock rendering -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
   </body>
 </html>

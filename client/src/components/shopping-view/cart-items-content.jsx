@@ -53,6 +53,7 @@ function UserCartItemsContent({ cartItem }) {
       if (data?.payload?.success) {
         toast({
           title: "Cart item is updated successfully",
+          variant: "success",
         });
       }
     });
@@ -65,6 +66,8 @@ function UserCartItemsContent({ cartItem }) {
       if (data?.payload?.success) {
         toast({
           title: "Cart item is deleted successfully",
+          variant: "success",
+
         });
       }
     });

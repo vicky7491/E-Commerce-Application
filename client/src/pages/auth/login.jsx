@@ -62,6 +62,7 @@ function AuthLogin() {
       if (data?.payload?.success) {
         toast({
           title: data?.payload?.message,
+          variant: "success",
         });
         // Redirect to dashboard or home page after successful login
         navigate("/shop");
