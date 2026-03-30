@@ -50,7 +50,7 @@ export default function ResetPassword() {
       toast({
         title: "Password requirements not met",
         description: `Please ensure your password includes: ${unmetRequirements.join(", ")}`,
-        variant: "destructive",
+        variant: "warning",
       });
       return;
     }

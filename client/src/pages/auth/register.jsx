@@ -87,6 +87,7 @@ function AuthRegister() {
       if (data?.payload?.success) {
         toast({
           title: data?.payload?.message,
+          variant: "info",
           description: "You can now login with your credentials",
         });
         setFormData(initialState);

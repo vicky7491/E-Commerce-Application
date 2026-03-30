@@ -63,7 +63,7 @@ function ShoppingCheckout() {
       toast({
         title: "Shipping address required",
         description: "Please select a delivery address to proceed",
-        variant: "destructive",
+        variant: "warning",
       });
       return;
     }
@@ -127,6 +127,7 @@ function ShoppingCheckout() {
                navigate("/shop/order-success", { state: { order: res.payload.order } });
               toast({ 
                 title: "Order placed successfully!",
+                variant: "success",
                 description: "Your order has been confirmed and will be shipped soon."
               });
             } else {
@@ -152,6 +153,7 @@ function ShoppingCheckout() {
             setIsPaymentStart(false);
             toast({
               title: "Payment cancelled",
+              variant: "destructive",
               description: "You can try again whenever you're ready",
             });
           }

@@ -97,6 +97,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         toast({
           title: "Added to cart",
           description: "Product has been added to your cart",
+          variant: "success",
         });
       }
     } catch (error) {
@@ -154,6 +155,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         toast({
           title: "Review submitted!",
           description: "Thank you for your feedback",
+          variant: "info",
         });
       }
     } catch (error) {

@@ -63,6 +63,7 @@ function ShoppingProductTile({ product, handleGetProductDetails }) {
         toast({
           title: "Added to Cart",
           description: "The item has been added to your cart.",
+          variant: "success",
         });
       })
       .catch((error) => {

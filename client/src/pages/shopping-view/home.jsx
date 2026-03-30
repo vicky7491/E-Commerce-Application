@@ -79,6 +79,7 @@ function ShoppingHome() {
         dispatch(fetchCartItems(user?.id));
         toast({
           title: "Product is added to cart",
+          variant: "success",
         });
       }
     });
