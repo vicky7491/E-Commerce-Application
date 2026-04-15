@@ -101,7 +101,7 @@ function HeaderRightContent() {
 
   useEffect(() => {
     if (user?.id) {
-      dispatch(fetchCartItems(user.id));
+      dispatch(fetchCartItems());
     }
   }, [dispatch, user?.id]);
 

@@ -8,11 +8,10 @@ const initialState = {
 
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
-  async ({ userId, productId, quantity }) => {
+  async ({ productId, quantity }) => {
     const response = await axios.post(
       `${API_BASE}/api/shop/cart/add`,
       {
-        userId,
         productId,
         quantity,
       },
@@ -49,11 +48,10 @@ export const deleteCartItem = createAsyncThunk(
 
 export const updateCartQuantity = createAsyncThunk(
   "cart/updateCartQuantity",
-  async ({ userId, productId, quantity }) => {
+  async ({ productId, quantity }) => {
     const response = await axios.put(
       `${API_BASE}/api/shop/cart/update-cart`,
       {
-        userId,
         productId,
         quantity,
       },

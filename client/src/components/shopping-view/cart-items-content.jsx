@@ -42,7 +42,6 @@ function UserCartItemsContent({ cartItem }) {
 
     dispatch(
       updateCartQuantity({
-        userId: user?.id,
         productId: getCartItem?.productId,
         quantity:
           typeOfAction === "plus"

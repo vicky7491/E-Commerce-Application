@@ -32,7 +32,7 @@ const registerUser = async (req, res) => {
 
     await newUser.save();
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       message: "Registration successful",
     });
@@ -53,7 +53,7 @@ const loginUser = async (req, res) => {
   try {
     const checkUser = await User.findOne({ email });
     if (!checkUser)
-      return res.json({
+      return res.status(401).json({
         success: false,
         message: "User doesn't exists! Please register first",
       });
@@ -63,7 +63,7 @@ const loginUser = async (req, res) => {
       checkUser.password
     );
     if (!checkPasswordMatch)
-      return res.json({
+      return res.status(401).json({
         success: false,
         message: "Incorrect password! Please try again",
       });
@@ -145,7 +145,7 @@ const forgotPassword = async (req, res) => {
     const appName = process.env.APP_NAME || "Your App";
 
     const htmlTemplate = forgotPasswordEmail({
-      userName: user.name,
+      userName: user.userName,
       resetUrl,
       appName
     });
@@ -153,7 +153,7 @@ const forgotPassword = async (req, res) => {
     const textMessage = `
 Password Reset Request
 
-Hello ${user.name || 'there'},
+Hello ${user.userName || 'there'},
 
 We received a request to reset your password for your ${appName} account.
 
@@ -210,6 +210,13 @@ const resetPassword = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Invalid or expired token",
+      });
+    }
+
+    if (!req.body.password || req.body.password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long",
       });
     }
 

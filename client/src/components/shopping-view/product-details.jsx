@@ -86,14 +86,13 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
     try {
       const data = await dispatch(
         addToCart({
-          userId: user?.id,
           productId: getCurrentProductId,
           quantity: 1,
         })
       );
       
       if (data?.payload?.success) {
-        dispatch(fetchCartItems(user?.id));
+        dispatch(fetchCartItems());
         toast({
           title: "Added to cart",
           description: "Product has been added to your cart",
@@ -140,9 +139,6 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
       const data = await dispatch(
         addReview({
           productId: productDetails?._id,
-          userId: user?.id,
-          userName: user?.userName || user?.name,
-          userAvatar: user?.avatar,
           reviewMessage: reviewMsg,
           reviewValue: rating,
         })

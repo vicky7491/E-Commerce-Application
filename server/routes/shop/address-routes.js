@@ -6,12 +6,13 @@ const {
   editAddress,
   deleteAddress,
 } = require("../../controllers/shop/address-controller");
+const { verifyToken } = require("../../middleware/verifyToken");
 
 const router = express.Router();
 
-router.post("/add", addAddress);
-router.get("/get/:userId", fetchAllAddress);
-router.delete("/delete/:userId/:addressId", deleteAddress);
-router.put("/update/:userId/:addressId", editAddress);
+router.post("/add", verifyToken, addAddress);
+router.get("/get/:userId", verifyToken, fetchAllAddress);
+router.delete("/delete/:userId/:addressId", verifyToken, deleteAddress);
+router.put("/update/:userId/:addressId", verifyToken, editAddress);
 
 module.exports = router;

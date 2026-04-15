@@ -4,8 +4,10 @@ const ProductReview = require("../../models/Review");
 
 const addProductReview = async (req, res) => {
   try {
-    const { productId, userId, userName, reviewMessage, reviewValue } =
-      req.body;
+    const { productId, reviewMessage, reviewValue } = req.body;
+    // Use authenticated user's identity from JWT
+    const userId = req.user.id;
+    const userName = req.user.userName;
 
     const order = await Order.findOne({
       userId,

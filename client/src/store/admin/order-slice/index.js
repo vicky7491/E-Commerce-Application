@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { API_BASE } from "@/api/base";
 const initialState = {
+  isLoading: false,
   orderList: [],
   orderDetails: null,
 };

@@ -48,10 +48,10 @@ const CastingKitPage = () => {
       }
     }
 
-    dispatch(addToCart({ userId, productId, quantity: 1 }))
+    dispatch(addToCart({ productId, quantity: 1 }))
       .unwrap()
       .then(() => {
-        dispatch(fetchCartItems(userId));
+        dispatch(fetchCartItems());
         toast({
           title: "Added to Cart",
           variant: "success",

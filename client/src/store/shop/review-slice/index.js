@@ -11,7 +11,8 @@ export const addReview = createAsyncThunk(
   async (formdata) => {
     const response = await axios.post(
       `${API_BASE}/api/shop/review/add`,
-      formdata
+      formdata,
+      { withCredentials: true }
     );
 
     return response.data;

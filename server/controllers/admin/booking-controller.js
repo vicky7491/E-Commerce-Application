@@ -25,9 +25,12 @@ const deleteBooking = async (req, res) => {
 
 const updateBooking = async (req, res) => {
   try {
-    const updated = await Booking.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const { name, phone, email, location, concept, date, time, comments } = req.body;
+    const updated = await Booking.findByIdAndUpdate(
+      req.params.id,
+      { name, phone, email, location, concept, date, time, comments },
+      { new: true }
+    );
     res.status(200).json({ success: true, updated });
   } catch (err) {
     console.error("Error updating booking:", err);

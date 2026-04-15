@@ -29,6 +29,13 @@ app.use(
   })
 );
 
+// Stricter rate limit for auth endpoints
+const authRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { success: false, message: "Too many requests. Please try again later." },
+});
+
 app.use(
   cors({
     origin: process.env.FRONTEND_URL?.split(","),
@@ -42,7 +49,7 @@ app.use(express.json({ limit: "10kb" }));
 
 
 // Routes
-app.use("/api/auth", require("./routes/auth/auth-routes"));
+app.use("/api/auth", authRateLimit, require("./routes/auth/auth-routes"));
 app.use("/api/admin/products", require("./routes/admin/products-routes"));
 app.use("/api/admin/orders", require("./routes/admin/order-routes"));
 app.use("/api/admin/bookings", require("./routes/admin/booking-routes"));

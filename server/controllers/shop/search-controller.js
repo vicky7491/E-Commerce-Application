@@ -1,5 +1,10 @@
 const Product = require("../../models/Product");
 
+// Escape special regex characters to prevent ReDoS
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 const searchProducts = async (req, res) => {
   try {
     const { keyword } = req.params;
@@ -10,7 +15,7 @@ const searchProducts = async (req, res) => {
       });
     }
 
-    const regEx = new RegExp(keyword, "i");
+    const regEx = new RegExp(escapeRegex(keyword), "i");
 
     const createSearchQuery = {
       $or: [
