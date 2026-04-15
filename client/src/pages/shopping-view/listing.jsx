@@ -40,44 +40,40 @@ function createSearchParamsHelper(filterParams, sortParam) {
 
 function ShoppingListing() {
   const dispatch = useDispatch();
-  const { productList, productDetails } = useSelector(state => state.shopProducts);
-  const { cartItems } = useSelector(state => state.shopCart);
-  const { user } = useSelector(state => state.auth);
-  const { toast } = useToast();
+  const { productList, productDetails } = useSelector(
+    (state) => state.shopProducts
+  );
+  const { cartItems } = useSelector((state) => state.shopCart);
+  const { user } = useSelector((state) => state.auth);
 
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const { toast } = useToast();
 
-  // ✅ Initialize directly from URL — no useEffect needed for this
-  const [filters, setFilters] = useState(() => {
-    const params = Object.fromEntries([...searchParams]);
-    const restored = {};
-    for (const [key, value] of Object.entries(params)) {
-      if (key !== "sort") restored[key] = value.split(",");
-    }
-    return restored;
-  });
-
-  const [sort, setSort] = useState(() => {
-    return searchParams.get("sort") || "price-lowtohigh";
-  });
-
+  // --- Handle Sort ---
   function handleSort(value) {
     setSort(value);
   }
 
+  // --- Handle Filter ---
   function handleFilter(getSectionId, getCurrentOption) {
     let cpyFilters = { ...filters };
 
     if (!cpyFilters[getSectionId]) {
       cpyFilters[getSectionId] = [getCurrentOption];
     } else {
-      const idx = cpyFilters[getSectionId].indexOf(getCurrentOption);
-      if (idx === -1) {
+      const indexOfCurrentOption =
+        cpyFilters[getSectionId].indexOf(getCurrentOption);
+
+      if (indexOfCurrentOption === -1) {
         cpyFilters[getSectionId].push(getCurrentOption);
       } else {
-        cpyFilters[getSectionId].splice(idx, 1);
+        cpyFilters[getSectionId].splice(indexOfCurrentOption, 1);
       }
+
+      // agar array empty ho jaye to key hata do
       if (cpyFilters[getSectionId].length === 0) {
         delete cpyFilters[getSectionId];
       }
@@ -86,16 +82,18 @@ function ShoppingListing() {
     setFilters(cpyFilters);
   }
 
+  // --- Get Product Details ---
   function handleGetProductDetails(getCurrentProductId) {
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
+  // --- Add to Cart ---
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {
       const indexOfCurrentItem = getCartItems.findIndex(
-        item => item.productId === getCurrentProductId
+        (item) => item.productId === getCurrentProductId
       );
       if (indexOfCurrentItem > -1) {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
@@ -109,23 +107,52 @@ function ShoppingListing() {
       }
     }
 
-    dispatch(addToCart({ userId: user?.id, productId: getCurrentProductId, quantity: 1 }))
-      .then((data) => {
-        if (data?.payload?.success) {
-          dispatch(fetchCartItems(user?.id));
-          toast({ title: "Product added to cart", variant: "success" });
-        }
-      });
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast({
+          title: "Product is added to cart",
+          variant: "success",
+        });
+      }
+    });
   }
 
-  // ✅ Single effect: sync URL + fetch products when filters/sort change
+  // --- On Page Load: restore filters & sort from URL ---
   useEffect(() => {
-    const queryString = createSearchParamsHelper(filters, sort);
-    setSearchParams(new URLSearchParams(queryString), { replace: true });
-    dispatch(fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }));
-  }, [filters, sort]); // ← no race condition, fires once on mount with correct values
+    const params = Object.fromEntries([...searchParams]);
 
-  // ✅ Open dialog when product details load
+    const restoredFilters = {};
+    for (const [key, value] of Object.entries(params)) {
+      if (key !== "sort") {
+        restoredFilters[key] = value.split(",");
+      }
+    }
+
+    setFilters(restoredFilters);
+    setSort(params.sort || "price-lowtohigh");
+  }, []); // run only once on mount
+
+  // --- Whenever filters/sort changes, sync URL ---
+  useEffect(() => {
+    const createQueryString = createSearchParamsHelper(filters, sort);
+    setSearchParams(new URLSearchParams(createQueryString));
+  }, [filters, sort]);
+
+  // --- Fetch products on filter/sort change ---
+  useEffect(() => {
+    if (filters !== null && sort !== null) {
+      dispatch(fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }));
+    }
+  }, [dispatch, sort, filters]);
+
+  // --- Open details dialog when productDetails available ---
   useEffect(() => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
