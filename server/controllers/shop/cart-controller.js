@@ -1,13 +1,12 @@
+const Razorpay = require('razorpay');
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
 
 const addToCart = async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
-    // Use authenticated user's id from JWT
-    const userId = req.user.id;
+    const { userId, productId, quantity } = req.body;
 
-    if (!productId || quantity <= 0) {
+    if (!userId || !productId || quantity <= 0) {
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
@@ -20,14 +19,6 @@ const addToCart = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Product not found",
-      });
-    }
-
-    // ✅ Stock validation
-    if (product.totalStock < quantity) {
-      return res.status(400).json({
-        success: false,
-        message: `Only ${product.totalStock} unit(s) available in stock`,
       });
     }
 
@@ -44,14 +35,7 @@ const addToCart = async (req, res) => {
     if (findCurrentProductIndex === -1) {
       cart.items.push({ productId, quantity });
     } else {
-      const newQty = cart.items[findCurrentProductIndex].quantity + quantity;
-      if (newQty > product.totalStock) {
-        return res.status(400).json({
-          success: false,
-          message: `Only ${product.totalStock} unit(s) available in stock`,
-        });
-      }
-      cart.items[findCurrentProductIndex].quantity = newQty;
+      cart.items[findCurrentProductIndex].quantity += quantity;
     }
 
     await cart.save();
@@ -70,8 +54,14 @@ const addToCart = async (req, res) => {
 
 const fetchCartItems = async (req, res) => {
   try {
-    // Use authenticated user's id from JWT
-    const userId = req.user.id;
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User id is manadatory!",
+      });
+    }
 
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
@@ -121,11 +111,9 @@ const fetchCartItems = async (req, res) => {
 
 const updateCartItemQty = async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
-    // Use authenticated user's id from JWT
-    const userId = req.user.id;
+    const { userId, productId, quantity } = req.body;
 
-    if (!productId || quantity <= 0) {
+    if (!userId || !productId || quantity <= 0) {
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
@@ -148,15 +136,6 @@ const updateCartItemQty = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Cart item not present !",
-      });
-    }
-
-    // ✅ Stock validation before updating quantity
-    const product = await Product.findById(productId);
-    if (product && quantity > product.totalStock) {
-      return res.status(400).json({
-        success: false,
-        message: `Only ${product.totalStock} unit(s) available in stock`,
       });
     }
 
@@ -195,11 +174,8 @@ const updateCartItemQty = async (req, res) => {
 
 const deleteCartItem = async (req, res) => {
   try {
-    const { productId } = req.params;
-    // Use authenticated user's id from JWT
-    const userId = req.user.id;
-
-    if (!productId) {
+    const { userId, productId } = req.params;
+    if (!userId || !productId) {
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",

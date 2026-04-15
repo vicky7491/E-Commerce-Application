@@ -5,7 +5,7 @@ const searchProducts = async (req, res) => {
     const { keyword } = req.params;
     if (!keyword || typeof keyword !== "string") {
       return res.status(400).json({
-        success: false,
+        succes: false,
         message: "Keyword is required and must be in string format",
       });
     }
@@ -17,6 +17,7 @@ const searchProducts = async (req, res) => {
         { title: regEx },
         { description: regEx },
         { category: regEx },
+        { brand: regEx },
       ],
     };
 
