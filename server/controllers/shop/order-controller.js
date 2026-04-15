@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const Razorpay = require("razorpay");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
@@ -38,7 +39,6 @@ const createRazorpayOrder = async (req, res) => {
 const confirmRazorpayPayment = async (req, res) => {
   try {
     const {
-      userId,
       cartItems,
       addressInfo,
       paymentMethod,
@@ -48,6 +48,22 @@ const confirmRazorpayPayment = async (req, res) => {
       razorpay_order_id,
       razorpay_signature,
     } = req.body;
+
+    // ✅ Verify Razorpay payment signature to prevent fake order confirmation
+    const generatedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest("hex");
+
+    if (generatedSignature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment signature. Order not created.",
+      });
+    }
+
+    // Use userId from the authenticated JWT, not from the request body
+    const userId = req.user.id;
 
     const newOrder = new Order({
       userId,
@@ -92,7 +108,8 @@ const confirmRazorpayPayment = async (req, res) => {
 // ✅ Step 3: Get all orders by user
 const getAllOrdersByUser = async (req, res) => {
   try {
-    const { userId } = req.params;
+    // Use the authenticated user's id from the JWT
+    const userId = req.user.id;
 
     const orders = await Order.find({ userId });
 
@@ -123,11 +140,18 @@ const getOrderDetails = async (req, res) => {
 
     const order = await Order.findById(id);
 
-
     if (!order) {
       return res.status(404).json({
         success: false,
         message: "Order not found!",
+      });
+    }
+
+    // Ensure users can only view their own orders
+    if (order.userId !== req.user.id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied",
       });
     }
 

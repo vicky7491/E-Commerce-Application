@@ -75,6 +75,7 @@ function ShoppingCheckout() {
       const res = await fetch(`${API_BASE}/api/shop/order/razorpay/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ amount: totalCartAmount }),
       });
 

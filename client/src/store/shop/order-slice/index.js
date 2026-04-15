@@ -11,9 +11,11 @@ const initialState = {
 export const createRazorpayOrder = createAsyncThunk(
   "/order/createRazorpayOrder",
   async (amount) => {
-    const response = await axios.post(`${API_BASE}/api/shop/order/razorpay/create`, {
-      amount,
-    });
+    const response = await axios.post(
+      `${API_BASE}/api/shop/order/razorpay/create`,
+      { amount },
+      { withCredentials: true }
+    );
 
     return response.data;
   }
@@ -22,7 +24,11 @@ export const createRazorpayOrder = createAsyncThunk(
 export const confirmRazorpayOrder = createAsyncThunk(
   "/order/confirmRazorpayOrder",
   async (orderData) => {
-    const response = await axios.post(`${API_BASE}/api/shop/order/razorpay/confirm`, orderData);
+    const response = await axios.post(
+      `${API_BASE}/api/shop/order/razorpay/confirm`,
+      orderData,
+      { withCredentials: true }
+    );
     return response.data;
   }
 );
@@ -30,7 +36,10 @@ export const confirmRazorpayOrder = createAsyncThunk(
 export const getAllOrdersByUserId = createAsyncThunk(
   "/order/getAllOrdersByUserId",
   async (userId) => {
-    const response = await axios.get(`${API_BASE}/api/shop/order/list/${userId}`);
+    const response = await axios.get(
+      `${API_BASE}/api/shop/order/list/${userId}`,
+      { withCredentials: true }
+    );
     return response.data;
   }
 );
@@ -38,7 +47,10 @@ export const getAllOrdersByUserId = createAsyncThunk(
 export const getOrderDetails = createAsyncThunk(
   "/order/getOrderDetails",
   async (id) => {
-    const response = await axios.get(`${API_BASE}/api/shop/order/details/${id}`);
+    const response = await axios.get(
+      `${API_BASE}/api/shop/order/details/${id}`,
+      { withCredentials: true }
+    );
     return response.data;
   }
 );

@@ -9,9 +9,16 @@ const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
 
   try {
+    if (!password || password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long",
+      });
+    }
+
     const checkUser = await User.findOne({ email });
     if (checkUser)
-      return res.json({
+      return res.status(409).json({
         success: false,
         message: "User Already exists with the same email! Please try again",
       });
@@ -152,7 +159,7 @@ We received a request to reset your password for your ${appName} account.
 
 Reset your password using this link: ${resetUrl}
 
-This link will expire in 1 hour. If you didn't request this, ignore this email.
+This link will expire in 15 minutes. If you didn't request this, ignore this email.
 
 Best regards,
 The ${appName} Team

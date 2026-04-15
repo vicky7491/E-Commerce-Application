@@ -15,7 +15,8 @@ export const addToCart = createAsyncThunk(
         userId,
         productId,
         quantity,
-      }
+      },
+      { withCredentials: true }
     );
 
     return response.data;
@@ -26,7 +27,8 @@ export const fetchCartItems = createAsyncThunk(
   "cart/fetchCartItems",
   async (userId) => {
     const response = await axios.get(
-      `${API_BASE}/api/shop/cart/get/${userId}`
+      `${API_BASE}/api/shop/cart/get/${userId}`,
+      { withCredentials: true }
     );
 
     return response.data;
@@ -37,7 +39,8 @@ export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
   async ({ userId, productId }) => {
     const response = await axios.delete(
-      `${API_BASE}/api/shop/cart/${userId}/${productId}`
+      `${API_BASE}/api/shop/cart/${userId}/${productId}`,
+      { withCredentials: true }
     );
 
     return response.data;
@@ -53,7 +56,8 @@ export const updateCartQuantity = createAsyncThunk(
         userId,
         productId,
         quantity,
-      }
+      },
+      { withCredentials: true }
     );
 
     return response.data;
