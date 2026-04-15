@@ -1,6 +1,6 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import AuthLayout from "./components/auth/layout";
 import AuthLogin from "./pages/auth/login";
@@ -34,37 +34,33 @@ import NotFound from "./pages/not-found";
 import UnauthPage from "./pages/unauth-page";
 import CheckAuth from "./components/common/check-auth";
 import ScrollToTop from "./components/common/ScrollToTop";
-
-import { checkAuth } from "./store/auth-slice";
-import { Skeleton } from "@/components/ui/skeleton";
 import AuthForgotPassword from "./pages/auth/forgot-password";
 import ResetPassword from "./pages/auth/resetPassword";
 
+import { checkAuth } from "./store/auth-slice";
+
 function App() {
-  const { user, isAuthenticated, isLoading } = useSelector(state => state.auth);
-  const [authChecked, setAuthChecked] = useState(false);
+  // ✅ Using isAuthLoading (from updated auth-slice) instead of old isLoading
+  const { user, isAuthenticated, isAuthLoading } = useSelector(state => state.auth);
   const dispatch = useDispatch();
 
- useEffect(() => {
-  dispatch(checkAuth()).finally(() => setAuthChecked(true));
-}, [dispatch]);
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
 
-  if (!authChecked) return (
-  <div className="flex items-center justify-center min-h-screen">
-    <Skeleton className="w-[800px] h-[600px] bg-black" />
-  </div>
-);
+  // ✅ No global block — public pages render immediately
+  // Only CheckAuth internally handles the spinner for protected routes
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <ScrollToTop />
       <Routes>
-        {/* ================= Redirect Root -> Shop ================= */}
+
+        {/* ── Root Redirect ───────────────────────────────────── */}
         <Route path="/" element={<Navigate to="/shop" replace />} />
 
-        {/* ================= Public + Protected Shop Routes ================= */}
+        {/* ── Public Shop Routes (no auth needed) ─────────────── */}
         <Route path="/shop" element={<ShoppingLayout />}>
-          {/* Default Shop Home */}
           <Route index element={<ShoppingHome />} />
           <Route path="listing" element={<ShoppingListing />} />
           <Route path="search" element={<SearchProducts />} />
@@ -75,13 +71,13 @@ function App() {
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="testimonials" element={<Testimonials />} />
-          <Route path="CastingKit" element={<CastingKit />} />
+          <Route path="casting-kit" element={<CastingKit />} /> {/* ✅ fixed: was CastingKit */}
 
-          {/* Protected User Routes */}
+          {/* ── Protected Shop Routes ─────────────────────────── */}
           <Route
             path="checkout"
             element={
-              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+              <CheckAuth isAuthenticated={isAuthenticated} user={user} isAuthLoading={isAuthLoading}>
                 <ShoppingCheckout />
               </CheckAuth>
             }
@@ -89,7 +85,7 @@ function App() {
           <Route
             path="account"
             element={
-              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+              <CheckAuth isAuthenticated={isAuthenticated} user={user} isAuthLoading={isAuthLoading}>
                 <ShoppingAccount />
               </CheckAuth>
             }
@@ -97,7 +93,7 @@ function App() {
           <Route
             path="order-success"
             element={
-              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+              <CheckAuth isAuthenticated={isAuthenticated} user={user} isAuthLoading={isAuthLoading}>
                 <OrderSuccess />
               </CheckAuth>
             }
@@ -105,55 +101,26 @@ function App() {
           <Route
             path="payment-success"
             element={
-              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+              <CheckAuth isAuthenticated={isAuthenticated} user={user} isAuthLoading={isAuthLoading}>
                 <PaymentSuccessPage />
               </CheckAuth>
             }
           />
         </Route>
 
-       
-       {/* ================= Auth Routes ================= */}
-<Route path="/auth" element={<AuthLayout />}>
-  <Route
-    path="login"
-    element={
-      <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-        <AuthLogin />
-      </CheckAuth>
-    }
-  />
-  <Route
-    path="register"
-    element={
-      <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-        <AuthRegister />
-      </CheckAuth>
-    }
-  />
-  <Route
-    path="forgot-password"
-    element={
-      <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-        <AuthForgotPassword/>
-      </CheckAuth>
-    }
-  />
-  <Route
-    path="reset-password/:token"
-    element={
-      <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-        <ResetPassword/>
-      </CheckAuth>
-    }
-  />
-</Route>
+        {/* ── Auth Routes (fully public, no CheckAuth wrapper) ─── */}
+        <Route path="/auth" element={<AuthLayout />}>
+          <Route path="login" element={<AuthLogin />} />
+          <Route path="register" element={<AuthRegister />} />
+          <Route path="forgot-password" element={<AuthForgotPassword />} />
+          <Route path="reset-password/:token" element={<ResetPassword />} />
+        </Route>
 
-        {/* ================= Protected Admin Routes ================= */}
+        {/* ── Protected Admin Routes ───────────────────────────── */}
         <Route
           path="/admin"
           element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+            <CheckAuth isAuthenticated={isAuthenticated} user={user} isAuthLoading={isAuthLoading}>
               <AdminLayout />
             </CheckAuth>
           }
@@ -162,12 +129,15 @@ function App() {
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
-          <Route path="bookingDashboard" element={<BookingDashboard />} />
+          <Route path="booking-dashboard" element={<BookingDashboard />} /> {/* ✅ fixed: was bookingDashboard */}
+          {/* ✅ Fallback for unknown admin routes */}
+          <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
         </Route>
 
-        {/* Fallback Routes */}
+        {/* ── Fallback Routes ──────────────────────────────────── */}
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />
+
       </Routes>
     </div>
   );
