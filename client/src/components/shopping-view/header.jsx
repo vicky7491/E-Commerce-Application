@@ -33,7 +33,7 @@ function MenuItems() {
   function handleNavigate(getCurrentMenuItem) {
     sessionStorage.removeItem("filters");
 
-      const isStaticPath = ["/shop", "/shop/testimonials", "/shop/aboutus", "/shop/contactus"].includes(
+      const isStaticPath = ["/shop", "/shop/testimonials", "/shop/aboutUs", "/shop/contactus"].includes(
     getCurrentMenuItem.path.toLowerCase()
   );
 
@@ -42,7 +42,7 @@ function MenuItems() {
     return;
   }
    if (getCurrentMenuItem.id === "casting-kit") {
-    navigate("/shop/casting-kit");
+    navigate("/shop/CastingKit");
     return;
   }
 
