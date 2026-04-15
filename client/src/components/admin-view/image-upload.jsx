@@ -29,8 +29,7 @@ function ProductImageUpload({
 
       const res = await axios.post(
         `${API_BASE}/api/admin/products/upload-image`,
-        data,
-        { withCredentials: true }
+        data
       );
 
       if (res?.data?.success) {

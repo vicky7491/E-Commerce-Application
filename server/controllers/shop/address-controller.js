@@ -4,7 +4,7 @@ const addAddress = async (req, res) => {
   try {
     const { userId,name, address, city, pincode, phone, notes } = req.body;
 
-    if (!userId || !name || !address || !city || !pincode || !phone) {
+    if (!userId || !name || !address || !city || !pincode || !phone || !notes) {
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
@@ -78,16 +78,7 @@ const editAddress = async (req, res) => {
         _id: addressId,
         userId,
       },
-      {
-        $set: {
-          name: formData.name,
-          address: formData.address,
-          city: formData.city,
-          pincode: formData.pincode,
-          phone: formData.phone,
-          notes: formData.notes,
-        },
-      },
+      formData,
       { new: true }
     );
 

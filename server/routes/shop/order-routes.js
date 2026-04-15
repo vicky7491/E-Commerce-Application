@@ -5,14 +5,19 @@ const {
   getAllOrdersByUser,
   getOrderDetails,
 } = require("../../controllers/shop/order-controller");
-const { verifyToken } = require("../../middleware/verifyToken");
 
 const router = express.Router();
 
-// All order routes require authentication
-router.post("/razorpay/create", verifyToken, createRazorpayOrder);
-router.post("/razorpay/confirm", verifyToken, confirmRazorpayPayment);
-router.get("/list", verifyToken, getAllOrdersByUser);
-router.get("/details/:id", verifyToken, getOrderDetails);
+// 🆕 Razorpay: Create Order
+router.post("/razorpay/create", createRazorpayOrder);
+
+// 🆕 Razorpay: Confirm Payment & Save Order
+router.post("/razorpay/confirm", confirmRazorpayPayment);
+
+// ✅ Get orders by user
+router.get("/list/:userId", getAllOrdersByUser);
+
+// ✅ Get single order detail
+router.get("/details/:id", getOrderDetails);
 
 module.exports = router;
