@@ -148,7 +148,7 @@ const getOrderDetails = async (req, res) => {
     }
 
     // Ensure users can only view their own orders
-    if (order.userId !== req.user.id.toString()) {
+    if (order.userId.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: "Access denied",

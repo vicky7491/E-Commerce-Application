@@ -35,9 +35,9 @@ export const confirmRazorpayOrder = createAsyncThunk(
 
 export const getAllOrdersByUserId = createAsyncThunk(
   "/order/getAllOrdersByUserId",
-  async (userId) => {
+  async (_) => {
     const response = await axios.get(
-      `${API_BASE}/api/shop/order/list/${userId}`,
+      `${API_BASE}/api/shop/order/list`,
       { withCredentials: true }
     );
     return response.data;

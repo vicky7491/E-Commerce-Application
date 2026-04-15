@@ -12,8 +12,8 @@ const router = express.Router();
 
 // All cart routes require authentication
 router.post("/add", verifyToken, addToCart);
-router.get("/get/:userId", verifyToken, fetchCartItems);
+router.get("/get", verifyToken, fetchCartItems);
 router.put("/update-cart", verifyToken, updateCartItemQty);
-router.delete("/:userId/:productId", verifyToken, deleteCartItem);
+router.delete("/:productId", verifyToken, deleteCartItem);
 
 module.exports = router;
