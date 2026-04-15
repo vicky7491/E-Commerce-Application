@@ -136,17 +136,17 @@ export const shoppingViewHeaderMenuItems = [
   {
     id: "casting-kit",
     label: "CastingKit",
-    path: "/shop/CastingKit",
+    path: "/shop/casting-kit",
   },
   {
-    id: "ContactUs",
+    id: "contactus",
     label: "ContactUs",
-    path: "/shop/ContactUs",
+    path: "/shop/contactus",
   },
   {
     id: "about-us",
     label: "AboutUs",
-    path: "/shop/AboutUs",
+    path: "/shop/aboutus",
   },
   {
     id: "search",

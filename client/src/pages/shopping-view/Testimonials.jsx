@@ -41,7 +41,7 @@ const Testimonials = () => {
 
   const categories = ['All', ...new Set(galleryItems.map(item => item.category))];
 
-  const handleExploreKits = () => navigate("/shop/CastingKit");
+  const handleExploreKits = () => navigate("/shop/casting-kit");
 
   return (
     <div>

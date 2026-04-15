@@ -36,8 +36,7 @@ app.use(
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control'],
   })
-);
-app.options('*', cors()); 
+); 
 app.use(cookieParser());
 app.use(express.json({ limit: "10kb" }));
 
@@ -61,10 +60,10 @@ app.get("/", (req, res) => {
   res.status(200).json({ status: "API IS RUNNNING" });
 });
 
-// // 404
-// app.use("*", (req, res) => {
-//   res.status(404).json({ success: false, message: "API route not found" });
-// });
+// 404
+app.use("*", (req, res) => {
+  res.status(404).json({ success: false, message: "API route not found" });
+});
 
 // Error handler
 app.use((err, req, res, next) => {

@@ -21,7 +21,7 @@ const STATIC_ROUTES = [
   { url: "/shop/privacy-policy", changefreq: "monthly", priority: 0.6 },
   { url: "/shop/terms-and-conditions", changefreq: "monthly", priority: 0.6 },
   { url: "/shop/testimonials", changefreq: "monthly", priority: 0.6 },
-  { url: "/shop/CastingKit", changefreq: "monthly", priority: 0.6 },
+  { url: "/shop/casting-kit", changefreq: "monthly", priority: 0.6 },
   { url: "/unauth-page", changefreq: "monthly", priority: 0.3 }
 ];
 
