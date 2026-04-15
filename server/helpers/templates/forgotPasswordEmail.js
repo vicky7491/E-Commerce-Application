@@ -95,7 +95,7 @@ const forgotPasswordEmail = ({ userName, resetUrl, appName }) => {
                       <div style="width:6px;height:6px;background:${brand};border-radius:50%;margin-top:6px;"></div>
                     </td>
                     <td style="font-size:13px;color:#57534e;line-height:1.65;">
-                      This link expires in <strong style="color:#1c1917;">1 hour.</strong>
+                      This link expires in <strong style="color:#1c1917;">15 minutes.</strong>
                       If you didn't request a password reset, no action is needed —
                       your account remains secure.
                     </td>
