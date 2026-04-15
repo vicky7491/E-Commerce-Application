@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Order = require("../../models/Order");
 const Product = require("../../models/Product");
 const ProductReview = require("../../models/Review");
@@ -9,9 +10,15 @@ const addProductReview = async (req, res) => {
     const userId = req.user.id;
     const userName = req.user.userName;
 
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ success: false, message: "Invalid product ID" });
+    }
+
+    const productObjectId = new mongoose.Types.ObjectId(productId);
+
     const order = await Order.findOne({
       userId,
-      "cartItems.productId": productId,
+      "cartItems.productId": productObjectId,
       orderStatus: { $in: ["confirmed", "delivered"] },
     });
 
@@ -23,7 +30,7 @@ const addProductReview = async (req, res) => {
     }
 
     const checkExistinfReview = await ProductReview.findOne({
-      productId,
+      productId: productObjectId,
       userId,
     });
 
@@ -35,7 +42,7 @@ const addProductReview = async (req, res) => {
     }
 
     const newReview = new ProductReview({
-      productId,
+      productId: productObjectId,
       userId,
       userName,
       reviewMessage,
@@ -44,13 +51,13 @@ const addProductReview = async (req, res) => {
 
     await newReview.save();
 
-    const reviews = await ProductReview.find({ productId });
+    const reviews = await ProductReview.find({ productId: productObjectId });
     const totalReviewsLength = reviews.length;
     const averageReview =
       reviews.reduce((sum, reviewItem) => sum + reviewItem.reviewValue, 0) /
       totalReviewsLength;
 
-    await Product.findByIdAndUpdate(productId, { averageReview });
+    await Product.findByIdAndUpdate(productObjectId, { averageReview });
 
     res.status(201).json({
       success: true,
@@ -69,7 +76,11 @@ const getProductReviews = async (req, res) => {
   try {
     const { productId } = req.params;
 
-    const reviews = await ProductReview.find({ productId });
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ success: false, message: "Invalid product ID" });
+    }
+
+    const reviews = await ProductReview.find({ productId: new mongoose.Types.ObjectId(productId) });
     res.status(200).json({
       success: true,
       data: reviews,

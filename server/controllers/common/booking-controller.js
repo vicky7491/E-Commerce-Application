@@ -7,7 +7,7 @@ const createBooking = async (req, res) => {
     const { name, phone, email, location, concept, date, time, comments } = req.body;
 
     if (!name || !phone || !email || !location || !concept || !date || !time) {
-      return res.status(400).json({ error: 'All required fields must be provided' });
+      return res.status(400).json({ success: false, message: 'All required fields must be provided' });
     }
 
     const newBooking = new Booking({ name, phone, email, location, concept, date, time, comments });
