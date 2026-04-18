@@ -22,6 +22,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import Footer from "./Footer";
 
+const LIMIT = 12;
+
 function createSearchParamsHelper(filterParams, sortParam) {
   const queryParams = [];
 
@@ -40,7 +42,9 @@ function createSearchParamsHelper(filterParams, sortParam) {
 
 function ShoppingListing() {
   const dispatch = useDispatch();
-  const { productList, productDetails } = useSelector(
+
+  // ── Added: pagination from Redux (Change 9) ─────────────────────────────────
+  const { productList, productDetails, pagination, isLoading } = useSelector(
     (state) => state.shopProducts
   );
   const { cartItems } = useSelector((state) => state.shopCart);
@@ -48,12 +52,23 @@ function ShoppingListing() {
 
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
+
+  // ── Added: page state (Change 9) ────────────────────────────────────────────
+  const [page, setPage] = useState(1);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const { toast } = useToast();
 
+  // ── Pagination derived values ────────────────────────────────────────────────
+  const totalPages    = pagination?.pages ?? 1;
+  const totalProducts = pagination?.total ?? productList?.length ?? 0;
+  const hasPrev       = page > 1;
+  const hasNext       = page < totalPages;
+
   // --- Handle Sort ---
   function handleSort(value) {
+    setPage(1); // reset to page 1 on sort change
     setSort(value);
   }
 
@@ -73,12 +88,12 @@ function ShoppingListing() {
         cpyFilters[getSectionId].splice(indexOfCurrentOption, 1);
       }
 
-      // agar array empty ho jaye to key hata do
       if (cpyFilters[getSectionId].length === 0) {
         delete cpyFilters[getSectionId];
       }
     }
 
+    setPage(1); // reset to page 1 on filter change
     setFilters(cpyFilters);
   }
 
@@ -145,12 +160,19 @@ function ShoppingListing() {
     setSearchParams(new URLSearchParams(createQueryString));
   }, [filters, sort]);
 
-  // --- Fetch products on filter/sort change ---
+  // --- Fetch products on filter / sort / page change (Change 9) ---
   useEffect(() => {
     if (filters !== null && sort !== null) {
-      dispatch(fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }));
+      dispatch(
+        fetchAllFilteredProducts({
+          filterParams: filters,
+          sortParams:   sort,
+          page,
+          limit:        LIMIT,
+        })
+      );
     }
-  }, [dispatch, sort, filters]);
+  }, [dispatch, sort, filters, page]); // ← added page
 
   // --- Open details dialog when productDetails available ---
   useEffect(() => {
@@ -168,9 +190,12 @@ function ShoppingListing() {
           <div className="p-4 border-b flex items-center justify-between">
             <h2 className="text-lg font-extrabold">All Products</h2>
             <div className="flex items-center gap-3">
+
+              {/* ── Updated: uses pagination.total (Change 9) ──────────────── */}
               <span className="text-muted-foreground">
-                {productList?.length} Products
+                {totalProducts} Products
               </span>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -211,6 +236,79 @@ function ShoppingListing() {
                 ))
               : null}
           </div>
+
+          {/* ── Pagination controls (Change 9) ──────────────────────────────── */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between px-4 py-4 border-t">
+
+              {/* Left — page info */}
+              <p className="text-sm text-muted-foreground">
+                Page {page} of {totalPages} &mdash; {totalProducts} total
+              </p>
+
+              {/* Right — Prev / numbered pills / Next */}
+              <div className="flex items-center gap-2">
+
+                {/* Prev */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={!hasPrev || isLoading}
+                  onClick={() => setPage((p) => p - 1)}
+                >
+                  ← Prev
+                </Button>
+
+                {/* Page number pills — shows first, last, current ±1, with … gaps */}
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(
+                    (p) =>
+                      p === 1 ||
+                      p === totalPages ||
+                      Math.abs(p - page) <= 1
+                  )
+                  .reduce((acc, p, idx, arr) => {
+                    if (idx > 0 && p - arr[idx - 1] > 1) {
+                      acc.push("ellipsis-" + p);
+                    }
+                    acc.push(p);
+                    return acc;
+                  }, [])
+                  .map((item) =>
+                    typeof item === "string" ? (
+                      <span key={item} className="px-1 text-muted-foreground text-sm">
+                        …
+                      </span>
+                    ) : (
+                      <Button
+                        key={item}
+                        variant={item === page ? "default" : "outline"}
+                        size="sm"
+                        disabled={isLoading}
+                        onClick={() => setPage(item)}
+                        className={
+                          item === page
+                            ? "bg-black text-white hover:bg-black/90"
+                            : ""
+                        }
+                      >
+                        {item}
+                      </Button>
+                    )
+                  )}
+
+                {/* Next */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={!hasNext || isLoading}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  Next →
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Details Dialog */}

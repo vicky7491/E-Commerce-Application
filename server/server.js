@@ -22,12 +22,6 @@ app.use(
 app.use(compression());
 app.use(morgan("combined"));
 
-app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-  })
-);
 
 app.use(
   cors({
@@ -42,19 +36,47 @@ app.use(cookieParser());
 app.use(express.json({ limit: "10kb" }));
 
 
+// ─── Rate Limiters ────────────────────────────────────────────────────────────
+
+// Strict: brute-force protection for login / register / forgot-password
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20,
+  standardHeaders: true,    // Return RateLimit-* headers (RFC 6585)
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many attempts. Please try again after 15 minutes.",
+  },
+});
+
+// Generous: normal browsing, product fetches, cart, orders, etc.
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 500,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many requests. Please slow down.",
+  },
+});
+
+
 // Routes
-app.use("/api/auth", require("./routes/auth/auth-routes"));
-app.use("/api/admin/products", require("./routes/admin/products-routes"));
-app.use("/api/admin/orders", require("./routes/admin/order-routes"));
-app.use("/api/admin/bookings", require("./routes/admin/booking-routes"));
-app.use("/api/shop/products", require("./routes/shop/products-routes"));
-app.use("/api/shop/cart", require("./routes/shop/cart-routes"));
-app.use("/api/shop/address", require("./routes/shop/address-routes"));
-app.use("/api/shop/order", require("./routes/shop/order-routes"));
-app.use("/api/shop/search", require("./routes/shop/search-routes"));
-app.use("/api/shop/review", require("./routes/shop/review-routes"));
-app.use("/api/common/feature", require("./routes/common/feature-routes"));
-app.use("/api/bookings", require("./routes/common/booking-routes"));
+app.use("/api/auth", authLimiter, require("./routes/auth/auth-routes"));
+
+app.use("/api/admin/products",generalLimiter, require("./routes/admin/products-routes"));
+app.use("/api/admin/orders",generalLimiter, require("./routes/admin/order-routes"));
+app.use("/api/admin/bookings", generalLimiter, require("./routes/admin/booking-routes"));
+app.use("/api/shop/products", generalLimiter, require("./routes/shop/products-routes"));
+app.use("/api/shop/cart", generalLimiter, require("./routes/shop/cart-routes"));
+app.use("/api/shop/address", generalLimiter, require("./routes/shop/address-routes"));
+app.use("/api/shop/order", generalLimiter, require("./routes/shop/order-routes"));
+app.use("/api/shop/search", generalLimiter, require("./routes/shop/search-routes"));
+app.use("/api/shop/review", generalLimiter, require("./routes/shop/review-routes"));
+app.use("/api/common/feature", generalLimiter, require("./routes/common/feature-routes"));
+app.use("/api/bookings", generalLimiter, require("./routes/common/booking-routes"));
 
 // Health check
 app.get("/", (req, res) => {

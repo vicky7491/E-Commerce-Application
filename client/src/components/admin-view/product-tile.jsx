@@ -16,6 +16,8 @@ function AdminProductTile({
             src={product?.images?.[0]}
             alt={product?.title}
             className="w-full h-[300px] object-cover rounded-t-lg"
+            loading="lazy"
+            decoding="async"
           />
         </div>
         <CardContent>

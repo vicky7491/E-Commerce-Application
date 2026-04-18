@@ -112,6 +112,8 @@ function ShoppingProductTile({ product, handleGetProductDetails }) {
                     alt={`${product?.title} - Image ${currentImageIndex + 1}`}
                     className="w-full h-full object-cover transition-all duration-500 ease-in-out"
                     key={currentImageIndex}
+                    loading="lazy"
+                    decoding="async"
                   />
                   
                   {/* Image Indicators/Dots */}

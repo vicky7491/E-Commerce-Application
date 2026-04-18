@@ -1,12 +1,115 @@
-// src/components/OurGallery.jsx
+import gallery_1    from "../../assets/gallery_1.jpg";
+import gallery_2    from "../../assets/gallery_2.jpg";
+import feedback_1   from "../../assets/feedback_1.mp4";
+import feedback_2   from "../../assets/feedback_2.mp4";
+import feedback_3   from "../../assets/feedback_3.mp4";
+import feedback_4   from "../../assets/feedback_4.mp4";
+import feedback_5   from "../../assets/feedback_5.mp4";
+import workprocess1 from "../../assets/working_1.mp4";
+import workprocess2 from "../../assets/working_2.mp4";
+import workprocess3 from "../../assets/working_3.jpg";
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from "react-router-dom";
 import CallToAction from './CallToAction';
-import { galleryItems } from '../../config/index';
 import Footer from './Footer';
 import InstagramHandle from './InstaHandle';
 import ProtectedVideo from '@/components/common/protected-video';
+
+const galleryItems = [
+  {
+    id: 1,
+    title: "Family Hand Casting",
+    description: "Generations connected in timeless bronze",
+    category: "Family/Group",
+    size: "medium",
+    image: gallery_1,
+    type: "image"
+  },
+  {
+    id: 2,
+    title: "Newborn Footprints",
+    description: "Precious first impressions in soft plaster",
+    category: "Baby",
+    size: "small",
+    image: gallery_2,
+    type: "image"
+  },
+  {
+    id: 3,
+    title: "Sibling Handprint Keepsake",
+    description: "Capturing childhood bonds",
+    category: "Parents",
+    size: "large",
+    image: feedback_4,
+    type: "video"
+  },
+  {
+    id: 4,
+    title: "Maternity Hand Casting",
+    description: "Celebrating the journey to motherhood",
+    category: "Parents",
+    size: "medium",
+    image: feedback_5,
+    type: "video"
+  },
+  {
+    id: 5,
+    title: "Anniversary Sculpture",
+    description: "Decades of devotion captured in art",
+    category: "Baby",
+    size: "large",
+    image: feedback_3,
+    type: "video"
+  },
+  {
+    id: 6,
+    title: "Casting Process",
+    description: "Witness the creation of timeless memories",
+    category: "Couples",
+    size: "large",
+    image: feedback_2,
+    type: "video"
+  },
+  {
+    id: 7,
+    title: "Artisan Technique",
+    description: "Our skilled craftsmen at work",
+    category: "Baby",
+    size: "medium",
+    image: feedback_1,
+    type: "video"
+  },
+  {
+    id: 8,
+    title: "Artisan Technique",
+    description: "Our skilled craftsmen at work",
+    category: "Working process",
+    size: "medium",
+    image:  workprocess1,
+    type: "video"
+  },
+  {
+    id: 9,
+    title: "Artisan Technique",
+    description: "Our skilled craftsmen at work",
+    category: "Working process",
+    size: "medium",
+    image:  workprocess2,
+    type: "video"
+  },
+  {
+    id: 10,
+    title: "Artisan Technique",
+    description: "Our skilled craftsmen at work",
+    category: "Working process",
+    size: "medium",
+    image:  workprocess3,
+    type: "image"
+  },
+];
+
 
 const Testimonials = () => {
   const [selectedItem, setSelectedItem] = useState(null);

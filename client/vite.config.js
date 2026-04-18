@@ -2,7 +2,6 @@ import path from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   base: "/",
@@ -12,6 +11,20 @@ export default defineConfig({
     },
   },
   server: {
-    historyApiFallback: true, // 👈 ensures /reset-password/... works
+    historyApiFallback: true,
+  },
+  build: {
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          redux:  ["@reduxjs/toolkit", "react-redux"],
+          ui:     ["framer-motion", "lucide-react", "@radix-ui/react-dialog", "@radix-ui/react-select"],
+          swiper: ["swiper"],
+          axios:  ["axios"],
+        },
+      },
+    },
   },
 });

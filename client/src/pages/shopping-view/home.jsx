@@ -281,6 +281,8 @@ function ShoppingHome() {
             src={coupleimpression}
             alt="Family hand casting"
             className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-110"
+            loading="lazy"
+            decoding="async"
           />
 
           {/* Enhanced overlay elements */}
