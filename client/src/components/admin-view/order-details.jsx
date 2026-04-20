@@ -1,10 +1,8 @@
 import { useState } from "react";
 import CommonForm from "../common/form";
 import { DialogContent } from "../ui/dialog";
-import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   getAllOrdersForAdmin,
   getOrderDetailsForAdmin,
@@ -22,7 +20,9 @@ import {
   MessageSquare,
   ChevronDown,
   ChevronUp,
-  Clipboard
+  Clipboard,
+  Sparkles,
+  IndianRupee,
 } from "lucide-react";
 
 const initialFormData = {
@@ -35,9 +35,9 @@ function AdminOrderDetailsView({ orderDetails }) {
     orderInfo: true,
     cartItems: true,
     shippingInfo: true,
-    updateStatus: true
+    updateStatus: true,
   });
-  const { user } = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
   const { toast } = useToast();
 
@@ -60,292 +60,359 @@ function AdminOrderDetailsView({ orderDetails }) {
     });
   }
 
-  // Format date to readable format
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
-  // Format price with commas
   const formatPrice = (price) => {
     if (!price) return "₹0.00";
-    return `₹${parseFloat(price).toLocaleString('en-US', {
+    return `₹${parseFloat(price).toLocaleString("en-US", {
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 2,
     })}`;
   };
 
-  // Toggle section expansion
   const toggleSection = (section) => {
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
-      [section]: !prev[section]
+      [section]: !prev[section],
     }));
   };
 
-  // Get badge color based on status
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case "confirmed":
       case "completed":
       case "paid":
       case "delivered":
-        return "bg-green-100 text-green-800";
+        return "bg-emerald-50 text-emerald-700 border-emerald-200";
       case "pending":
       case "inprocess":
       case "inshipping":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-amber-50 text-amber-700 border-amber-200";
       case "rejected":
       case "cancelled":
       case "failed":
-        return "bg-red-100 text-red-800";
+        return "bg-red-50 text-red-700 border-red-200";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-slate-50 text-slate-700 border-slate-200";
     }
   };
 
-  return (
-    <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
-      <div className="grid gap-6">
-        {/* Order Info Card */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          <div 
-            className="flex items-center justify-between p-4 bg-gray-50 cursor-pointer"
-            onClick={() => toggleSection('orderInfo')}
-          >
-            <div className="flex items-center gap-2">
-              <Package className="h-5 w-5 text-gray-600" />
-              <h3 className="font-semibold text-lg">Order Information</h3>
-            </div>
-            {expandedSections.orderInfo ? (
-              <ChevronUp className="h-5 w-5 text-gray-500" />
-            ) : (
-              <ChevronDown className="h-5 w-5 text-gray-500" />
-            )}
+  const SectionCard = ({
+    id,
+    title,
+    icon: Icon,
+    children,
+    defaultOpenKey,
+  }) => (
+    <div className="overflow-hidden rounded-3xl border bg-white shadow-sm">
+      <button
+        type="button"
+        onClick={() => toggleSection(defaultOpenKey)}
+        className="flex w-full items-center justify-between border-b bg-[#fcfaf8] px-5 py-4 text-left transition hover:bg-[#f8f2ec]"
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#C47D52]/10 text-[#C47D52]">
+            <Icon className="h-5 w-5" />
           </div>
-          
-          {expandedSections.orderInfo && (
-            <div className="p-4 grid gap-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <p className="text-sm text-gray-500 flex items-center gap-1">
-                    <Clipboard className="h-4 w-4" /> Order ID
-                  </p>
-                  <p className="font-medium">{orderDetails?._id || "N/A"}</p>
-                </div>
-                
-                <div className="space-y-1">
-                  <p className="text-sm text-gray-500 flex items-center gap-1">
-                    <Calendar className="h-4 w-4" /> Order Date
-                  </p>
-                  <p className="font-medium">{formatDate(orderDetails?.orderDate)}</p>
-                </div>
-                
-                <div className="space-y-1">
-                  <p className="text-sm text-gray-500">Total Amount</p>
-                  <p className="font-medium text-lg">{formatPrice(orderDetails?.totalAmount)}</p>
-                </div>
-                
-                <div className="space-y-1">
-                  <p className="text-sm text-gray-500 flex items-center gap-1">
-                    <CreditCard className="h-4 w-4" /> Payment Method
-                  </p>
-                  <p className="font-medium capitalize">{orderDetails?.paymentMethod || "N/A"}</p>
-                </div>
-                
-                <div className="space-y-1">
-                  <p className="text-sm text-gray-500">Payment Status</p>
-                  <Badge className={getStatusColor(orderDetails?.paymentStatus)}>
-                    {orderDetails?.paymentStatus || "N/A"}
-                  </Badge>
-                </div>
-                
-                <div className="space-y-1">
-                  <p className="text-sm text-gray-500">Order Status</p>
-                  <Badge className={getStatusColor(orderDetails?.orderStatus)}>
-                    {orderDetails?.orderStatus || "N/A"}
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-        
-        <Separator />
-        
-        {/* Cart Items Card */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          <div 
-            className="flex items-center justify-between p-4 bg-gray-50 cursor-pointer"
-            onClick={() => toggleSection('cartItems')}
-          >
-            <h3 className="font-semibold text-lg">Order Items</h3>
-            {expandedSections.cartItems ? (
-              <ChevronUp className="h-5 w-5 text-gray-500" />
-            ) : (
-              <ChevronDown className="h-5 w-5 text-gray-500" />
-            )}
-          </div>
-          
-          {expandedSections.cartItems && (
-            <div className="p-4">
-              {orderDetails?.cartItems && orderDetails.cartItems.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-200">
-                        <th className="text-left py-2 px-3 font-medium">Product</th>
-                        <th className="text-center py-2 px-3 font-medium">Quantity</th>
-                        <th className="text-right py-2 px-3 font-medium">Price</th>
-                        <th className="text-right py-2 px-3 font-medium">Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {orderDetails.cartItems.map((item, index) => (
-                        <tr key={index} className="border-b border-gray-100 last:border-b-0">
-                          <td className="py-3 px-3">
-                            <p className="font-medium">{item.title || "Unnamed Product"}</p>
-                          </td>
-                          <td className="py-3 px-3 text-center">{item.quantity || 0}</td>
-                          <td className="py-3 px-3 text-right">{formatPrice(item.price)}</td>
-                          <td className="py-3 px-3 text-right">
-                            {formatPrice((item.price || 0) * (item.quantity || 0))}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                    <tfoot>
-                      <tr className="bg-gray-50 font-medium">
-                        <td colSpan="3" className="py-3 px-3 text-right">Subtotal</td>
-                        <td className="py-3 px-3 text-right">
-                          {formatPrice(orderDetails?.totalAmount)}
-                        </td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
-              ) : (
-                <p className="text-center text-gray-500 py-4">No items in this order</p>
-              )}
-            </div>
-          )}
-        </div>
-        
-        <Separator />
-        
-        {/* Shipping Info Card */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          <div 
-            className="flex items-center justify-between p-4 bg-gray-50 cursor-pointer"
-            onClick={() => toggleSection('shippingInfo')}
-          >
-            <div className="flex items-center gap-2">
-              <Truck className="h-5 w-5 text-gray-600" />
-              <h3 className="font-semibold text-lg">Shipping Information</h3>
-            </div>
-            {expandedSections.shippingInfo ? (
-              <ChevronUp className="h-5 w-5 text-gray-500" />
-            ) : (
-              <ChevronDown className="h-5 w-5 text-gray-500" />
-            )}
-          </div>
-          
-          {expandedSections.shippingInfo && (
-            <div className="p-4">
-              {orderDetails?.addressInfo ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <p className="text-sm text-gray-500 flex items-center gap-1">
-                      <User className="h-4 w-4" /> Full Name
-                    </p>
-                    <p className="font-medium">{orderDetails.addressInfo.name || "N/A"}</p>
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <p className="text-sm text-gray-500 flex items-center gap-1">
-                      <Phone className="h-4 w-4" /> Phone Number
-                    </p>
-                    <p className="font-medium">{orderDetails.addressInfo.phone || "N/A"}</p>
-                  </div>
-                  
-                  <div className="space-y-1 md:col-span-2">
-                    <p className="text-sm text-gray-500 flex items-center gap-1">
-                      <MapPin className="h-4 w-4" /> Address
-                    </p>
-                    <p className="font-medium">{orderDetails.addressInfo.address || "N/A"}</p>
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <p className="text-sm text-gray-500">City</p>
-                    <p className="font-medium">{orderDetails.addressInfo.city || "N/A"}</p>
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <p className="text-sm text-gray-500">Postal Code</p>
-                    <p className="font-medium">{orderDetails.addressInfo.pincode || "N/A"}</p>
-                  </div>
-                  
-                  {orderDetails.addressInfo.notes && (
-                    <div className="space-y-1 md:col-span-2">
-                      <p className="text-sm text-gray-500 flex items-center gap-1">
-                        <MessageSquare className="h-4 w-4" /> Delivery Notes
-                      </p>
-                      <p className="font-medium italic">{orderDetails.addressInfo.notes}</p>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <p className="text-center text-gray-500 py-4">No shipping information available</p>
-              )}
-            </div>
-          )}
+          <h3 className="text-lg font-semibold text-[#3A3A3A]">{title}</h3>
         </div>
 
-        <Separator />
-        
-        {/* Update Status Card */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          <div 
-            className="flex items-center justify-between p-4 bg-gray-50 cursor-pointer"
-            onClick={() => toggleSection('updateStatus')}
-          >
-            <h3 className="font-semibold text-lg">Update Order Status</h3>
-            {expandedSections.updateStatus ? (
-              <ChevronUp className="h-5 w-5 text-gray-500" />
-            ) : (
-              <ChevronDown className="h-5 w-5 text-gray-500" />
-            )}
+        {expandedSections[defaultOpenKey] ? (
+          <ChevronUp className="h-5 w-5 text-muted-foreground" />
+        ) : (
+          <ChevronDown className="h-5 w-5 text-muted-foreground" />
+        )}
+      </button>
+
+      {expandedSections[defaultOpenKey] && (
+        <div className="p-5">{children}</div>
+      )}
+    </div>
+  );
+
+  const InfoBlock = ({ icon: Icon, label, value, full = false }) => (
+    <div className={full ? "space-y-1 md:col-span-2" : "space-y-1"}>
+      <p className="flex items-center gap-2 text-sm text-muted-foreground">
+        {Icon ? <Icon className="h-4 w-4" /> : null}
+        {label}
+      </p>
+      <div className="font-medium text-[#3A3A3A]">{value || "N/A"}</div>
+    </div>
+  );
+
+  return (
+    <DialogContent className="max-h-[90vh] overflow-y-auto border-0 bg-[#f8f5f2] p-0 sm:max-w-[760px]">
+      <div className="space-y-6 p-6">
+        {/* Top Header */}
+        <div className="rounded-3xl border bg-gradient-to-r from-[#fffaf6] to-[#f8f2ec] p-6 shadow-sm">
+          <div className="mb-2 flex items-center gap-2 text-[#C47D52]">
+            <Sparkles size={18} />
+            <span className="text-sm font-semibold uppercase tracking-[0.2em]">
+              Order Details
+            </span>
           </div>
-          
-          {expandedSections.updateStatus && (
-            <div className="p-4">
-              <CommonForm
-                formControls={[
-                  {
-                    label: "Order Status",
-                    name: "status",
-                    componentType: "select",
-                    options: [
-                      { id: "pending", label: "Pending" },
-                      { id: "inProcess", label: "In Process" },
-                      { id: "inShipping", label: "In Shipping" },
-                      { id: "delivered", label: "Delivered" },
-                      { id: "rejected", label: "Rejected" },
-                    ],
-                  },
-                ]}
-                formData={formData}
-                setFormData={setFormData}
-                buttonText={"Update Order Status"}
-                onSubmit={handleUpdateStatus}
-              />
+
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-[#3A3A3A]">
+                #{orderDetails?._id || "N/A"}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Complete order summary, shipping details, and status control.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <Badge
+                variant="outline"
+                className={`rounded-full border px-3 py-1 ${getStatusColor(
+                  orderDetails?.paymentStatus
+                )}`}
+              >
+                Payment: {orderDetails?.paymentStatus || "N/A"}
+              </Badge>
+
+              <Badge
+                variant="outline"
+                className={`rounded-full border px-3 py-1 ${getStatusColor(
+                  orderDetails?.orderStatus
+                )}`}
+              >
+                Order: {orderDetails?.orderStatus || "N/A"}
+              </Badge>
+            </div>
+          </div>
+        </div>
+
+        {/* Order Information */}
+        <SectionCard
+          title="Order Information"
+          icon={Package}
+          defaultOpenKey="orderInfo"
+        >
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <InfoBlock
+              icon={Clipboard}
+              label="Order ID"
+              value={orderDetails?._id}
+            />
+            <InfoBlock
+              icon={Calendar}
+              label="Order Date"
+              value={formatDate(orderDetails?.orderDate)}
+            />
+            <InfoBlock
+              icon={IndianRupee}
+              label="Total Amount"
+              value={
+                <span className="text-lg font-semibold text-[#C47D52]">
+                  {formatPrice(orderDetails?.totalAmount)}
+                </span>
+              }
+            />
+            <InfoBlock
+              icon={CreditCard}
+              label="Payment Method"
+              value={
+                <span className="capitalize">
+                  {orderDetails?.paymentMethod || "N/A"}
+                </span>
+              }
+            />
+
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Payment Status</p>
+              <Badge
+                variant="outline"
+                className={`rounded-full border px-3 py-1 ${getStatusColor(
+                  orderDetails?.paymentStatus
+                )}`}
+              >
+                {orderDetails?.paymentStatus || "N/A"}
+              </Badge>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Order Status</p>
+              <Badge
+                variant="outline"
+                className={`rounded-full border px-3 py-1 ${getStatusColor(
+                  orderDetails?.orderStatus
+                )}`}
+              >
+                {orderDetails?.orderStatus || "N/A"}
+              </Badge>
+            </div>
+          </div>
+        </SectionCard>
+
+        {/* Order Items */}
+        <SectionCard
+          title="Order Items"
+          icon={Clipboard}
+          defaultOpenKey="cartItems"
+        >
+          {orderDetails?.cartItems && orderDetails.cartItems.length > 0 ? (
+            <div className="overflow-hidden rounded-2xl border">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-[#fcfaf8]">
+                    <tr className="border-b">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-[#5b514b]">
+                        Product
+                      </th>
+                      <th className="px-4 py-3 text-center text-sm font-semibold text-[#5b514b]">
+                        Qty
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-[#5b514b]">
+                        Price
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-[#5b514b]">
+                        Total
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {orderDetails.cartItems.map((item, index) => (
+                      <tr
+                        key={index}
+                        className="border-b last:border-0 hover:bg-[#fdf8f4]"
+                      >
+                        <td className="px-4 py-4">
+                          <p className="font-medium text-[#3A3A3A]">
+                            {item.title || "Unnamed Product"}
+                          </p>
+                        </td>
+                        <td className="px-4 py-4 text-center text-[#4f4742]">
+                          {item.quantity || 0}
+                        </td>
+                        <td className="px-4 py-4 text-right text-[#4f4742]">
+                          {formatPrice(item.price)}
+                        </td>
+                        <td className="px-4 py-4 text-right font-medium text-[#3A3A3A]">
+                          {formatPrice((item.price || 0) * (item.quantity || 0))}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+
+                  <tfoot>
+                    <tr className="bg-[#fcfaf8]">
+                      <td
+                        colSpan="3"
+                        className="px-4 py-4 text-right font-semibold text-[#5b514b]"
+                      >
+                        Subtotal
+                      </td>
+                      <td className="px-4 py-4 text-right font-bold text-[#C47D52]">
+                        {formatPrice(orderDetails?.totalAmount)}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed bg-[#fcfaf8] px-4 py-8 text-center text-sm text-muted-foreground">
+              No items in this order
             </div>
           )}
-        </div>
+        </SectionCard>
+
+        {/* Shipping Information */}
+        <SectionCard
+          title="Shipping Information"
+          icon={Truck}
+          defaultOpenKey="shippingInfo"
+        >
+          {orderDetails?.addressInfo ? (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <InfoBlock
+                icon={User}
+                label="Full Name"
+                value={orderDetails.addressInfo.name}
+              />
+              <InfoBlock
+                icon={Phone}
+                label="Phone Number"
+                value={orderDetails.addressInfo.phone}
+              />
+              <InfoBlock
+                icon={MapPin}
+                label="Address"
+                value={orderDetails.addressInfo.address}
+                full
+              />
+              <InfoBlock
+                label="City"
+                value={orderDetails.addressInfo.city}
+              />
+              <InfoBlock
+                label="Postal Code"
+                value={orderDetails.addressInfo.pincode}
+              />
+
+              {orderDetails.addressInfo.notes && (
+                <InfoBlock
+                  icon={MessageSquare}
+                  label="Delivery Notes"
+                  value={
+                    <span className="italic text-[#4f4742]">
+                      {orderDetails.addressInfo.notes}
+                    </span>
+                  }
+                  full
+                />
+              )}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed bg-[#fcfaf8] px-4 py-8 text-center text-sm text-muted-foreground">
+              No shipping information available
+            </div>
+          )}
+        </SectionCard>
+
+        {/* Update Status */}
+        <SectionCard
+          title="Update Order Status"
+          icon={CreditCard}
+          defaultOpenKey="updateStatus"
+        >
+          <div className="rounded-2xl border bg-[#fcfaf8] p-4">
+            <p className="mb-4 text-sm text-muted-foreground">
+              Update the current order status from the dropdown below.
+            </p>
+
+            <CommonForm
+              formControls={[
+                {
+                  label: "Order Status",
+                  name: "status",
+                  componentType: "select",
+                  options: [
+                    { id: "pending", label: "Pending" },
+                    { id: "inProcess", label: "In Process" },
+                    { id: "inShipping", label: "In Shipping" },
+                    { id: "delivered", label: "Delivered" },
+                    { id: "rejected", label: "Rejected" },
+                  ],
+                },
+              ]}
+              formData={formData}
+              setFormData={setFormData}
+              buttonText={"Update Order Status"}
+              onSubmit={handleUpdateStatus}
+            />
+          </div>
+        </SectionCard>
       </div>
     </DialogContent>
   );
