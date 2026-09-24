@@ -80,10 +80,15 @@ const CastingKitPage = () => {
   useEffect(() => {
     const fetchCastingKits = async () => {
       try {
-        const response = await axios.get(`${API_BASE}/api/admin/products/get`);
-        const allProducts = response.data.data || [];
-        const onlyCastingKits = allProducts.filter((item) => item.isCastingKit === true);
-        setKits(onlyCastingKits);
+        const query = new URLSearchParams({
+          isCastingKit: "true",
+          page: "1",
+          limit: "100",
+        });
+        const response = await axios.get(
+          `${API_BASE}/api/shop/products/get?${query}`
+        );
+        setKits(response.data.data || []);
       } catch (error) {
         console.error("Failed to load casting kits:", error);
         setKits([]);

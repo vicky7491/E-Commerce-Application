@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { motion } from "framer-motion";
 import { ShoppingCart, Eye, Sparkles } from "lucide-react";
+import { getCloudinaryImageUrl } from "@/lib/cloudinary";
 
 function CastingKitTile({ kit, handleGetProductDetails, handleAddToCart }) {
   return (
@@ -18,9 +19,15 @@ function CastingKitTile({ kit, handleGetProductDetails, handleAddToCart }) {
         >
           <div className="relative overflow-hidden h-[280px]">
             <img
-              src={kit?.images?.[0]}
+              src={getCloudinaryImageUrl(kit?.images?.[0], {
+                width: 600,
+                height: 560,
+                crop: "fill",
+              })}
               alt={kit?.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              loading="lazy"
+              decoding="async"
             />
             
             {/* Enhanced overlay */}
