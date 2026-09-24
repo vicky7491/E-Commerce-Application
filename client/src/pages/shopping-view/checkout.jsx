@@ -40,7 +40,53 @@ function ShoppingCheckout() {
     return sum + price * (item?.quantity || 0);
   }, 0);
 
-  const itemCount = items.reduce((total, item) => total + (item?.quantity || 0), 0);
+  const itemCount = items.reduce(
+    (total, item) => total + (item?.quantity || 0),
+    0
+  );
+
+  // Load Razorpay only when the user actually starts payment
+  const loadRazorpayScript = () => {
+    return new Promise((resolve, reject) => {
+      // Already loaded
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+
+      // Script already being loaded
+      const existingScript = document.querySelector(
+        'script[src="https://checkout.razorpay.com/v1/checkout.js"]'
+      );
+
+      if (existingScript) {
+        existingScript.addEventListener("load", () => resolve(true));
+        existingScript.addEventListener("error", () =>
+          reject(new Error("Failed to load Razorpay"))
+        );
+        return;
+      }
+
+      const script = document.createElement("script");
+
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.async = true;
+
+      script.onload = () => {
+        if (window.Razorpay) {
+          resolve(true);
+        } else {
+          reject(new Error("Razorpay SDK loaded but unavailable"));
+        }
+      };
+
+      script.onerror = () => {
+        reject(new Error("Failed to load Razorpay SDK"));
+      };
+
+      document.body.appendChild(script);
+    });
+  };
 
   async function handleRazorpayPayment() {
     if (!items.length) {
@@ -64,17 +110,23 @@ function ShoppingCheckout() {
     setIsPaymentStart(true);
 
     try {
-      const res = await fetch(`${API_BASE}/api/shop/order/razorpay/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ amount: totalCartAmount }),
-      });
+      // Load Razorpay only now
+      await loadRazorpayScript();
+
+      const res = await fetch(
+        `${API_BASE}/api/shop/order/razorpay/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ amount: totalCartAmount }),
+        }
+      );
 
       const data = await res.json();
 
-      if (!data?.success) {
+      if (!res.ok || !data?.success) {
         throw new Error("Failed to create Razorpay order");
       }
 
@@ -85,35 +137,46 @@ function ShoppingCheckout() {
         order_id: data.orderId,
         name: "Your Store",
         description: "Payment for your order",
+
         prefill: {
           name: user?.name || "",
           email: user?.email || "",
           contact: currentSelectedAddress?.phone || "",
         },
+
         theme: {
           color: "#9155FD",
         },
+
         modal: {
           ondismiss: function () {
             setIsPaymentStart(false);
+
             toast({
               title: "Payment cancelled",
-              description: "You can try again whenever you're ready",
+              description:
+                "You can try again whenever you're ready",
               variant: "destructive",
             });
           },
         },
+
         handler: function (response) {
           const orderData = {
             userId: user?.id,
             cartId: cartItems?._id,
+
             cartItems: items.map((item) => ({
               productId: item?.productId,
               title: item?.title,
               image: item?.image,
-              price: item?.salePrice > 0 ? item.salePrice : item?.price,
+              price:
+                item?.salePrice > 0
+                  ? item.salePrice
+                  : item?.price,
               quantity: item?.quantity,
             })),
+
             addressInfo: {
               addressId: currentSelectedAddress?._id,
               name: currentSelectedAddress?.name,
@@ -123,29 +186,41 @@ function ShoppingCheckout() {
               phone: currentSelectedAddress?.phone,
               notes: currentSelectedAddress?.notes,
             },
+
             paymentMethod: "razorpay",
             totalAmount: totalCartAmount,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_signature: response.razorpay_signature,
+
+            razorpay_payment_id:
+              response.razorpay_payment_id,
+
+            razorpay_order_id:
+              response.razorpay_order_id,
+
+            razorpay_signature:
+              response.razorpay_signature,
           };
 
           dispatch(confirmRazorpayOrder(orderData)).then((res) => {
             if (res?.payload?.success) {
               dispatch(clearCart());
+
               navigate("/shop/order-success", {
-                state: { order: res.payload.order },
+                state: {
+                  order: res.payload.order,
+                },
               });
 
               toast({
                 title: "Order placed successfully!",
-                description: "Your order has been confirmed and will be shipped soon.",
+                description:
+                  "Your order has been confirmed and will be shipped soon.",
                 variant: "success",
               });
             } else {
               toast({
                 title: "Payment confirmation failed",
-                description: "Please contact support if the amount was deducted",
+                description:
+                  "Please contact support if the amount was deducted",
                 variant: "destructive",
               });
             }
@@ -156,14 +231,18 @@ function ShoppingCheckout() {
       };
 
       const razorpayInstance = new window.Razorpay(options);
+
       razorpayInstance.open();
     } catch (error) {
       console.error("Payment error:", error);
+
       toast({
         title: "Payment initiation failed",
-        description: "Please try again or use a different payment method",
+        description:
+          "Please try again or use a different payment method",
         variant: "destructive",
       });
+
       setIsPaymentStart(false);
     }
   }
@@ -176,7 +255,9 @@ function ShoppingCheckout() {
           <CardHeader className="border-b bg-blue-50">
             <div className="flex items-center gap-3">
               <ShoppingCart className="h-5 w-5 text-blue-600" />
-              <CardTitle className="text-lg">Order Items ({itemCount})</CardTitle>
+              <CardTitle className="text-lg">
+                Order Items ({itemCount})
+              </CardTitle>
             </div>
           </CardHeader>
 
@@ -184,12 +265,19 @@ function ShoppingCheckout() {
             <div className="space-y-4">
               {items.length > 0 ? (
                 items.map((item) => (
-                  <UserCartItemsContent key={item.productId} cartItem={item} />
+                  <UserCartItemsContent
+                    key={item.productId}
+                    cartItem={item}
+                  />
                 ))
               ) : (
                 <div className="py-8 text-center">
                   <Package className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-                  <p className="text-gray-500">Your cart is empty</p>
+
+                  <p className="text-gray-500">
+                    Your cart is empty
+                  </p>
+
                   <Button
                     variant="outline"
                     className="mt-4"
@@ -210,22 +298,31 @@ function ShoppingCheckout() {
               <CardHeader className="border-b bg-blue-50">
                 <div className="flex items-center gap-3">
                   <MapPin className="h-5 w-5 text-blue-600" />
-                  <CardTitle className="text-lg">Shipping Address</CardTitle>
+
+                  <CardTitle className="text-lg">
+                    Shipping Address
+                  </CardTitle>
                 </div>
               </CardHeader>
 
               <CardContent className="p-6">
                 <Address
                   selectedId={currentSelectedAddress}
-                  setCurrentSelectedAddress={setCurrentSelectedAddress}
+                  setCurrentSelectedAddress={
+                    setCurrentSelectedAddress
+                  }
                 />
 
                 {currentSelectedAddress && (
                   <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-4">
                     <div className="mb-2 flex items-center gap-2 text-green-700">
                       <CheckCircle className="h-4 w-4" />
-                      <span className="font-medium">Address Selected</span>
+
+                      <span className="font-medium">
+                        Address Selected
+                      </span>
                     </div>
+
                     <p className="text-sm text-green-600">
                       Orders will be shipped to this address
                     </p>
@@ -241,39 +338,60 @@ function ShoppingCheckout() {
               <CardHeader className="border-b bg-blue-50">
                 <div className="flex items-center gap-3">
                   <CreditCard className="h-5 w-5 text-blue-600" />
-                  <CardTitle className="text-lg">Order Summary</CardTitle>
+
+                  <CardTitle className="text-lg">
+                    Order Summary
+                  </CardTitle>
                 </div>
               </CardHeader>
 
               <CardContent className="p-6">
                 <div className="space-y-4">
                   <div className="flex justify-between text-sm">
-                    <span>Subtotal ({itemCount} items)</span>
-                    <span>₹{totalCartAmount.toFixed(2)}</span>
+                    <span>
+                      Subtotal ({itemCount} items)
+                    </span>
+
+                    <span>
+                      ₹{totalCartAmount.toFixed(2)}
+                    </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span>Shipping</span>
-                    <span className="text-green-600">Free</span>
+
+                    <span className="text-green-600">
+                      Free
+                    </span>
                   </div>
 
                   <div className="flex justify-between text-sm">
                     <span>Tax</span>
-                    <span>Calculated at checkout</span>
+
+                    <span>
+                      Calculated at checkout
+                    </span>
                   </div>
 
                   <Separator />
 
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span>₹{totalCartAmount.toFixed(2)}</span>
+
+                    <span>
+                      ₹{totalCartAmount.toFixed(2)}
+                    </span>
                   </div>
 
                   <Button
                     size="lg"
                     className="mt-4 w-full"
                     onClick={handleRazorpayPayment}
-                    disabled={isPaymentStart || !items.length || !currentSelectedAddress}
+                    disabled={
+                      isPaymentStart ||
+                      !items.length ||
+                      !currentSelectedAddress
+                    }
                   >
                     {isPaymentStart ? (
                       <>
@@ -288,15 +406,21 @@ function ShoppingCheckout() {
                     )}
                   </Button>
 
-                  {(!items.length || !currentSelectedAddress) && (
+                  {(!items.length ||
+                    !currentSelectedAddress) && (
                     <div className="mt-3 rounded-lg border border-yellow-200 bg-yellow-50 p-3">
                       <div className="flex items-start gap-2">
                         <AlertCircle className="mt-0.5 h-4 w-4 text-yellow-600" />
+
                         <div className="text-sm text-yellow-700">
                           {!items.length ? (
-                            <p>Add items to your cart to proceed</p>
+                            <p>
+                              Add items to your cart to proceed
+                            </p>
                           ) : (
-                            <p>Select a shipping address to proceed</p>
+                            <p>
+                              Select a shipping address to proceed
+                            </p>
                           )}
                         </div>
                       </div>
@@ -304,8 +428,8 @@ function ShoppingCheckout() {
                   )}
 
                   <div className="mt-4 text-center text-xs text-gray-500">
-                    By completing your purchase, you agree to our Terms of Service and
-                    Privacy Policy
+                    By completing your purchase, you agree to
+                    our Terms of Service and Privacy Policy
                   </div>
                 </div>
               </CardContent>
@@ -318,21 +442,30 @@ function ShoppingCheckout() {
                   <div className="mb-1 flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
                     <CheckCircle className="h-4 w-4 text-green-600" />
                   </div>
-                  <span className="text-xs text-gray-600">Secure Payment</span>
+
+                  <span className="text-xs text-gray-600">
+                    Secure Payment
+                  </span>
                 </div>
 
                 <div className="flex flex-col items-center">
                   <div className="mb-1 flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
                     <Package className="h-4 w-4 text-blue-600" />
                   </div>
-                  <span className="text-xs text-gray-600">Fast Delivery</span>
+
+                  <span className="text-xs text-gray-600">
+                    Fast Delivery
+                  </span>
                 </div>
 
                 <div className="flex flex-col items-center">
                   <div className="mb-1 flex h-8 w-8 items-center justify-center rounded-full bg-purple-100">
                     <CheckCircle className="h-4 w-4 text-purple-600" />
                   </div>
-                  <span className="text-xs text-gray-600">Easy Returns</span>
+
+                  <span className="text-xs text-gray-600">
+                    Easy Returns
+                  </span>
                 </div>
               </div>
             </div>
