@@ -12,6 +12,8 @@ const getFilteredProducts = async (req, res) => {
     // ─── Filters ────────────────────────────────────────────────────────────
     let filters = {};
     if (category.length) filters.category = { $in: category.split(",") };
+    if (req.query.isCastingKit === "true") filters.isCastingKit = true;
+    if (req.query.isCastingKit === "false") filters.isCastingKit = false;
 
     // ─── Sort ───────────────────────────────────────────────────────────────
     let sort = {};

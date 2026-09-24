@@ -28,7 +28,8 @@ function CheckAuth({ isAuthenticated, isLoading, user, children }) {
   }
 
   // ── Auth pages (login / register / forgot / reset) ────────────────────────
-  // While loading: show spinner so we don't flash login then redirect
+  // Render the form immediately; auth is checked in the background by App.
+  // If the visitor is already authenticated, redirect once that check resolves.
   const isAuthPage =
     location.pathname.includes("/login") ||
     location.pathname.includes("/register") ||
@@ -36,7 +37,7 @@ function CheckAuth({ isAuthenticated, isLoading, user, children }) {
     location.pathname.includes("/reset-password");
 
   if (isAuthPage) {
-    if (isLoading) return <Spinner />;
+    if (isLoading) return <>{children}</>;
     if (isAuthenticated) {
       return user?.role === "admin"
         ? <Navigate to="/admin/dashboard" />
