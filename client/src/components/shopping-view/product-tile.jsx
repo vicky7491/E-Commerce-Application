@@ -8,6 +8,7 @@ import { ShoppingCart, Eye, Sparkles } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "@/components/ui/use-toast";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import { getCloudinaryImageUrl } from "@/lib/cloudinary";
 
 function ShoppingProductTile({ product, handleGetProductDetails }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -108,7 +109,11 @@ function ShoppingProductTile({ product, handleGetProductDetails }) {
                 <>
                   {/* Current Image */}
                   <img
-                    src={images[currentImageIndex]}
+                    src={getCloudinaryImageUrl(images[currentImageIndex], {
+                      width: 600,
+                      height: 560,
+                      crop: "fill",
+                    })}
                     alt={`${product?.title} - Image ${currentImageIndex + 1}`}
                     className="w-full h-full object-cover transition-all duration-500 ease-in-out"
                     key={currentImageIndex}

@@ -3,6 +3,7 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { motion } from "framer-motion";
 import { Pencil, Trash2, Sparkles } from "lucide-react";
+import { getCloudinaryImageUrl } from "@/lib/cloudinary";
 
 function AdminProductTile({
   product,
@@ -25,7 +26,11 @@ function AdminProductTile({
         <div className="relative overflow-hidden">
           <div className="relative h-[280px] overflow-hidden">
             <img
-              src={product?.images?.[0]}
+              src={getCloudinaryImageUrl(product?.images?.[0], {
+                width: 600,
+                height: 560,
+                crop: "fill",
+              })}
               alt={product?.title}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               loading="lazy"

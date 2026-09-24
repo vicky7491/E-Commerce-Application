@@ -16,6 +16,7 @@ import { addReview, getReviews } from "@/store/shop/review-slice";
 import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Skeleton } from "../ui/skeleton";
+import { getCloudinaryImageUrl } from "@/lib/cloudinary";
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [reviewMsg, setReviewMsg] = useState("");
@@ -203,7 +204,10 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 <div className="relative w-full h-full rounded-xl overflow-hidden bg-white shadow-lg">
                   {images.length > 0 ? (
                     <img
-                      src={images[currentImageIndex]}
+                      src={getCloudinaryImageUrl(images[currentImageIndex], {
+                        width: 1200,
+                        height: 1200,
+                      })}
                       alt={`${productDetails?.title} - Image ${currentImageIndex + 1}`}
                       className="w-full h-full object-contain p-2"
                       onError={(e) => {
@@ -261,7 +265,11 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                         }`}
                       >
                         <img
-                          src={image}
+                          src={getCloudinaryImageUrl(image, {
+                            width: 160,
+                            height: 160,
+                            crop: "fill",
+                          })}
                           alt={`Thumbnail ${index + 1}`}
                           className="w-full h-full object-cover"
                           onError={(e) => {
