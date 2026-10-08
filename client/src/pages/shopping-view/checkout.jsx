@@ -20,6 +20,7 @@ import {
   Loader2,
   CheckCircle,
   AlertCircle,
+  MessageSquare,
 } from "lucide-react";
 
 function ShoppingCheckout() {
@@ -28,6 +29,7 @@ function ShoppingCheckout() {
 
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
   const [isPaymentStart, setIsPaymentStart] = useState(false);
+  const [orderNote, setOrderNote] = useState("");
 
   const dispatch = useDispatch();
   const { toast } = useToast();
@@ -187,6 +189,8 @@ function ShoppingCheckout() {
               notes: currentSelectedAddress?.notes,
             },
 
+            orderNote: orderNote.trim(),
+
             paymentMethod: "razorpay",
             totalAmount: totalCartAmount,
 
@@ -328,6 +332,37 @@ function ShoppingCheckout() {
                     </p>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="border-b bg-blue-50">
+                <div className="flex items-center gap-3">
+                  <MessageSquare className="h-5 w-5 text-blue-600" />
+                  <CardTitle className="text-lg">Order note</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6">
+                <label
+                  htmlFor="order-note"
+                  className="mb-2 block text-sm font-medium text-gray-700"
+                >
+                  Anything we should know about this order?{" "}
+                  <span className="font-normal text-gray-500">(optional)</span>
+                </label>
+                <textarea
+                  id="order-note"
+                  name="orderNote"
+                  value={orderNote}
+                  onChange={(event) => setOrderNote(event.target.value)}
+                  maxLength={500}
+                  rows={4}
+                  placeholder="Add delivery preferences or special instructions for the seller."
+                  className="w-full resize-y rounded-md border border-gray-300 bg-white p-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
+                <p className="mt-2 text-right text-xs text-gray-500">
+                  {orderNote.length}/500
+                </p>
               </CardContent>
             </Card>
           </div>

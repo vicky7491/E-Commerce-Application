@@ -21,6 +21,7 @@ const OrderSchema = new mongoose.Schema({
     phone: String,
     notes: String,
   },
+  orderNote: { type: String, trim: true, maxlength: 500, default: "" },
   orderStatus: String,
   paymentMethod: String,
   paymentStatus: String,

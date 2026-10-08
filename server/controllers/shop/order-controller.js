@@ -37,6 +37,14 @@ const createRazorpayOrder = async (req, res) => {
 // ✅ Step 2: After payment success, confirm order & save to DB
 const confirmRazorpayPayment = async (req, res) => {
   try {
+    const rawOrderNote = req.body?.orderNote ?? "";
+    if (typeof rawOrderNote !== "string" || rawOrderNote.length > 500) {
+      return res.status(400).json({
+        success: false,
+        message: "Order note must be 500 characters or fewer",
+      });
+    }
+
     const {
       userId,
       cartItems,
@@ -54,6 +62,7 @@ const confirmRazorpayPayment = async (req, res) => {
       cartId,
       cartItems,
       addressInfo,
+      orderNote: rawOrderNote.trim(),
       orderStatus: "confirmed",
       paymentStatus: "paid",
       paymentMethod,
