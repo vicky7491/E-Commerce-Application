@@ -195,6 +195,14 @@ function ShoppingOrderDetailsView({ orderDetails }) {
               <p className="text-xs" style={{ color: "#9c8b80" }}>Order Status</p>
               <StatusPill status={orderDetails?.orderStatus} />
             </div>
+            {orderDetails?.orderNote && (
+              <div className="col-span-2 space-y-0.5">
+                <p className="text-xs" style={{ color: "#9c8b80" }}>Order Note</p>
+                <p className="whitespace-pre-wrap text-sm font-medium" style={{ color: "#2d1f17" }}>
+                  {orderDetails.orderNote}
+                </p>
+              </div>
+            )}
             <div className="col-span-2 pt-2" style={{ borderTop: "1px solid #ece8e3" }}>
               <p className="text-xs" style={{ color: "#9c8b80" }}>Order Total</p>
               <p className="text-2xl font-bold mt-0.5" style={{ color: "#c17f5e" }}>

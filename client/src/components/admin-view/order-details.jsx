@@ -360,6 +360,19 @@ function AdminOrderDetailsView({ orderDetails }) {
                 value={orderDetails.addressInfo.pincode}
               />
 
+              {orderDetails.orderNote && (
+                <InfoBlock
+                  icon={MessageSquare}
+                  label="Order Note"
+                  value={
+                    <span className="whitespace-pre-wrap italic text-[#4f4742]">
+                      {orderDetails.orderNote}
+                    </span>
+                  }
+                  full
+                />
+              )}
+
               {orderDetails.addressInfo.notes && (
                 <InfoBlock
                   icon={MessageSquare}
