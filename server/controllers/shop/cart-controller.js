@@ -1,12 +1,13 @@
-const Razorpay = require('razorpay');
+const mongoose = require("mongoose");
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
 
 const addToCart = async (req, res) => {
   try {
-    const { userId, productId, quantity } = req.body;
+    const { productId, quantity } = req.body || {};
+    const userId = req.user.id;
 
-    if (!userId || !productId || quantity <= 0) {
+    if (!mongoose.isValidObjectId(productId) || !Number.isInteger(quantity) || quantity < 1) {
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
@@ -19,6 +20,13 @@ const addToCart = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Product not found",
+      });
+    }
+
+    if (!Number.isFinite(product.totalStock) || product.totalStock < quantity) {
+      return res.status(409).json({
+        success: false,
+        message: "Requested quantity is not available",
       });
     }
 
@@ -35,7 +43,14 @@ const addToCart = async (req, res) => {
     if (findCurrentProductIndex === -1) {
       cart.items.push({ productId, quantity });
     } else {
-      cart.items[findCurrentProductIndex].quantity += quantity;
+      const nextQuantity = cart.items[findCurrentProductIndex].quantity + quantity;
+      if (nextQuantity > product.totalStock) {
+        return res.status(409).json({
+          success: false,
+          message: "Requested quantity is not available",
+        });
+      }
+      cart.items[findCurrentProductIndex].quantity = nextQuantity;
     }
 
     await cart.save();
@@ -54,14 +69,7 @@ const addToCart = async (req, res) => {
 
 const fetchCartItems = async (req, res) => {
   try {
-    const { userId } = req.params;
-
-    if (!userId) {
-      return res.status(400).json({
-        success: false,
-        message: "User id is manadatory!",
-      });
-    }
+    const userId = req.user.id;
 
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
@@ -71,7 +79,7 @@ const fetchCartItems = async (req, res) => {
     if (!cart) {
       return res.status(200).json({
         success: true,
-        items: [],
+        data: { _id: null, items: [] },
       });
     }
 
@@ -111,9 +119,10 @@ const fetchCartItems = async (req, res) => {
 
 const updateCartItemQty = async (req, res) => {
   try {
-    const { userId, productId, quantity } = req.body;
+    const { productId, quantity } = req.body || {};
+    const userId = req.user.id;
 
-    if (!userId || !productId || quantity <= 0) {
+    if (!mongoose.isValidObjectId(productId) || !Number.isInteger(quantity) || quantity < 1) {
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
@@ -136,6 +145,14 @@ const updateCartItemQty = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Cart item not present !",
+      });
+    }
+
+    const product = await Product.findById(productId).select("totalStock");
+    if (!product || !Number.isFinite(product.totalStock) || product.totalStock < quantity) {
+      return res.status(409).json({
+        success: false,
+        message: "Requested quantity is not available",
       });
     }
 
@@ -174,8 +191,9 @@ const updateCartItemQty = async (req, res) => {
 
 const deleteCartItem = async (req, res) => {
   try {
-    const { userId, productId } = req.params;
-    if (!userId || !productId) {
+    const { productId } = req.params;
+    const userId = req.user.id;
+    if (!mongoose.isValidObjectId(productId)) {
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
@@ -195,7 +213,7 @@ const deleteCartItem = async (req, res) => {
     }
 
     cart.items = cart.items.filter(
-      (item) => item.productId._id?.toString() !== productId
+      (item) => item.productId?._id?.toString() !== productId
     );
 
     await cart.save();

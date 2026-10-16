@@ -8,7 +8,7 @@ const OrderSchema = new mongoose.Schema({
       productId: String,
       title: String,
       image: String,
-      price: String,
+      price: Number,
       quantity: Number,
     },
   ],
@@ -24,12 +24,15 @@ const OrderSchema = new mongoose.Schema({
   orderNote: { type: String, trim: true, maxlength: 500, default: "" },
   orderStatus: String,
   paymentMethod: String,
-  paymentStatus: String,
+  paymentStatus: { type: String, default: "pending" },
   totalAmount: Number,
+  amountPaise: Number,
   orderDate: Date,
   orderUpdateDate: Date,
   paymentId: String,
   payerId: String,
+  razorpayOrderId: { type: String, index: true },
+  cartVersion: Number,
 });
 
 module.exports = mongoose.model("Order", OrderSchema);

@@ -35,7 +35,6 @@ app.use(
 );
 app.options('*', cors()); 
 app.use(cookieParser());
-app.use(express.json({ limit: "10kb" }));
 
 
 // ─── Rate Limiters ────────────────────────────────────────────────────────────
@@ -64,6 +63,15 @@ const generalLimiter = rateLimit({
   },
 });
 
+// Mount before express.json so Razorpay's webhook signature is checked against
+// the original request bytes.
+app.use(
+  "/api/shop/order/razorpay/webhook",
+  generalLimiter,
+  require("./routes/shop/razorpay-webhook-routes")
+);
+
+app.use(express.json({ limit: "10kb" }));
 
 // Routes
 app.use("/api/auth", authLimiter, require("./routes/auth/auth-routes"));

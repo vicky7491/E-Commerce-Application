@@ -52,6 +52,7 @@ CLOUDINARY_API_SECRET=your_api_secret
 
 RAZORPAY_KEY_ID=rzp_test_xxxx
 RAZORPAY_KEY_SECRET=your_secret
+RAZORPAY_WEBHOOK_SECRET=your_webhook_secret
 
 RESEND_API_KEY=re_xxxx
 EMAIL_FROM=noreply@example.com
@@ -65,8 +66,9 @@ Create a `.env` file in `client/` with:
 
 ```
 VITE_API_BASE_URL=http://localhost:5000
-VITE_RAZORPAY_KEY_ID=rzp_test_xxxx
 ```
+
+The server returns the configured Razorpay Key ID to Checkout, so keep the Key Secret and Webhook Secret in `server/.env` only. In the Razorpay Dashboard, add a webhook using your server's full URL ending in `/api/shop/order/razorpay/webhook`, use the same Webhook Secret, and subscribe to the `payment.captured` event. The payment finalization flow uses a MongoDB transaction, so the database must support transactions (MongoDB Atlas does).
 
 ## Getting Started (Local Development)
 

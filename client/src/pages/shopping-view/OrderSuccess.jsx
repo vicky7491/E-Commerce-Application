@@ -86,9 +86,13 @@ export default function OrderSuccess() {
       {/* Success Header */}
       <div className="flex flex-col items-center text-center mb-8">
         <CheckCircle2 className="w-14 h-14 text-green-600 mb-3" />
-        <h1 className="text-3xl font-bold">Order Confirmed</h1>
+        <h1 className="text-3xl font-bold">
+          {orderStatus === "inventory_issue" ? "Payment received; order needs review" : "Order Confirmed"}
+        </h1>
         <p className="text-muted-foreground mt-1">
-          Thank you for your purchase! Your payment has been received.
+          {orderStatus === "inventory_issue"
+            ? "Your payment was captured, but stock changed during checkout. Please contact support to resolve this order."
+            : "Thank you for your purchase! Your payment has been received."}
         </p>
       </div>
 
