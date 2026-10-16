@@ -25,7 +25,6 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
   const [formData, setFormData] = useState(initialAddressFormData);
   const [currentEditedId, setCurrentEditedId] = useState(null);
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
   const { addressList } = useSelector((state) => state.shopAddress);
   const { toast } = useToast();
 
@@ -44,13 +43,12 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
     currentEditedId !== null
       ? dispatch(
           editaAddress({
-            userId: user?.id,
             addressId: currentEditedId,
             formData,
           })
         ).then((data) => {
           if (data?.payload?.success) {
-            dispatch(fetchAllAddresses(user?.id));
+            dispatch(fetchAllAddresses());
             setCurrentEditedId(null);
             setFormData(initialAddressFormData);
             toast({
@@ -62,11 +60,10 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
       : dispatch(
           addNewAddress({
             ...formData,
-            userId: user?.id,
           })
         ).then((data) => {
           if (data?.payload?.success) {
-            dispatch(fetchAllAddresses(user?.id));
+            dispatch(fetchAllAddresses());
             setFormData(initialAddressFormData);
             toast({
               title: "Address added successfully",
@@ -78,10 +75,10 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
 
   function handleDeleteAddress(getCurrentAddress) {
     dispatch(
-      deleteAddress({ userId: user?.id, addressId: getCurrentAddress._id })
+      deleteAddress({ addressId: getCurrentAddress._id })
     ).then((data) => {
       if (data?.payload?.success) {
-        dispatch(fetchAllAddresses(user?.id));
+        dispatch(fetchAllAddresses());
         toast({
           title: "Address deleted successfully",
           variant: "success",
@@ -110,7 +107,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
   }
 
   useEffect(() => {
-    dispatch(fetchAllAddresses(user?.id));
+    dispatch(fetchAllAddresses());
   }, [dispatch]);
 
   return (

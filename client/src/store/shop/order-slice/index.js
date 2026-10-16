@@ -10,10 +10,10 @@ const initialState = {
 
 export const createRazorpayOrder = createAsyncThunk(
   "/order/createRazorpayOrder",
-  async (amount) => {
+  async (checkoutData) => {
     const response = await axios.post(`${API_BASE}/api/shop/order/razorpay/create`, {
-      amount,
-    });
+      ...checkoutData,
+    }, { withCredentials: true });
 
     return response.data;
   }
@@ -21,16 +21,28 @@ export const createRazorpayOrder = createAsyncThunk(
 
 export const confirmRazorpayOrder = createAsyncThunk(
   "/order/confirmRazorpayOrder",
-  async (orderData) => {
-    const response = await axios.post(`${API_BASE}/api/shop/order/razorpay/confirm`, orderData);
-    return response.data;
+  async (orderData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE}/api/shop/order/razorpay/confirm`,
+        orderData,
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Unable to confirm payment" }
+      );
+    }
   }
 );
 
 export const getAllOrdersByUserId = createAsyncThunk(
   "/order/getAllOrdersByUserId",
-  async (userId) => {
-    const response = await axios.get(`${API_BASE}/api/shop/order/list/${userId}`);
+  async () => {
+    const response = await axios.get(`${API_BASE}/api/shop/order/list`, {
+      withCredentials: true,
+    });
     return response.data;
   }
 );
@@ -38,7 +50,9 @@ export const getAllOrdersByUserId = createAsyncThunk(
 export const getOrderDetails = createAsyncThunk(
   "/order/getOrderDetails",
   async (id) => {
-    const response = await axios.get(`${API_BASE}/api/shop/order/details/${id}`);
+    const response = await axios.get(`${API_BASE}/api/shop/order/details/${id}`, {
+      withCredentials: true,
+    });
     return response.data;
   }
 );

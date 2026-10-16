@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { API_BASE } from "@/api/base";
-import { clearCart } from "@/store/shop/cart-slice";
+import { clearCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { confirmRazorpayOrder } from "@/store/shop/order-slice";
 
 import {
@@ -38,8 +38,9 @@ function ShoppingCheckout() {
   const items = cartItems?.items || [];
 
   const totalCartAmount = items.reduce((sum, item) => {
-    const price = item?.salePrice > 0 ? item.salePrice : item?.price || 0;
-    return sum + price * (item?.quantity || 0);
+    const price = Number(item?.salePrice > 0 ? item.salePrice : item?.price || 0);
+    const unitPricePaise = Math.round((price + Number.EPSILON) * 100);
+    return sum + (unitPricePaise * (item?.quantity || 0)) / 100;
   }, 0);
 
   const itemCount = items.reduce(
@@ -122,26 +123,45 @@ function ShoppingCheckout() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ amount: totalCartAmount }),
+          credentials: "include",
+          body: JSON.stringify({
+            addressId: currentSelectedAddress._id,
+            orderNote: orderNote.trim(),
+          }),
         }
       );
 
       const data = await res.json();
 
       if (!res.ok || !data?.success) {
-        throw new Error("Failed to create Razorpay order");
+        throw new Error(data?.message || "Failed to create Razorpay order");
+      }
+
+      if (data.amount !== Math.round((totalCartAmount + Number.EPSILON) * 100)) {
+        dispatch(fetchCartItems());
+        toast({
+          title: "Cart total changed",
+          description: "Review the updated cart total before starting payment again.",
+          variant: "warning",
+        });
+        setIsPaymentStart(false);
+        return;
+      }
+
+      if (!data.keyId) {
+        throw new Error("Razorpay is not configured correctly on the server");
       }
 
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        key: data.keyId,
         amount: data.amount,
         currency: data.currency,
         order_id: data.orderId,
-        name: "Your Store",
+        name: "Beautiful Molds",
         description: "Payment for your order",
 
         prefill: {
-          name: user?.name || "",
+          name: user?.userName || user?.name || "",
           email: user?.email || "",
           contact: currentSelectedAddress?.phone || "",
         },
@@ -163,87 +183,62 @@ function ShoppingCheckout() {
           },
         },
 
-        handler: function (response) {
-          const orderData = {
-            userId: user?.id,
-            cartId: cartItems?._id,
+        handler: async function (response) {
+          const confirmationAction = await dispatch(
+            confirmRazorpayOrder({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+            })
+          );
+          const confirmation = confirmationAction.payload;
 
-            cartItems: items.map((item) => ({
-              productId: item?.productId,
-              title: item?.title,
-              image: item?.image,
-              price:
-                item?.salePrice > 0
-                  ? item.salePrice
-                  : item?.price,
-              quantity: item?.quantity,
-            })),
+          if (confirmationAction.meta.requestStatus === "fulfilled" && confirmation?.success) {
+            dispatch(clearCart());
+            navigate("/shop/order-success", {
+              state: { order: confirmation.order },
+            });
 
-            addressInfo: {
-              addressId: currentSelectedAddress?._id,
-              name: currentSelectedAddress?.name,
-              address: currentSelectedAddress?.address,
-              city: currentSelectedAddress?.city,
-              pincode: currentSelectedAddress?.pincode,
-              phone: currentSelectedAddress?.phone,
-              notes: currentSelectedAddress?.notes,
-            },
+            toast({
+              title: confirmation.needsSupport
+                ? "Payment received; order needs review"
+                : "Order placed successfully!",
+              description: confirmation.needsSupport
+                ? "Your payment was captured. Please contact support about this order."
+                : "Your order has been confirmed and will be shipped soon.",
+              variant: confirmation.needsSupport ? "warning" : "success",
+            });
+          } else {
+            toast({
+              title: confirmation?.pending
+                ? "Payment confirmation is in progress"
+                : "Payment confirmation needs attention",
+              description: confirmation?.message ||
+                "Do not pay again yet. Check your orders shortly, and contact support if you were charged.",
+              variant: "destructive",
+            });
+          }
 
-            orderNote: orderNote.trim(),
-
-            paymentMethod: "razorpay",
-            totalAmount: totalCartAmount,
-
-            razorpay_payment_id:
-              response.razorpay_payment_id,
-
-            razorpay_order_id:
-              response.razorpay_order_id,
-
-            razorpay_signature:
-              response.razorpay_signature,
-          };
-
-          dispatch(confirmRazorpayOrder(orderData)).then((res) => {
-            if (res?.payload?.success) {
-              dispatch(clearCart());
-
-              navigate("/shop/order-success", {
-                state: {
-                  order: res.payload.order,
-                },
-              });
-
-              toast({
-                title: "Order placed successfully!",
-                description:
-                  "Your order has been confirmed and will be shipped soon.",
-                variant: "success",
-              });
-            } else {
-              toast({
-                title: "Payment confirmation failed",
-                description:
-                  "Please contact support if the amount was deducted",
-                variant: "destructive",
-              });
-            }
-
-            setIsPaymentStart(false);
-          });
+          setIsPaymentStart(false);
         },
       };
 
       const razorpayInstance = new window.Razorpay(options);
+      razorpayInstance.on("payment.failed", (event) => {
+        toast({
+          title: "Payment failed",
+          description: event?.error?.description || "You can retry the payment from checkout.",
+          variant: "destructive",
+        });
+      });
 
       razorpayInstance.open();
     } catch (error) {
-      console.error("Payment error:", error);
+      console.error("Payment initiation failed:", error.message);
 
       toast({
         title: "Payment initiation failed",
-        description:
-          "Please try again or use a different payment method",
+        description: error.message || "Please try again or use a different payment method",
         variant: "destructive",
       });
 

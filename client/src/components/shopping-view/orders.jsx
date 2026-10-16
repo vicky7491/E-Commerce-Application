@@ -38,7 +38,6 @@ function StatusPill({ status, type = "order" }) {
 function ShoppingOrders() {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
   const { orderList, orderDetails } = useSelector((state) => state.shopOrder);
 
   function handleFetchOrderDetails(getId) {
@@ -46,7 +45,7 @@ function ShoppingOrders() {
   }
 
   useEffect(() => {
-    dispatch(getAllOrdersByUserId(user?.id));
+    dispatch(getAllOrdersByUserId());
   }, [dispatch]);
 
   useEffect(() => {

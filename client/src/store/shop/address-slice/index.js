@@ -11,7 +11,8 @@ export const addNewAddress = createAsyncThunk(
   async (formData) => {
     const response = await axios.post(
       `${API_BASE}/api/shop/address/add`,
-      formData
+      formData,
+      { withCredentials: true }
     );
 
     return response.data;
@@ -20,9 +21,10 @@ export const addNewAddress = createAsyncThunk(
 
 export const fetchAllAddresses = createAsyncThunk(
   "/addresses/fetchAllAddresses",
-  async (userId) => {
+  async () => {
     const response = await axios.get(
-      `${API_BASE}/api/shop/address/get/${userId}`
+      `${API_BASE}/api/shop/address/get`,
+      { withCredentials: true }
     );
 
     return response.data;
@@ -31,10 +33,11 @@ export const fetchAllAddresses = createAsyncThunk(
 
 export const editaAddress = createAsyncThunk(
   "/addresses/editaAddress",
-  async ({ userId, addressId, formData }) => {
+  async ({ addressId, formData }) => {
     const response = await axios.put(
-      `${API_BASE}/api/shop/address/update/${userId}/${addressId}`,
-      formData
+      `${API_BASE}/api/shop/address/update/${addressId}`,
+      formData,
+      { withCredentials: true }
     );
 
     return response.data;
@@ -43,9 +46,10 @@ export const editaAddress = createAsyncThunk(
 
 export const deleteAddress = createAsyncThunk(
   "/addresses/deleteAddress",
-  async ({ userId, addressId }) => {
+  async ({ addressId }) => {
     const response = await axios.delete(
-      `${API_BASE}/api/shop/address/delete/${userId}/${addressId}`
+      `${API_BASE}/api/shop/address/delete/${addressId}`,
+      { withCredentials: true }
     );
 
     return response.data;

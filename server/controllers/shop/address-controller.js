@@ -1,10 +1,12 @@
+const mongoose = require("mongoose");
 const Address = require("../../models/Address");
 
 const addAddress = async (req, res) => {
   try {
-    const { userId,name, address, city, pincode, phone, notes } = req.body;
+    const { name, address, city, pincode, phone, notes = "" } = req.body || {};
+    const userId = String(req.user.id);
 
-    if (!userId || !name || !address || !city || !pincode || !phone || !notes) {
+    if (!name || !address || !city || !pincode || !phone) {
       return res.status(400).json({
         success: false,
         message: "Invalid data provided!",
@@ -38,13 +40,7 @@ const addAddress = async (req, res) => {
 
 const fetchAllAddress = async (req, res) => {
   try {
-    const { userId } = req.params;
-    if (!userId) {
-      return res.status(400).json({
-        success: false,
-        message: "User id is required!",
-      });
-    }
+    const userId = String(req.user.id);
 
     const addressList = await Address.find({ userId });
 
@@ -63,26 +59,27 @@ const fetchAllAddress = async (req, res) => {
 
 const editAddress = async (req, res) => {
   try {
-    const { userId, addressId } = req.params;
-    const formData = req.body;
+    const { addressId } = req.params;
+    const userId = String(req.user.id);
+    const { name, address, city, pincode, phone, notes = "" } = req.body || {};
 
-    if (!userId || !addressId) {
+    if (!mongoose.isValidObjectId(addressId) || !name || !address || !city || !pincode || !phone) {
       return res.status(400).json({
         success: false,
-        message: "User and address id is required!",
+        message: "Address details are required",
       });
     }
 
-    const address = await Address.findOneAndUpdate(
+    const updatedAddress = await Address.findOneAndUpdate(
       {
         _id: addressId,
         userId,
       },
-      formData,
+      { name, address, city, pincode, phone, notes },
       { new: true }
     );
 
-    if (!address) {
+    if (!updatedAddress) {
       return res.status(404).json({
         success: false,
         message: "Address not found",
@@ -91,7 +88,7 @@ const editAddress = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: address,
+      data: updatedAddress,
     });
   } catch (e) {
     console.log(e);
@@ -104,11 +101,12 @@ const editAddress = async (req, res) => {
 
 const deleteAddress = async (req, res) => {
   try {
-    const { userId, addressId } = req.params;
-    if (!userId || !addressId) {
+    const { addressId } = req.params;
+    const userId = String(req.user.id);
+    if (!mongoose.isValidObjectId(addressId)) {
       return res.status(400).json({
         success: false,
-        message: "User and address id is required!",
+        message: "A valid address id is required",
       });
     }
 
