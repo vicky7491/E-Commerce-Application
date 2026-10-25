@@ -1,22 +1,57 @@
+const mongoose = require("mongoose");
 const Order = require("../../models/Order");
 const Product = require("../../models/Product");
 const ProductReview = require("../../models/Review");
 
 const addProductReview = async (req, res) => {
   try {
-    const { productId, userId, userName, reviewMessage, reviewValue } =
-      req.body;
+    const { productId, reviewMessage = "", reviewValue } = req.body || {};
+    const userId = String(req.user.id);
 
-    const order = await Order.findOne({
+    if (!mongoose.isValidObjectId(productId)) {
+      return res.status(400).json({
+        success: false,
+        message: "A valid product is required to submit a review.",
+      });
+    }
+
+    if (
+      typeof reviewValue !== "number" ||
+      !Number.isInteger(reviewValue) ||
+      reviewValue < 1 ||
+      reviewValue > 5
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Rating must be a whole number from 1 to 5.",
+      });
+    }
+
+    if (typeof reviewMessage !== "string" || reviewMessage.length > 1000) {
+      return res.status(400).json({
+        success: false,
+        message: "Review text must be 1000 characters or fewer.",
+      });
+    }
+
+    const productExists = await Product.exists({ _id: productId });
+    if (!productExists) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found.",
+      });
+    }
+
+    const paidOrder = await Order.exists({
       userId,
+      paymentStatus: "paid",
       "cartItems.productId": productId,
-      // orderStatus: "confirmed" || "delivered",
     });
 
-    if (!order) {
+    if (!paidOrder) {
       return res.status(403).json({
         success: false,
-        message: "You need to purchase product to review it.",
+        message: "You can review this product after a paid purchase.",
       });
     }
 
@@ -35,8 +70,8 @@ const addProductReview = async (req, res) => {
     const newReview = new ProductReview({
       productId,
       userId,
-      userName,
-      reviewMessage,
+      userName: String(req.user.userName || "Customer").slice(0, 80),
+      reviewMessage: reviewMessage.trim(),
       reviewValue,
     });
 

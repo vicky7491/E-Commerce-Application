@@ -141,15 +141,12 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
       const data = await dispatch(
         addReview({
           productId: productDetails?._id,
-          userId: user?.id,
-          userName: user?.userName || user?.name,
-          userAvatar: user?.avatar,
           reviewMessage: reviewMsg,
           reviewValue: rating,
         })
-      );
+      ).unwrap();
       
-      if (data.payload.success) {
+      if (data.success) {
         setRating(0);
         setReviewMsg("");
         dispatch(getReviews(productDetails?._id));
@@ -161,7 +158,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
       }
     } catch (error) {
       toast({
-        title: "You need to purchase this product to review it.",
+        title: error?.message || "Unable to submit your review.",
         variant: "destructive",
       });
     } finally {
