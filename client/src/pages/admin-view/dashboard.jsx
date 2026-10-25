@@ -1,5 +1,6 @@
 import FeatureImageUpload from "@/components/admin-view/FeatureImageUpload";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import {
   addFeatureImage,
   getFeatureImages,
@@ -15,6 +16,7 @@ function AdminDashboard() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const dispatch = useDispatch();
+  const { toast } = useToast();
 
   const { featureImageList } = useSelector(
     (state) => state.commonFeature
@@ -37,9 +39,21 @@ function AdminDashboard() {
   }
 
   function handleDeleteFeatureImage(imageId) {
-    dispatch(deleteFeatureImage(imageId)).then(() => {
-      dispatch(getFeatureImages());
-    });
+    dispatch(deleteFeatureImage(imageId))
+      .unwrap()
+      .then((result) => {
+        if (result?.success) {
+          dispatch(getFeatureImages());
+          toast({ title: "Feature image deleted", variant: "success" });
+        }
+      })
+      .catch((error) => {
+        toast({
+          title: "Could not delete feature image",
+          description: error?.message || "Please try again.",
+          variant: "destructive",
+        });
+      });
   }
 
   useEffect(() => {

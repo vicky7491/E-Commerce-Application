@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { getMaxListeners } = require("../models/User");
+const { isAdminUser } = require("../helpers/admin-access");
 
 const verifyToken = (req, res, next) => {
 const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
@@ -19,8 +19,8 @@ const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
 const verifyTokenAndAdmin = (req, res, next) => {
   verifyToken(req, res, () => {
-    const adminEmails = ["vickyyadav5383@gmail.com","aniketkumar704216@gmail.com","beautifulmolds@gmail.com"]; // ✅ List of allowed admin emails
-    if (adminEmails.includes(req.user.email)) {
+    if (isAdminUser(req.user)) {
+      req.user.role = "admin";
       next();
     } else {
       return res.status(403).json({ success: false, message: "Admin access only!" });

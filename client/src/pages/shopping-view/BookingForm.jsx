@@ -409,6 +409,7 @@ const BookingForm = ({ formId }) => {
   const [isSubmitting,    setIsSubmitting]    = useState(false);
   const [isSubmitted,     setIsSubmitted]     = useState(false);
   const [submittedData,   setSubmittedData]   = useState(null);
+  const [submitError,     setSubmitError]     = useState("");
 
   const patch = (key) => (e) => setFormData(f => ({ ...f, [key]: e.target.value }));
 
@@ -441,22 +442,27 @@ const BookingForm = ({ formId }) => {
     const errs = validate(3);
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setIsSubmitting(true);
+    setSubmitError("");
     const payload = { ...formData, concept: selectedConcept, date, time: preferredTime };
 
-    setTimeout(() => { setIsSubmitting(false); setSubmittedData(payload); setIsSubmitted(true); }, 1400);
-
-    if (typeof sessionStorage !== 'undefined') sessionStorage.setItem("activeForm", formId);
     try {
       await axios.post(`${API_BASE}/api/bookings/booking`, payload);
+      if (typeof sessionStorage !== 'undefined') sessionStorage.setItem("activeForm", formId);
+      setSubmittedData(payload);
+      setIsSubmitted(true);
     } catch (err) {
-      console.error("Booking error:", err.response?.data || err.message);
+      setSubmitError(
+        err.response?.data?.message || "We couldn't submit your booking. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleReset = () => {
     setIsSubmitted(false); setSubmittedData(null); setStep(1);
     setFormData({ name:'', phone:'', email:'', location:'', comments:'' });
-    setSelectedConcept(''); setDate(''); setPreferredTime(''); setErrors({});
+    setSelectedConcept(''); setDate(''); setPreferredTime(''); setErrors({}); setSubmitError('');
   };
 
   if (isSubmitted && submittedData) return (
@@ -582,7 +588,7 @@ const BookingForm = ({ formId }) => {
             </button>
           ) : (
             <button type="button"
-              onClick={() => { sessionStorage?.setItem("activeForm", formId); handleSubmit(); }}
+              onClick={handleSubmit}
               disabled={isSubmitting}
               className={`flex items-center gap-2 px-7 py-3 rounded-xl text-white text-sm font-bold transition-all duration-200
                 ${isSubmitting
@@ -594,6 +600,12 @@ const BookingForm = ({ formId }) => {
             </button>
           )}
         </div>
+
+        {submitError && (
+          <p role="alert" className="text-center text-sm text-red-500 mt-3">
+            {submitError}
+          </p>
+        )}
 
         <p className="text-center text-[11px] text-slate-300 mt-5 font-medium">
           🔒 Your details are private &amp; secure · No spam, ever

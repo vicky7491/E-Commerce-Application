@@ -13,6 +13,7 @@ export const addNewProduct = createAsyncThunk(
       `${API_BASE}/api/admin/products/add`,
       formData,
       {
+        withCredentials: true,
         headers: {
           "Content-Type": "application/json",
         },
@@ -41,6 +42,7 @@ export const editProduct = createAsyncThunk(
       `${API_BASE}/api/admin/products/edit/${id}`,
       formData,
       {
+        withCredentials: true,
         headers: {
           "Content-Type": "application/json",
         },
@@ -53,12 +55,19 @@ export const editProduct = createAsyncThunk(
 
 export const deleteProduct = createAsyncThunk(
   "/products/deleteProduct",
-  async (id) => {
-    const result = await axios.delete(
-      `${API_BASE}/api/admin/products/delete/${id}`
-    );
+  async (id, { rejectWithValue }) => {
+    try {
+      const result = await axios.delete(
+        `${API_BASE}/api/admin/products/delete/${id}`,
+        { withCredentials: true }
+      );
 
-    return result?.data;
+      return result?.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to delete product." }
+      );
+    }
   }
 );
 

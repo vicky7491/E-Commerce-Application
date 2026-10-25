@@ -97,12 +97,28 @@ function AdminProducts() {
   }
 
   function handleDelete(productId) {
-    dispatch(deleteProduct(productId)).then((data) => {
-      if (data?.payload?.success) {
+    dispatch(deleteProduct(productId))
+      .unwrap()
+      .then((data) => {
+        if (!data?.success) {
+          toast({
+            title: "Product deletion failed",
+            description: data?.message || "Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+
         dispatch(fetchAllProducts());
         toast({ title: "Product deleted successfully", variant: "success" });
-      }
-    });
+      })
+      .catch((error) => {
+        toast({
+          title: "Product deletion failed",
+          description: error?.message || "Please try again.",
+          variant: "destructive",
+        });
+      });
   }
 
   function isFormValid() {

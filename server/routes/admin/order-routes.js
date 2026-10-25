@@ -1,5 +1,5 @@
 const express = require("express");
-const { authMiddleware } = require("../../controllers/auth/auth-controller");
+const { verifyTokenAndAdmin } = require("../../middleware/verifyToken");
 
 const {
   getAllOrdersOfAllUsers,
@@ -9,13 +9,7 @@ const {
 
 const router = express.Router();
 
-router.use(authMiddleware);
-router.use((req, res, next) => {
-  if (req.user?.role !== "admin") {
-    return res.status(403).json({ success: false, message: "Admin access required" });
-  }
-  next();
-});
+router.use(verifyTokenAndAdmin);
 
 router.get("/get", getAllOrdersOfAllUsers);
 router.get("/details/:id", getOrderDetailsForAdmin);
