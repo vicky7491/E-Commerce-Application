@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const forgotPasswordEmail = require("../../helpers/templates/forgotPasswordEmail");
 const User = require("../../models/User");
 const sendEmail = require("../../helpers/sendEmail");
+const { getUserRole } = require("../../helpers/admin-access");
 //register
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
@@ -61,10 +62,11 @@ const loginUser = async (req, res) => {
         message: "Incorrect password! Please try again",
       });
 
+    const role = getUserRole(checkUser);
     const token = jwt.sign(
       {
         id: checkUser._id,
-        role: checkUser.role,
+        role,
         email: checkUser.email,
         userName: checkUser.userName,
       },
@@ -83,7 +85,7 @@ const loginUser = async (req, res) => {
         message: "Logged in successfully",
       user: {
         email: checkUser.email,
-        role: checkUser.role,
+        role,
         id: checkUser._id,
         userName: checkUser.userName,
       },

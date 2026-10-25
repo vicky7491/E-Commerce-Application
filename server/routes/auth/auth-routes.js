@@ -7,6 +7,7 @@ const {
   resetPassword,
   forgotPassword
 } = require("../../controllers/auth/auth-controller");
+const { getUserRole } = require("../../helpers/admin-access");
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 
 router.get("/check-auth", authMiddleware, (req, res) => {
-  const user = req.user;
+  const user = { ...req.user, role: getUserRole(req.user) };
   res.status(200).json({
     success: true,
     message: "Authenticated user!",
