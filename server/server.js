@@ -63,6 +63,17 @@ const generalLimiter = rateLimit({
   },
 });
 
+const bookingLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many booking requests. Please try again later.",
+  },
+});
+
 // Mount before express.json so Razorpay's webhook signature is checked against
 // the original request bytes.
 app.use(
@@ -86,7 +97,7 @@ app.use("/api/shop/order", generalLimiter, require("./routes/shop/order-routes")
 app.use("/api/shop/search", generalLimiter, require("./routes/shop/search-routes"));
 app.use("/api/shop/review", generalLimiter, require("./routes/shop/review-routes"));
 app.use("/api/common/feature", generalLimiter, require("./routes/common/feature-routes"));
-app.use("/api/bookings", generalLimiter, require("./routes/common/booking-routes"));
+app.use("/api/bookings", bookingLimiter, require("./routes/common/booking-routes"));
 
 // Health check
 app.get("/", (req, res) => {
