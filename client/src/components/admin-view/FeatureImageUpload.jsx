@@ -21,7 +21,8 @@ function FeatureImageUpload({
 
     const res = await axios.post(
       `${API_BASE}/api/admin/products/upload-image`,
-      data
+      data,
+      { withCredentials: true }
     );
 
     if (res?.data?.success) {

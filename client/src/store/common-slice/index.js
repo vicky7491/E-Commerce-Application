@@ -19,7 +19,11 @@ export const getFeatureImages = createAsyncThunk(
 export const addFeatureImage = createAsyncThunk(
   "feature/addFeatureImage",
   async (image) => {
-    const response = await axios.post(`${API_BASE}/api/common/feature/add`, { image });
+    const response = await axios.post(
+      `${API_BASE}/api/common/feature/add`,
+      { image },
+      { withCredentials: true }
+    );
     return response.data;
   }
 );
@@ -27,9 +31,18 @@ export const addFeatureImage = createAsyncThunk(
 // ✅ Delete Feature Image
 export const deleteFeatureImage = createAsyncThunk(
   "feature/deleteFeatureImage",
-  async (id) => {
-    const response = await axios.delete(`${API_BASE}/api/common/feature/delete/${id}`);
-    return { id, success: response.data.success };
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(
+        `${API_BASE}/api/common/feature/delete/${id}`,
+        { withCredentials: true }
+      );
+      return { id, success: response.data.success };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to delete feature image." }
+      );
+    }
   }
 );
 
